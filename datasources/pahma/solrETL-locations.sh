@@ -63,7 +63,7 @@ curl -S -s "http://localhost:8983/solr/${TENANT}-locations/update" --data '<comm
 # this POSTs the csv to the Solr / update endpoint
 # note, among other things, the overriding of the encapsulator with \
 ##############################################################################
-time curl -s -S 'http://localhost:8983/solr/pahma-locations/update/csv?commit=true&header=true&trim=true&separator=%09&encapsulator=\' --data-binary @4solr.pahma.locations.csv -H 'Content-type:text/plain; charset=utf-8'
+time curl -X POST -s -S 'http://localhost:8983/solr/pahma-locations/update/csv?commit=true&header=true&trim=true&separator=%09&encapsulator=\' -T @4solr.pahma.locations.csv -H 'Content-type:text/plain; charset=utf-8'
 rm m4.csv
 gzip 4solr.*.csv
 date

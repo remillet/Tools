@@ -23,7 +23,7 @@ try:
 except:
     for row in csv.reader(codecs.open(sys.argv[1], 'r', "utf-8"), delimiter='\t'):
         # csid   displayname     refname noauthorname    majorgroup
-        xData.append([row[0], row[1], row[2], 'nothing'])
+        xData.append([row[0], row[1], row[2], 'n.d.'])
 
 
 cspaceCSV = csv.writer(codecs.open(sys.argv[2], 'w', "utf-8"), delimiter='\t')

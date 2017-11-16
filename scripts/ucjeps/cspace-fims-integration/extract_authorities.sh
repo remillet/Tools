@@ -4,7 +4,7 @@ CREDS="xxx@ucjeps.cspace.berkeley.edu:xxx"
  
 function extract()
 {
-   curl -u "${CREDS}" -o tmp.xml "https://ucjeps.cspace.berkeley.edu/cspace-services/$1/items?pgSz=10000"
+   curl -u "${CREDS}" -o tmp.xml "https://ucjeps.cspace.berkeley.edu/cspace-services/$1/items?pgSz=50000"
    xmllint --format tmp.xml > $2.xml
    rm tmp.xml
 }

@@ -8,15 +8,28 @@ def extractTag(xml, tag):
     element = xml.find('.//%s' % tag)
     return element.text
 
+xData = []
+try:
+    cspaceXML = ET.parse(sys.argv[1])
+    root = cspaceXML.getroot()
+    items = cspaceXML.findall('.//list-item')
+    for i in items:
+        csid = i.find('.//csid')
+        csid = csid.text
+        termDisplayName = extractTag(i, 'termDisplayName')
+        refName = extractTag(i, 'refName')
+        updated_at = extractTag(i, 'updatedAt')
+        xData.append([csid, termDisplayName,refName,updated_at])
+except:
+    for row in csv.reader(codecs.open(sys.argv[1], 'r', "utf-8"), delimiter='\t'):
+        # csid   displayname     refname noauthorname    majorgroup
+        xData.append([row[0], row[1], row[2], 'nothing'])
 
-cspaceXML = ET.parse(sys.argv[1])
-root = cspaceXML.getroot()
-items = cspaceXML.findall('.//list-item')
 
 cspaceCSV = csv.writer(codecs.open(sys.argv[2], 'w', "utf-8"), delimiter='\t')
 entities = {}
 
-numberofitems = len(items)
+numberofitems = len(xData)
 # if numberofitems > numberWanted:
 #    items = items[:numberWanted]
 
@@ -27,14 +40,8 @@ if len(sys.argv) >= 4:
 else:
     check_names = False
 
-sequence_number = 0
-for i in items:
-    sequence_number += 1
-    csid = i.find('.//csid')
-    csid = csid.text
-    termDisplayName = extractTag(i, 'termDisplayName')
-    refName = extractTag(i, 'refName')
-    updated_at = extractTag(i, 'updatedAt')
+for sequence_number,i in enumerate(xData):
+    [ csid,termDisplayName,refName,updated_at ] = i
     # if we were given a specific list of names, only write those ones out
     if check_names:
         if not termDisplayName in names2check:

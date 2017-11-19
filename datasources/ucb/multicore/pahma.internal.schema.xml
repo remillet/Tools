@@ -209,7 +209,7 @@
     <copyField source="objproddate_s" dest="objproddate_txt"/>
     <copyField source="objfcp_s" dest="objfcp_txt"/>
     <copyField source="objfcpelevation_s" dest="objfcpelevation_txt"/>
-    <copyField source="objfcptree_s" dest="objfcptree_txt"/>
+    <copyField source="objfcptree_ss" dest="objfcptree_txt"/>
     <copyField source="currentlocation_s" dest="currentlocation_txt"/>
     <copyField source="computedcrate_s" dest="computedcrate_txt"/>
     <copyField source="donor_ss" dest="donor_txt"/>

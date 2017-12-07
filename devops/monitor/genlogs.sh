@@ -1,7 +1,7 @@
 t=$1
 # grep django logs, eliminating 'junk' records; combine and sort, eliminating duplicates
-grep -h INFO ~/${t}/logs/logfile.txt*  | grep -v SMBConnection | grep -v AuthN | grep -v accountperms | grep -v delete| perl -pe 's/\[(.*?) (.*?)\] (\w+) \[(.*?)\] (.*?) :: (.*?) :: (.*?)( :: .*?)?/${t}\t\1\t\2\t\3\t\4\t\5\t\6\t\7\t\8/'  > ${t}.temp1
-grep -h DEBUG ~/${t}/logs/logfile.txt* | grep -v SMBConnection | grep -v 'could not authenticate' | perl -pe 's/\[(.*?) (.*?)\] (\w+) \[(.*?)\] User: (.*) authenticated with Host: (.*)/${t}\t\1\t\2\t\3\t\4\t\5\t\6/' >> ${t}.temp1
+grep -h INFO ~/${t}/logs/logfile.txt* | grep -v SMBConnection | grep -v urllib3 | grep -v AuthN | grep -v accountperms | grep -v delete| perl -pe 's/\[(.*?) (.*?)\] (\w+) \[(.*?)\] (.*?) :: (.*?) :: (.*?)( :: .*?)?/${t}\t\1\t\2\t\3\t\4\t\5\t\6\t\7\t\8/'  > ${t}.temp1
+grep -h DEBUG ~/${t}/logs/logfile.txt* | grep -v SMBConnection | grep -v urllib3 | grep -v 'could not authenticate' | perl -pe 's/\[(.*?) (.*?)\] (\w+) \[(.*?)\] User: (.*) authenticated with Host: (.*)/${t}\t\1\t\2\t\3\t\4\t\5\t\6/' >> ${t}.temp1
 # get rid of the nagios monitoring records
 cat ${t}.temp1 ${t}.django.log | perl -ne 'print unless /text:\(\+(rotogravure|Monterey|prominent|preserve|glazed)\)/' | sort -u > ${t}.temp2
 mv ${t}.temp2 ${t}.django.log

@@ -229,6 +229,7 @@
     <copyField source="exhibitionnumber_ss" dest="exhibitionnumber_txt"/>
     <copyField source="exhibitiontitle_ss" dest="exhibitiontitle_txt"/>
     <copyField source="grouptitle_ss" dest="grouptitle_txt"/>
+    <copyField source="objmaker_ss" dest="objmaker_txt"/>
 
     <copyField source="*_s" dest="text"/>
     <copyField source="*_ss" dest="text"/>

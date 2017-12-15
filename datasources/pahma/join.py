@@ -28,7 +28,7 @@ for lineno, ci in enumerate(f2):
     counts['file2'] += 1
     if ci[0] in file1:
         if ci[0] in alreadyseen:
-            print '%s already seen, not added' % ci[0]
+            #print '%s already seen, not added' % ci[0]
             counts['duplicates'] += 1
         else:
             alreadyseen[ci[0]] = ci

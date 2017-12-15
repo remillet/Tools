@@ -95,7 +95,9 @@ while (<METADATA>) {
   }
   else {
     $count{'matched: no'}++;
+    $count{'hasimages: no'}++;
     $mediablobs = $delim x 6;
+    $mediablobs .= 'no';
   }
   $mediablobs =~ s/,$delim/$delim/g; # get rid of trailing commas
   print $_ . $mediablobs . "\n";

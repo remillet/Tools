@@ -7,7 +7,7 @@
     <worksheet sheetname="Samples">
       <rule level="error" type="duplicateColumnNames"/>
       <rule column="Coll_Num" level="warning" type="uniqueValue"/>
-      <rule column="Coll_Num" level="error" type="validForURI"/>
+      <rule column="Coll_Num" level="warning" type="validForURI"/>
       <rule column="Barcode_Number" level="error" type="uniqueValue"/>
       <rule column="RequiredColumns" level="error" type="RequiredColumns">
         <field>Locality</field>
@@ -307,6 +307,80 @@
         <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(40258)">W. J. Williamson</field>
         <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(3549)">W. L. Jepson</field>
         <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(3842)">Ynes Mexia</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(Bethel1509471588882)">Bethel</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(CatherineMLink1349298589037)">Cathy Link</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(DJahnTAudesirk1342653113841)">D. Jahn and T. Audesirk</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(EmmaSnyder1509475417574)">Emma Snyder</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(MrsEmmaSnyder1378836147274)">Emma Snyder</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(EYDawson1509473548783)">E. Y. Dawson</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(FrancisDrouetandAaronACohen1509475817633)">Francis Drouet and Aaron A. Cohen</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(FrancisDrouetandJFrancisMacbride1509475663948)">Francis Drouet and J. Francis Macbride</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(FrancisDrouetandMJGroesbeck1509475807470)">Francis Drouet and M. J. Groesbeck</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(FrancisDrouetandReneeDrouet1509475796959)">Francis Drouet and Renee Drouet</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(FrancisDrouetwithDonaldRichardsDonaldAJohansen1509475782997)">Francis Drouet with Donald Richards, Donald A. Johansen</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(FDrouetwithDonaldRichardsJosephRubinstein1509475744685)">Francis Drouet with Donald Richards, Joseph Rubinstein</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(15758)">Frederick W. Koch</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(GatesBurrell1509558315784)">Gates Burrell</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(GeorgeFAtkinson1509558305226)">George F. Atkinson</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(GHHollenberg1509558084041)">G. H. Hollenberg</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(HaydenWilliams1510081096282)">Hayden Williams</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(44655)">H. D. Johnston</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(JamesWCunningham1510083072839)">James W. Cunningham</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(JamesWCunninghamandFrancisDrouet1510083091937)">James W. Cunningham and Francis Drouet</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(JCGuemsey1510081113940)">J. C. Guemsey</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(JCStephenson1510082022309)">J. C. Stephenson</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(JFrancisMacbrideandHerbertLMason1510082083301)">J. Francis Macbride and Herbert L. Mason</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(JHauck1510082191674)">J. Hauck</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(JMReed1510082461142)">J. M. Reed</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(JohnLBlum1510083154116)">John L. Blum</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(JohnLBlumandRonaldMeister1510083166775)">John L. Blum and Ronald Meister</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(JohnMohr1510083285758)">John Mohr</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(JProskauerandNelsLersten1510082591885)">J. Proskauer and Nels Lersten</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(KathyAMiller1510083607143)">Kathy A. Miller</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(LawrenceReid1510088321776)">Lawrence Reid</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(848)">L. G. M. Bass Becking</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(LouiseKelloggandAnnieMAlexander1510093971057)">Louise Kellogg and Annie M. Alexander</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(MarkMMorris1510094114226)">Mark M. Morris</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(12860)">Maxwell S. Doty</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(McClatchie1510096296035)">McClatchie</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(MKWicksten1510094028200)">M. K. Wicksten</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(MrsLoomis1362182870068)">Nina H. Loomis</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(NLGardnerandHEParks1510096896656)">N. L. Gardner and H. E. Parks</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(NLGardnerandLoisChambers1510096906235)">N. L. Gardner and Lois Chambers</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(NLGardnerandVDuran1510096915523)">N. L. Gardner and V. Duran</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(NLNicholsonwithSRaschRGiven1510096926121)">N. L. Nicholson with S. Rasch, R. Given</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(PTBeaudetteandEYDawson1510097197327)">P. T. Beaudette and E. Y. Dawson</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(RayChin1510097814046)">Ray Chin</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(RLMoeandJJokerst1510097672275)">R. L. Moe and J. Jokerst</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(RNNelson1510097752762)">R. N. Nelson</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(RobertBSetzer1510097897097)">Robert B. Setzer</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(RonaldHClawson1510098489866)">Ronald H. Clawson</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(RWoodfield1510097780567)">R. Woodfield</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(44218)">S. Galen Smith and Herbert L. Mason</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(MrsSPMonks1370379921616)">S. P. Monks</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(Seaweed1191)">S. P. Monks</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(TLLyon1510099486153)">T. L. Lyon</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(TomSmith1510099558657)">Tom Smith</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(UMMiller1510099606354)">U. M. Miller</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(VanderEike1510099936247)">Vander Eike</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(WBCookeandVGCooke1510099667664)">W. B. Cooke and V. G. Cooke</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(WEAllen1510100008877)">W. E. Allen</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(23254)">W. I. Follett and Evelyn B. Follett</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(WWBonns1510100422402)">W. W. Bonns</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(GeorgeJHollenberg1510857590948)'George J. Hollenberg'">George J. Hollenberg</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(PAMung1510857631061)'P. A. Mung'">P. A. Mung</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(KathrynFrankenfield1510857709024)'Kathryn Frankenfield'">Kathryn Frankenfield</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(LillianFWennstrom1510857778970)'Lillian F. Wennstrom'">Lillian F. Wennstrom</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(CarterandNLGardner1510096813282)">Carter and N. L. Gardner</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(8065)">M. French Gilman</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(MrsSnyder1352828758419)">Mrs. Snyder</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(3266)">none</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(8083)">none</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(27502)">Nordhoff</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(PHaakerMOdemar1344901273284)">P. Haaker and M. Odemar</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(MissSarahPMonks1377023046810)">Sarah P. Monks</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(SarahPMonks1348684166416)">Sarah P. Monks</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(organization):item:name(WJVOsterhoutRAHarper1357860711167)">W. J. V. Osterhout and R. A. Harper</field>
       </list>
       <list alias="DeterminedBy" caseInsensitive="false">
         <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:orgauthorities:name(determination):item:name(AdamCSchneider1390521123940)">Adam C. Schneider</field>
@@ -11422,6 +11496,7 @@
         <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:taxonomyauthority:name(unverified):item:name(unverified11822)">Zostera muelleri Irmisch ex Aschers</field>
         <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:taxonomyauthority:name(taxon):item:name(88609)">Acinetospora nicholsoniae Hollenb.</field>
         <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:taxonomyauthority:name(taxon):item:name(88125)">Alaria Grev.</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:taxonomyauthority:name(taxon):item:name(Alaria)">Alaria</field>
         <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:taxonomyauthority:name(taxon):item:name(88130)">Branchioglossum Kylin</field>
         <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:taxonomyauthority:name(taxon):item:name(88142)">Cladophora Kuetz.</field>
         <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:taxonomyauthority:name(taxon):item:name(76400)">Codium Stackh.</field>
@@ -11435,7 +11510,37 @@
         <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:taxonomyauthority:name(taxon):item:name(88483)">Ulva fasciata Delile</field>
         <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:taxonomyauthority:name(taxon):item:name(88160)">Vaucheria DC.</field>
         <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:taxonomyauthority:name(taxon):item:name(88481)">Vaucheria gardneri Collins</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:taxonomyauthority:name(taxon):item:name(88125)">Alaria Grev.</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:taxonomyauthority:name(taxon):item:name(88130)">Branchioglossum Kylin</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:taxonomyauthority:name(taxon):item:name(Chara)">Chara L.</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:taxonomyauthority:name(taxon):item:name(Chondria)">Chondria Link</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:taxonomyauthority:name(taxon):item:name(88142)">Cladophora Kuetz.</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:taxonomyauthority:name(taxon):item:name(76400)">Codium Stackh.</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:taxonomyauthority:name(taxon):item:name(93915)">Dictyota unknown</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:taxonomyauthority:name(taxon):item:name(94058)">Dictyota cribrosa Setchell &amp; Gardner</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:taxonomyauthority:name(taxon):item:name(88813)">Gigartina Stackhouse</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:taxonomyauthority:name(taxon):item:name(88148)">Oedogonium Link</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:taxonomyauthority:name(taxon):item:name(88149)">Oophila Wille</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:taxonomyauthority:name(taxon):item:name(88159)">Ulva L.</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:taxonomyauthority:name(taxon):item:name(92217)">Ulva dactylifera Setchell &amp; Gardner</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:taxonomyauthority:name(taxon):item:name(88483)">Ulva fasciata Delile</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:taxonomyauthority:name(taxon):item:name(88160)">Vaucheria DC.</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:taxonomyauthority:name(taxon):item:name(88481)">Vaucheria gardneri Collins</field>
         <field uri=""> </field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:taxonomyauthority:name(taxon):item:name(Cladophoratmp)">Cladophora</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:taxonomyauthority:name(taxon):item:name(Cladophora)">Cladophora</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:taxonomyauthority:name(taxon):item:name(Codium)">Codium</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:taxonomyauthority:name(taxon):item:name(Dictyota)">Dictyota</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:taxonomyauthority:name(taxon):item:name(Dictyotacribrosa)">Dictyota cribrosa</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:taxonomyauthority:name(taxon):item:name(Gigartina)">Gigartina</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:taxonomyauthority:name(taxon):item:name(Gigartina1390516959811)">Gigartina</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:taxonomyauthority:name(taxon):item:name(Gigartina1390516960325)">Gigartina</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:taxonomyauthority:name(taxon):item:name(Oedogonium)">Oedogonium</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:taxonomyauthority:name(taxon):item:name(Oophila)">Oophila</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:taxonomyauthority:name(taxon):item:name(Ulvadactylifera)">Ulva dactylifera</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:taxonomyauthority:name(taxon):item:name(Ulvafasciata)">Ulva fasciata</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:taxonomyauthority:name(taxon):item:name(Vaucheria)">Vaucheria</field>
+        <field uri="urn:cspace:ucjeps.cspace.berkeley.edu:taxonomyauthority:name(taxon):item:name(Vaucheriagardneri)">Vaucheria gardneri</field>
       </list>
     </lists>
   </validation>

@@ -14,7 +14,10 @@ do
     ./genlogs.sh ${t}
     ./topblobs.sh ${t}
     #echo "<a target=\"blobs\" href=\"${t}.blobs.html\">Top 100 Blobs for ${t}</a>" >> summary.html
+    ./bmulog.sh ${t}
 done
+cp *.bmu.log /var/www/static
+gzip -f /var/www/static/*.bmu.log
 ./maketable.sh
 perl -i -pe 's/^aa//' combined.txt
 perl -pe 'print "<tr><th>";s/\t/<td>/g;' combined.txt >> summary.html

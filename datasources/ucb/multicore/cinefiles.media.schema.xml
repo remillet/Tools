@@ -193,20 +193,14 @@
         or to add multiple fields to the same field for easier/faster searching.
     -->
 
-    <copyField source="*_s" dest="text"/>
-    <copyField source="*_ss" dest="text"/>
-    <copyField source="*_txt" dest="text"/>
 
   <!-- Above, multiple source fields are copied to the [text] field. 
 	  Another way to map multiple source fields to the same 
 	  destination field is to use the dynamic field syntax. 
 	  copyField also supports a maxChars to copy setting.  -->
 	   
-  <!-- <copyField source="*_t" dest="text" maxChars="3000"/> -->
 
   <!-- copy name to alphaNameSort, a field designed for sorting by name -->
-  <!-- <copyField source="name" dest="alphaNameSort"/> -->
- 
 
     <!-- field type definitions. The "name" attribute is
        just a label to be used by field definitions.  The "class"

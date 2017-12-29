@@ -48,9 +48,9 @@ select
     lg.maxelevation as maxelevation_s,
     lg.elevationunit as elevationunit_s,
     regexp_replace(co.fieldcollectionnote,E'[\\t\\n\\r]+', ' ', 'g') as habitat_s,
-    lg.decimallatitude as location_0_coordinate,
-    lg.decimallongitude as location_1_coordinate,
-    lg.decimallatitude || ', ' || lg.decimallongitude as latlong_p,
+    lg.decimallatitude as location_0_d,
+    lg.decimallongitude as location_1_d,
+    lg.decimallatitude || ',' || lg.decimallongitude as latlong_p,
     case when lg.vcoordsys like 'Township%'
                 then lg.vcoordinates
     end as trscoordinates_s,

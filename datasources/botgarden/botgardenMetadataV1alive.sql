@@ -45,7 +45,7 @@ select
     lg.maxelevation as MaxElevation_s,
     lg.elevationunit as ElevationUnit_s,
         co.fieldcollectionnote as Habitat_s,
-    lg.decimallatitude || ', ' || lg.decimallongitude as latlong_p,
+    lg.decimallatitude || ',' || lg.decimallongitude as latlong_p,
     case when lg.vcoordsys like 'Township%'
                 then lg.vcoordinates
     end as TRSCoordinates_s,

@@ -13,16 +13,27 @@
 # 3. export and mail BAMPFA view for Orlando
 # 4. export and mail Piction view for MCQ
 #
+# some notes:
+#
+# in most cases, the jobs must be order wrt to each other: the 'internal' cores
+# often require data generated for the 'public' cores, etc.
+#
+# in general, the refreshes for a particular tenant must be run sequentially, i.e.
+# not in parallel: they may overwrite files or otherwise conflict. there are no
+# such conflicts between tenants, except for system resources such as cpu and
+# memory.
 ##################################################################################
 echo 'starting solr refreshes' `date`
-/home/app_solr/solrdatasources/bampfa/solrETL-internal.sh         bampfa     >> /home/app_solr/solrdatasources/bampfa/solr_extract_internal.log  2>&1
 /home/app_solr/solrdatasources/bampfa/solrETL-public.sh           bampfa     >> /home/app_solr/solrdatasources/bampfa/solr_extract_public.log  2>&1
+/home/app_solr/solrdatasources/bampfa/solrETL-internal.sh         bampfa     >> /home/app_solr/solrdatasources/bampfa/solr_extract_internal.log  2>&1
 /home/app_solr/solrdatasources/bampfa/bampfa_collectionitems_vw.sh bampfa    >> /home/app_solr/solrdatasources/bampfa/solr_extract_BAM.log  2>&1
 /home/app_solr/solrdatasources/bampfa/piction_extract.sh          bampfa     >> /home/app_solr/solrdatasources/bampfa/solr_extract_Piction.log  2>&1
 
 /home/app_solr/solrdatasources/botgarden/solrETL-public.sh        botgarden  >> /home/app_solr/solrdatasources/botgarden/solr_extract_public.log  2>&1
 /home/app_solr/solrdatasources/botgarden/solrETL-internal.sh      botgarden  >> /home/app_solr/solrdatasources/botgarden/solr_extract_internal.log  2>&1
 /home/app_solr/solrdatasources/botgarden/solrETL-propagations.sh  botgarden  >> /home/app_solr/solrdatasources/botgarden/solr_extract_propagations.log  2>&1
+
+/home/app_solr/solrdatasources/cinefiles/solrETL-public.sh        cinefiles  >> /home/app_solr/solrdatasources/cinefiles/solr_extract_public.log  2>&1
 
 /home/app_solr/solrdatasources/pahma/solrETL-public.sh            pahma      >> /home/app_solr/solrdatasources/pahma/solr_extract_public.log  2>&1
 /home/app_solr/solrdatasources/pahma/solrETL-internal.sh          pahma      >> /home/app_solr/solrdatasources/pahma/solr_extract_internal.log  2>&1

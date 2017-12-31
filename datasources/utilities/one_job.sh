@@ -1,12 +1,12 @@
 ##################################################################################
 #
-# CRON TABLE (crontab) for CSpace Solr ETL
+# "One Job To Rule Them All"
 #
 ##################################################################################
 #
-# run solr ETL (and other webapp and API monitoring)
+# run all solr ETL (and other webapp and API monitoring)
 #
-# currently runs under pseudo user app_solr on cspace-prod and cspace-dev
+# currently runs under app user app_solr on cspace-prod and (optionally) cspace-dev
 #
 # 1. run the 13 solr4 updates
 # 2. monitor solr datastore contents (email contents)

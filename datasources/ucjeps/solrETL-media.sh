@@ -24,7 +24,7 @@ perl -ne 's/\\/x/g; next if / rows/; print $_' newmedia.csv > 4solr.${TENANT}.me
 ##############################################################################
 # count the types and tokens in the sql output
 ##############################################################################
-time python evaluate.py 4solr.${TENANT}.media.csv /dev/null > counts.public.csv
+time python evaluate.py 4solr.${TENANT}.media.csv /dev/null > counts.public.csv &
 ##############################################################################
 # clear out the existing data
 ##############################################################################
@@ -38,4 +38,5 @@ time curl -X POST -S -s "http://localhost:8983/solr/${TENANT}-media/update/csv?c
 rm newmedia.csv
 # zip up .csvs, save a bit of space on backups
 gzip -f *.csv
+wait
 date

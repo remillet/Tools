@@ -87,5 +87,6 @@ time curl -X POST -S -s "http://localhost:8983/solr/${TENANT}-internal/update/cs
 # get rid of intermediate files
 rm d?.csv d??.csv m?.csv metadata*.csv
 # zip up .csvs, save a bit of space on backups
-gzip -f 4solr.*.csv
+gzip -f 4solr.$TENANT.internal.csv 4solr.$TENANT.media.csv
+wait
 date

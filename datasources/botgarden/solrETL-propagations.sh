@@ -56,5 +56,6 @@ time curl -X POST -S -s "http://localhost:8983/solr/${TENANT}-propagations/updat
 # get rid of intermediate files
 rm p?.csv header4Solr.csv*
 # zip up .csvs, save a bit of space on backups
-gzip -f 4solr.*.csv
+gzip -f 4solr.$TENANT.propagations.csv
+wait
 date

@@ -69,5 +69,6 @@ curl -S -s "http://localhost:8983/solr/${TENANT}-locations/update" --data '<comm
 ##############################################################################
 time curl -X POST -s -S 'http://localhost:8983/solr/pahma-locations/update/csv?commit=true&header=true&trim=true&separator=%09&encapsulator=\' -T 4solr.pahma.locations.csv -H 'Content-type:text/plain; charset=utf-8'
 rm m4.csv
-gzip 4solr.*.csv
+gzip 4solr.$TENANT.locations.csv
+wait
 date

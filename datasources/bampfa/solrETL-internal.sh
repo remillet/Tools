@@ -44,7 +44,7 @@ wc -l *.csv
 ##############################################################################
 # count the types and tokens in the final file, check cell counts
 ##############################################################################
-time python evaluate.py 4solr.$TENANT.public.csv /dev/null > counts.internal.csv &
+time python evaluate.py 4solr.$TENANT.internal.csv /dev/null > counts.internal.csv &
 # clear out the existing data
 curl -S -s "http://localhost:8983/solr/${TENANT}-internal/update" --data '<delete><query>*:*</query></delete>' -H 'Content-type:text/xml; charset=utf-8'
 curl -S -s "http://localhost:8983/solr/${TENANT}-internal/update" --data '<commit/>' -H 'Content-type:text/xml; charset=utf-8'

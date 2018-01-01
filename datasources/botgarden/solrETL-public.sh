@@ -20,7 +20,6 @@ SERVER="dba-postgres-prod-42.ist.berkeley.edu port=5313 sslmode=prefer"
 USERNAME="reporter_$TENANT"
 DATABASE="${TENANT}_domain_${TENANT}"
 CONNECTSTRING="host=$SERVER dbname=$DATABASE"
-export NUMCOLS=46
 ##############################################################################
 # extract metadata (dead and alive) info from CSpace
 ##############################################################################
@@ -31,10 +30,14 @@ time perl -pe 's/[\r\n]/ /g;s/\@\@/\n/g' d1b.csv > d2b.csv
 time perl -pe 's/[\r\n]/ /g;s/\@\@/\n/g' d1a.csv > d2a.csv
 cat d2b.csv d2a.csv > d2.csv
 time perl -ne 'print unless /\(\d+ rows\)/' d2.csv > d3.csv
-time perl -ne " \$x = \$_ ;s/[^\t]//g; if     (length eq \$ENV{NUMCOLS}) { print \$x;}" d3.csv > d4.csv
-time perl -ne " \$x = \$_ ;s/[^\t]//g; unless (length eq \$ENV{NUMCOLS}) { print \$x;}" d3.csv > errors.csv &
+##############################################################################
+# count the number of columns in each row, solr wants them all to be the same
+##############################################################################
+time python evaluate.py d3.csv d4.csv > counts.public.csv
 ##############################################################################
 # eliminate restricted items from public dataset
+# nb: at this time we're not doing this, instead we are obfuscating their
+# garden locations in a step further below...
 ##############################################################################
 #perl -i -ne '@x = split /\t/;print unless $x[57] =~ /Restricted/' d4.csv
 ##############################################################################
@@ -71,27 +74,23 @@ python gbif/parseAndInsertGBIFparts.py metadata.csv metadata+parsednames.csv gbi
 ##############################################################################
 grep -P "^1\tid\t" metadata+parsednames.csv | head -1 > header4Solr.csv
 perl -i -pe 's/^1\tid/id\tobjcsid_s/' header4Solr.csv
-perl -i -pe 's/$/\tblob_ss/' header4Solr.csv
+perl -i -pe 's/\r//;s/$/\tblob_ss/' header4Solr.csv
 grep -v -P "^1\tid\t" metadata+parsednames.csv > d7.csv
 python fixfruits.py d7.csv > d8.csv
 ##############################################################################
 # add the blob csids to the rest of the internal
 ##############################################################################
 time perl mergeObjectsAndMedia.pl 4solr.$TENANT.media.csv d8.csv > d9.csv
-cat header4Solr.csv d9.csv | perl -pe 's/␥/|/g' > 4solr.$TENANT.public.csv
+cat header4Solr.csv d9.csv | perl -pe 's/␥/|/g' > d10.csv
 ##############################################################################
-# here are the schema changes needed: copy all the _s and _ss to _txt, and vv.
+# compute _i values for _dt values (to support BL date range searching)
 ##############################################################################
-perl -pe 's/\t/\n/g' header4Solr.csv| perl -ne 'chomp; next unless /_txt/; s/_txt$//; print "    <copyField source=\"" .$_."_txt\" dest=\"".$_."_s\"/>\n"' > schemaFragment.xml
-perl -pe 's/\t/\n/g' header4Solr.csv| perl -ne 'chomp; next unless /_s$/; s/_s$//; print "    <copyField source=\"" .$_."_s\" dest=\"".$_."_txt\"/>\n"' >> schemaFragment.xml
-perl -pe 's/\t/\n/g' header4Solr.csv| perl -ne 'chomp; next unless /_ss$/; s/_ss$//; print "    <copyField source=\"" .$_."_ss\" dest=\"".$_."_txt\"/>\n"' >> schemaFragment.xml
-##############################################################################
-# here are the solr csv update parameters needed for multivalued fields
-##############################################################################
-perl -pe 's/\t/\n/g' header4Solr.csv| perl -ne 'chomp; next unless /_ss/; next if /blob/; print "f.$_.split=true&f.$_.separator=%7C&"' > uploadparms.txt
+time python computeTimeIntegers.py d10.csv 4solr.$TENANT.public.csv
+# shorten this one long org name...
 perl -i -pe 's/International Union for Conservation of Nature and Natural Resources/IUCN/g' 4solr.$TENANT.public.csv
 wc -l *.csv
 #
+time python evaluate.py 4solr.$TENANT.public.csv /dev/null > counts.public.csv &
 curl -S -s "http://localhost:8983/solr/${TENANT}-public/update" --data '<delete><query>*:*</query></delete>' -H 'Content-type:text/xml; charset=utf-8'
 curl -S -s "http://localhost:8983/solr/${TENANT}-public/update" --data '<commit/>' -H 'Content-type:text/xml; charset=utf-8'
 time curl -X POST -S -s "http://localhost:8983/solr/${TENANT}-public/update/csv?commit=true&header=true&trim=true&separator=%09&f.fruiting_ss.split=true&f.fruiting_ss.separator=%7C&f.flowering_ss.split=true&f.flowering_ss.separator=%7C&f.fruitingverbatim_ss.split=true&f.fruitingverbatim_ss.separator=%7C&f.floweringverbatim_ss.split=true&f.floweringverbatim_ss.separator=%7C&f.collcounty_ss.split=true&f.collcounty_ss.separator=%7C&f.collstate_ss.split=true&f.collstate_ss.separator=%7C&f.collcountry_ss.split=true&f.collcountry_ss.separator=%7C&f.conservationinfo_ss.split=true&f.conservationinfo_ss.separator=%7C&f.conserveorg_ss.split=true&f.conserveorg_ss.separator=%7C&f.conservecat_ss.split=true&f.conservecat_ss.separator=%7C&f.voucherlist_ss.split=true&f.voucherlist_ss.separator=%7C&f.blob_ss.split=true&f.blob_ss.separator=,&encapsulator=\\" -T 4solr.$TENANT.public.csv -H 'Content-type:text/plain; charset=utf-8'

@@ -45,6 +45,7 @@ while (<>) {
   s/urn.cspace.botgarden.cspace.berkeley.edu.*?\t/\t/g;
   my $keep = $_;
   chomp;
+  s/\r//g;
   my (@columns) = split "\t",$_,-1;
   $_ = @columns[26];
   s/ *, */,/g; # get rid of all spaces around commas

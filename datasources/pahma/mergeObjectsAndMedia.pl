@@ -17,6 +17,7 @@ open METADATA,$ARGV[1] || die "couldn't open metadata file $ARGV[1]";
 while (<METADATA>) {
   $count{'metadata'}++;
   chomp;
+  s/\r//g;
   my ($id, $objectid, @rest) = split /$delim/;
   # insert list of blobs as final column
   my $mediablobs = $media{$objectid};

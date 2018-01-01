@@ -6,6 +6,7 @@ my $coordcolumn = 0 + @ARGV[0];
 
 while (<STDIN>) {
   chomp;
+  s/\r//g;
   my (@columns) = split /\t/,$_,-1;
   my $hascoords = (@columns[$coordcolumn] ne '') ? 'yes' : 'no';
   $hascoords = 'hascoords_s' if (@columns[$coordcolumn] =~ /_p/); # header

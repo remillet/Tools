@@ -4,6 +4,7 @@ use strict;
 # replace the blob csid with the csid of the 'restricted image' if the regex appears anywheren in the row
 while (<>) {
   chomp;
+  s/\r//g;
   my (@columns) = split /\t/,$_,-1;
   #print "bef:\t" . $columns[10] . "\t" . $columns[37] . "\n";
   # use placeholder image if certain text appears anwhere in the record

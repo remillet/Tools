@@ -1,9 +1,10 @@
 $runtype = @ARGV[0];
-$location_column = @ARGV[1];
-$crate_column = @ARGV[2];
+$location_column = 0 + @ARGV[1];
+$crate_column = 0 + @ARGV[2];
 while (<STDIN>) {
     chomp;
-    @cell = split '\|',$_,-1;
+    s/\r//;
+    @cell = split "\t",$_,-1;
     # BAMPFA-412
     # "Asian Study"* => "located in Asian Study Center"
     # "Study Center*" => "located in Art Study Centers"
@@ -27,8 +28,8 @@ while (<STDIN>) {
             $cell[$location_column] = '-REDACTED-';
         }
     }
-    $_ = join('|',@cell);
+    $_ = join("\t",@cell);
     # add to tail end of record.
-    s/$/\|$status\n/;
+    s/$/\t$status\n/;
     print;
 }

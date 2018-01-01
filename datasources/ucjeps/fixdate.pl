@@ -3,6 +3,7 @@ use strict;
 # modify dates to conform ISO-6301, which is all Solr accepts.
 while (<>) {
   chomp;
+  s/\r//g;
   my (@columns) = split "\t",$_,-1;
   #my ($Y,$M,$D) = split '-',$columns[7];
   # fix earlycollectiondate_dt and latecollectiondate_dt

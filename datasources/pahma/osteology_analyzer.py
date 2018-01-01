@@ -1,7 +1,6 @@
-import csv
+import sys, csv
 import hashlib
 import math
-import sys
 
 
 skip_columns = ["id",

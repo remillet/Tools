@@ -3,7 +3,7 @@
 ##############################################################################
 # shell script to extract multiple tabular data files from CSpace,
 # "stitch" them together (see join.py)
-# prep them for load into Solr4 using the "csv data import handler"
+# prep them for load into solr using the "csv data import handler"
 ##############################################################################
 date
 cd /home/app_solr/solrdatasources/pahma
@@ -26,10 +26,9 @@ USERNAME="reporter_$TENANT"
 DATABASE="${TENANT}_domain_${TENANT}"
 CONNECTSTRING="host=$SERVER dbname=$DATABASE"
 CONTACT="mtblack@berkeley.edu"
+# field collection place ("FCP") is used in various calculations, set a
+# variable to indicate which column it is in the extract
 FCPCOL=35
-export PUBLICCOLS=39
-# the internal dataset has 7 more columns than the public one
-export INTERNALCOLS=46
 ##############################################################################
 # run the "all media query"
 ##############################################################################
@@ -70,27 +69,39 @@ do
  fi
 done
 ##############################################################################
+# recover the headers and put them back at the top of the file
+##############################################################################
+time grep -P "^id\t"  restricted.csv > header4Solr.csv &
+time grep -v -P "^id\t" restricted.csv > d8.csv &
+wait
+cat header4Solr.csv d8.csv | perl -pe 's/␥/|/g' > restricted.csv
+#
+time grep -P "^id\t"  internal.csv > header4Solr.csv &
+time grep -v -P "^id\t" internal.csv > d8.csv &
+wait
+cat header4Solr.csv d8.csv | perl -pe 's/␥/|/g' > internal.csv
+##############################################################################
 # internal.csv and restricted.csv contain the basic metadata for the internal
-# and public portals respectively. The script keeps these around for
-# debugging.
+# and public portals respectively. We keep these around for debugging.
 # no other accesses to the database are made after this point
 #
 # the script from here on uses only three files: these two and
 # 4solr.$TENANT.allmedia.csv, so if you wanted to re-run the next chunks of
 # the ETL, you can use these files for that purpose.
 ##############################################################################
-# check to see that each row has the right number of columns (solr4 will barf)
+# check to see that each row has the right number of columns (solr will barf)
 ##############################################################################
-time perl -ne '$x = $_ ;s/[^\t]//g; if     (length == $ENV{PUBLICCOLS}) { print $x;}' restricted.csv | perl -pe 's/\\/\//g;s/\t"/\t/g;s/"\t/\t/g;' > temp.public.csv &
-time perl -ne '$x = $_ ;s/[^\t]//g; unless (length == $ENV{PUBLICCOLS}) { print $x;}' restricted.csv | perl -pe 's/\\/\//g' > errors.public.csv &
-time perl -ne '$x = $_ ;s/[^\t]//g; if     (length == $ENV{INTERNALCOLS}) { print $x;}' internal.csv | perl -pe 's/\\/\//g;s/\t"/\t/g;s/"\t/\t/g;' > temp.internal.csv &
-time perl -ne '$x = $_ ;s/[^\t]//g; unless (length == $ENV{INTERNALCOLS}) { print $x;}' internal.csv | perl -pe 's/\\/\//g' > errors.internal.csv &
+time perl -pe 's/\r//g;s/\\/\//g;s/\t"/\t/g;s/"\t/\t/g;s/\"\"/"/g' restricted.csv > d6a.csv &
+time perl -pe 's/\r//g;s/\\/\//g;s/\t"/\t/g;s/"\t/\t/g;s/\"\"/"/g' internal.csv > d6b.csv &
+wait
+time python evaluate.py d6a.csv temp.public.csv > counts.public.csv &
+time python evaluate.py d6b.csv temp.internal.csv > counts.internal.csv &
 wait
 ##############################################################################
 # check latlongs for public datastore
 ##############################################################################
 perl -ne '@y=split /\t/;@x=split ",",$y[35];print if     ((abs($x[0])<90 && abs($x[1])<180 && $y[35]!~/[^0-9\, \.\-]/) || $y[35]=~/_p/);' temp.public.csv > d6a.csv &
-perl -ne '@y=split /\t/;@x=split ",",$y[35];print unless ((abs($x[0])<90 && abs($x[1])<180 && $y[35]!~/[^0-9\, \.\-]/) || $y[35]=~/_p/);' temp.public.csv > errors_in_latlong.csv &
+perl -ne '@y=split /\t/;@x=split ",",$y[35];print unless ((abs($x[0])<90 && abs($x[1])<180 && $y[35]!~/[^0-9\, \.\-]/) || $y[35]=~/_p/);' temp.public.csv > counts.latlong_errors.csv &
 ##############################################################################
 # check latlongs for internal datastore
 ##############################################################################
@@ -128,14 +139,27 @@ time perl -i -pe 's/\r//g;s/\\/\//g;s/\t"/\t/g;s/"\t/\t/g;s/\"\"/"/g' d7.csv
 time grep -P "^id\t" d7.csv > header4Solr.csv &
 time grep -v -P "^id\t" d7.csv > d8.csv &
 wait
-cat header4Solr.csv d8.csv | perl -pe 's/␥/|/g' > 4solr.$TENANT.public.csv
+cat header4Solr.csv d8.csv | perl -pe 's/␥/|/g' > d9.csv
+##############################################################################
+# compute _i values for _dt values (to support BL date range searching
+##############################################################################
+time python computeTimeIntegers.py d9.csv 4solr.$TENANT.public.csv
 #
 time grep -P "^id\t" d6b.csv > header4Solr.csv &
 time grep -v -P "^id\t" d6b.csv > d8.csv &
 wait
-cat header4Solr.csv d8.csv | perl -pe 's/␥/|/g' > 4solr.$TENANT.internal.csv
+cat header4Solr.csv d8.csv | perl -pe 's/␥/|/g' > d9.csv
+##############################################################################
+# compute _i values for _dt values (to support BL date range searching
+##############################################################################
+time python computeTimeIntegers.py d9.csv 4solr.$TENANT.internal.csv
 #
 wc -l *.csv
+##############################################################################
+# count the types and tokens in these final files
+##############################################################################
+time python evaluate.py 4solr.$TENANT.public.csv /dev/null > counts.public.csv &
+time python evaluate.py 4solr.$TENANT.internal.csv /dev/null > counts.internal.csv &
 ##############################################################################
 # ok, now let's load this into solr...
 # clear out the existing data
@@ -151,9 +175,9 @@ time curl -X POST -S -s "http://localhost:8983/solr/${TENANT}-public/update/csv?
 # wrap things up: make a gzipped version of what was loaded
 ##############################################################################
 # send the errors off to be dealt with
-tar -czf errors.tgz errors*.csv
-./make_error_report.sh | mail -a errors.tgz -s "PAHMA Solr Refresh Errors `date`" ${CONTACT}
-# ./make_error_report.sh | mail -a errors.tgz -s "PAHMA Solr Refresh Errors `date`" cspace-app-logs@lists.berkeley.edu
+tar -czf counts.tgz counts*.csv
+./make_error_report.sh | mail -a counts.tgz -s "PAHMA Solr Refresh Errors `date`" ${CONTACT}
+# ./make_error_report.sh | mail -a counts.tgz -s "PAHMA Solr Refresh Errors `date`" cspace-app-logs@lists.berkeley.edu
 # get rid of intermediate files
 rm d?.csv d6?.csv m?.csv part*.csv temp.*.csv basic*.csv errors*.csv header4Solr.csv
 # zip up .csvs, save a bit of space on backups

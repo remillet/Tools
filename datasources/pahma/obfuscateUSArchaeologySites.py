@@ -1,24 +1,24 @@
-import csv
+import re
 import hashlib
 import math
-import sys
+import sys, csv
+from unicode_hack import UnicodeReader, UnicodeWriter
 
 hashkey_column = 34
 fieldCollectionTree_column = 37
 objecttype_column = 5
 latlong_column = 35
-
+delim = '\t'
 
 def pol2cart(rho, phi):
     x = rho * math.cos(phi)
     y = rho * math.sin(phi)
     return (x, y)
 
-
-with open(sys.argv[2], "wb") as out:
-    writer = csv.writer(out, delimiter="\t")
-    with open(sys.argv[1], "rb") as original:
-        reader = csv.reader(original, delimiter="\t")
+with open(sys.argv[2], 'wb') as out:
+    writer = UnicodeWriter(out, delimiter=delim, quoting=csv.QUOTE_NONE, quotechar=chr(255))
+    with open(sys.argv[1], 'r') as original:
+        reader = UnicodeReader(original, delimiter=delim, quoting=csv.QUOTE_NONE, quotechar=chr(255))
         for row in reader:
             try:
                 # *all* archeology sites worldwide are obscured
@@ -33,7 +33,7 @@ with open(sys.argv[2], "wb") as out:
                     # 'hashkey_column' is the constant we will be hashing with
                     # (we want to hash to the same value each run, lest someone try to 'zero in' using multiple
                     # observations of the portal data...)
-                    location = row[hashkey_column]
+                    location = re.sub(r'[^\x00-\x7F]+',' ', row[hashkey_column])
                     modulus = 0.2
 
                     # get md5 hash of secret value, convert to int, normalize this to range of -.05 to .05 degrees
@@ -55,6 +55,7 @@ with open(sys.argv[2], "wb") as out:
             except:
                 print 'problem!!!'
                 print row
+                raise
                 sys.exit()
 
             writer.writerow(row)

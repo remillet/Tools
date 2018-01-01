@@ -17,6 +17,7 @@ open METADATA,$ARGV[1] || die "couldn't open metadata file $ARGV[1]";
 while (<METADATA>) {
   $count{'metadata'}++;
   chomp;
+  s/\r//g;
   my ($id, $objectid, @rest) = split /$delim/;
   # botgarden is special here: csid got buried in the record...
   $objectid = $rest[39];

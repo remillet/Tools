@@ -1,12 +1,14 @@
 import sys, csv
 
+# It is important to note that this script treats the data as binary data.
+# (The Python csv module prior to v3.0 does not handle unicode characters properly.)
 delim = "\t"
 
 inputFile1 = sys.argv[1]
 inputFile2 = sys.argv[2]
 
-f1 = csv.reader(open(inputFile1, 'rb'), delimiter=delim, quotechar="\r")
-f2 = csv.reader(open(inputFile2, 'rb'), delimiter=delim, quotechar="\r")
+f1 = csv.reader(open(inputFile1, 'rb'), delimiter=delim, quoting=csv.QUOTE_NONE, quotechar=chr(255))
+f2 = csv.reader(open(inputFile2, 'rb'), delimiter=delim, quoting=csv.QUOTE_NONE, quotechar=chr(255))
 
 file1 = {}
 alreadyseen = {}
@@ -42,10 +44,7 @@ for lineno, ci in enumerate(f2):
 	#file1[ci[0]].append(len(ci[1:]) * "|")
 
 for key,line in file1.items():
-    if len(line) == max:
-        print "%s%s%s" % (key,delim,delim.join(line))
-    else:
-        print "%s%s%s%s" % (key,delim,delim.join(line),(max-len(line)) * delim)
+    print "%s%s%s%s" % (key,delim,delim.join(line),(max-len(line)) * delim)
 
 counts['max'] = max
 for stat,value in sorted(counts.items()):

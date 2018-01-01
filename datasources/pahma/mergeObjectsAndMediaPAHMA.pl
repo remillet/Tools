@@ -16,6 +16,7 @@ my $objectnamecol = 8;
 while (<MEDIA>) {
   $count{'media'}++;
   chomp;
+  s/\r//g;
   my ($objectcsid,$objectnumber,$mediacsid,$description,$name,$creatorrefname,$creator,$blobcsid,$copyrightstatement,$identificationnumber,$rightsholderrefname,$rightsholder,$contributor,$approvedforweb,$pahmatmslegacydepartment,$objectstatus,$primarydisplay) = split /$delim/;
   #print "$blobcsid $objectcsid\n";
   my $imagetype = 'images';
@@ -60,7 +61,12 @@ while (<MEDIA>) {
 open METADATA,$ARGV[1] || die "couldn't open metadata file $ARGV[1]";
 while (<METADATA>) {
   chomp;
+  s/\r//g; # dunno why this is needed, but it seems to be...
   my ($id, $objectcsid, @rest) = split /$delim/;
+  if (!$objectcsid) {
+    warn "objectcsid is blank: " . $_;
+    next;
+  }
   # handle header line
   if ($id eq 'id') {
     print $_ . $delim . join($delim,qw(blob_ss card_ss primaryimage_s imagetype_ss restrictions_ss hasimages_s)) . "\n";

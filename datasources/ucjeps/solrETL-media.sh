@@ -11,7 +11,6 @@ SERVER="dba-postgres-prod-42.ist.berkeley.edu port=5310 sslmode=prefer"
 USERNAME="reporter_$TENANT"
 DATABASE="${TENANT}_domain_${TENANT}"
 CONNECTSTRING="host=$SERVER dbname=$DATABASE"
-export NUMCOLS=55
 ##############################################################################
 # save last night results to tmp just in case
 ##############################################################################
@@ -22,6 +21,10 @@ mv 4solr.${TENANT}.media.csv /tmp
 time psql -F $'\t' -R"@@" -A -U $USERNAME -d "$CONNECTSTRING" -f ucjepsNewMedia.sql -o newmedia.csv
 time perl -i -pe 's/[\r\n]/ /g;s/\@\@/\n/g' newmedia.csv
 perl -ne 's/\\/x/g; next if / rows/; print $_' newmedia.csv > 4solr.${TENANT}.media.csv
+##############################################################################
+# count the types and tokens in the sql output
+##############################################################################
+time python evaluate.py 4solr.${TENANT}.media.csv /dev/null > counts.public.csv
 ##############################################################################
 # clear out the existing data
 ##############################################################################

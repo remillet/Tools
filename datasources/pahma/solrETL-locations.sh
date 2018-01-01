@@ -54,6 +54,10 @@ grep -v -P "^csid_s\t" m4.csv > m5.csv
 cat header4Solr.csv m5.csv > m4.csv
 rm m5.csv m3.sort.csv
 time perl -ne " \$x = \$_ ;s/[^\t]//g; if (length eq 8) { print \$x;}" m4.csv > 4solr.${TENANT}.locations.csv
+##############################################################################
+# count the types and tokens in the final file
+##############################################################################
+time python evaluate.py 4solr.$TENANT.locations.csv /dev/null > counts.locations.csv &
 # ok, now let's load this into solr...
 # clear out the existing data
 ##############################################################################

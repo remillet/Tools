@@ -32,7 +32,7 @@ time perl -ne '$x = $_ ;s/[^\t]//g; unless (length eq $ENV{NUMFIELDS}) { print $
 wait
 # extract displayName from all refNames
 perl -pe "s/urn:cspace:.*?.cspace.berkeley.edu:.*?:name(.*?):item:name(.*?)'(.*?)'/\3/g" p4.csv > p5.csv
-head -1 p5.csv | perl -pe 's/\t/_s\t/g;s/_s//;s/$/_s/;' > header4Solr.csv
+head -1 p5.csv | perl -pe 's/\r//;s/\t/_s\t/g;s/_s//;s/$/_s/;' > header4Solr.csv
 #tail -n +2 p5.csv | perl fixdate.pl > p7.csv
 tail -n +2 p5.csv > p6.csv
 cat header4Solr.csv p6.csv > 4solr.$TENANT.propagations.csv
@@ -46,7 +46,10 @@ perl -pe 's/\t/\n/g' header4Solr.csv| perl -ne 'chomp; next unless /_s/; s/_s$//
 ##############################################################################
 perl -pe 's/\t/\n/g' header4Solr.csv| perl -ne 'chomp; next unless /_ss/; next if /blob/; print "f.$_.split=true&f.$_.separator=%7C&"' > uploadparms.txt
 wc -l *.csv
-#
+##############################################################################
+# count the types and tokens in the final file
+##############################################################################
+time python evaluate.py 4solr.$TENANT.propagations.csv /dev/null > counts.propagations.csv &
 curl -S -s "http://localhost:8983/solr/${TENANT}-propagations/update" --data '<delete><query>*:*</query></delete>' -H 'Content-type:text/xml; charset=utf-8'
 curl -S -s "http://localhost:8983/solr/${TENANT}-propagations/update" --data '<commit/>' -H 'Content-type:text/xml; charset=utf-8'
 time curl -X POST -S -s "http://localhost:8983/solr/${TENANT}-propagations/update/csv?commit=true&header=true&trim=true&separator=%09&encapsulator=\\" -T 4solr.$TENANT.propagations.csv -H 'Content-type:text/plain; charset=utf-8'

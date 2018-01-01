@@ -39,12 +39,12 @@ cut -f1,3- o2.csv > o1.csv
 grep -P "^id\t" o1.csv > header4Solr.csv
 grep -v -P "^id\t" o1.csv > o2.csv
 cat header4Solr.csv o2.csv > o1.csv
-rm o2.csv
-time perl -ne " \$x = \$_ ;s/[^\t]//g; if     (length eq \$ENV{NUMCOLS}) { print \$x;}" o1.csv | perl -pe 's/\\/\//g;s/\t"/\t/g;s/"\t/\t/g;' > 4solr.pahma.osteology.csv &
-time perl -ne " \$x = \$_ ;s/[^\t]//g; unless (length eq \$ENV{NUMCOLS}) { print \$x;}" o1.csv | perl -pe 's/\\/\//g' > errors.osteology.csv &
-wait
 # hack to fix inventorydate_dt
-perl -i -pe 's/([\d\-]+) ([\d:]+)/\1T\2Z/' 4solr.${TENANT}.osteology.csv
+perl -i -pe 's/([\d\-]+) ([\d:]+)/\1T\2Z/' o1.csv
+##############################################################################
+# count the types and tokens in the final file
+##############################################################################
+time python evaluate.py o1.csv 4solr.pahma.osteology.csv > counts.osteology.csv
 # ok, now let's load this into solr...
 # clear out the existing data
 ##############################################################################

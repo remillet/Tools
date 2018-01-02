@@ -16,7 +16,6 @@ HOSTNAME="dba-postgres-prod-42.ist.berkeley.edu port=5307 sslmode=prefer"
 USERNAME="reporter_pahma"
 DATABASE="pahma_domain_pahma"
 CONNECTSTRING="host=$HOSTNAME dbname=$DATABASE"
-export NUMCOLS=71
 ##############################################################################
 # extract media info from CSpace
 ##############################################################################
@@ -27,24 +26,22 @@ time perl -i -pe 's/[\r\n]/ /g;s/\@\@/\n/g' o1.csv
 # we want to recover and use our "special" solr-friendly header, which got buried
 ##############################################################################
 gunzip 4solr.${TENANT}.internal.csv.gz
-# dunno why this is happening, but somehow this file contains a line with like 200,000 commas in it.
-perl -i -ne 'print unless length > 30000' 4solr.pahma.internal.csv
 # compress the osteology data into a single variable
 python osteology_analyzer.py o1.csv o2.csv
-sort o2.csv > o1.csv
+sort o2.csv > o3.csv
 # add the internal data
-python join.py o1.csv 4solr.${TENANT}.internal.csv > o2.csv
+python join.py o3.csv 4solr.${TENANT}.internal.csv > o4.csv
 # csid_s is both files, let's keep only one in this file
-cut -f1,3- o2.csv > o1.csv
-grep -P "^id\t" o1.csv > header4Solr.csv
-grep -v -P "^id\t" o1.csv > o2.csv
-cat header4Solr.csv o2.csv > o1.csv
+cut -f1,3- o4.csv > o5.csv
+grep -P "^id\t" o5.csv > header4Solr.csv
+grep -v -P "^id\t" o5.csv > o6.csv
+cat header4Solr.csv o6.csv > o7.csv
 # hack to fix inventorydate_dt
-perl -i -pe 's/([\d\-]+) ([\d:]+)/\1T\2Z/' o1.csv
+perl -i -pe 's/([\d\-]+) ([\d:]+)/\1T\2Z/' o7.csv
 ##############################################################################
 # count the types and tokens in the final file
 ##############################################################################
-time python evaluate.py o1.csv 4solr.pahma.osteology.csv > counts.osteology.csv &
+time python evaluate.py o7.csv 4solr.pahma.osteology.csv > counts.osteology.csv
 # ok, now let's load this into solr...
 # clear out the existing data
 ##############################################################################
@@ -55,7 +52,7 @@ curl -S -s "http://localhost:8983/solr/${TENANT}-osteology/update" --data '<comm
 # note, among other things, the overriding of the encapsulator with \
 ##############################################################################
 time curl -X POST -S -s "http://localhost:8983/solr/${TENANT}-osteology/update/csv?commit=true&header=true&separator=%09&objpp_ss.split=true&f.objpp_ss.separator=%7C&f.aggregate_ss.split=true&f.aggregate_ss.separator=%2C&f.objaltnum_ss.split=true&f.objaltnum_ss.separator=%7C&f.objfilecode_ss.split=true&f.objfilecode_ss.separator=%7C&f.objdimensions_ss.split=true&f.objdimensions_ss.separator=%7C&f.objmaterials_ss.split=true&f.objmaterials_ss.separator=%7C&f.objinscrtext_ss.split=true&f.objinscrtext_ss.separator=%7C&f.objcollector_ss.split=true&f.objcollector_ss.separator=%7C&f.objaccno_ss.split=true&f.objaccno_ss.separator=%7C&f.objaccdate_ss.split=true&f.objaccdate_ss.separator=%7C&f.objacqdate_ss.split=true&f.objacqdate_ss.separator=%7C&f.objassoccult_ss.split=true&f.objassoccult_ss.separator=%7C&f.objculturetree_ss.split=true&f.objculturetree_ss.separator=%7C&f.exhibitionnumber_ss.split=true&f.exhibitionnumber_ss.separator=%7C&f.exhibitiontitle_ss.split=true&f.exhibitiontitle_ss.separator=%7C&f.grouptitle_ss.split=true&f.objfcptree_ss.split=true&f.objfcptree_ss.separator=%7C&f.grouptitle_ss.separator=%7C&f.blob_ss.split=true&f.blob_ss.separator=,&encapsulator=\\" -T 4solr.${TENANT}.osteology.csv -H 'Content-type:text/plain; charset=utf-8' &
-rm o1.csv o3.csv header4Solr.csv &
+rm o?.csv header4Solr.csv &
 gzip -f 4solr.${TENANT}.osteology.csv &
 gzip -f 4solr.${TENANT}.internal.csv &
 wait

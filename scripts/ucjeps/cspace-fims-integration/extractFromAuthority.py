@@ -5,6 +5,24 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 
 
+if len(sys.argv) < 3:
+    print ""
+    print "reads a CSpace authority XML file and outputs CSIDs, displayNames, and refNames as a .csv file"
+    print ""
+    print "if a 3rd argument is present, it is assumed to be a list of displaynames to be used to filter the output"
+    print ""
+    print "if duplicate displaynames are seen this are output to stdout"
+    print ""
+    print "usage: python %s <authorityfile.xml> <outputfile.csv> <optionallistofname.txt > listofdups.txt" % sys.argv[0]
+    print ""
+    print "e.g:   python %s organization.xml organization.csv orgnames_to_extract.txt > listofdups.txt" % sys.argv[0]
+    print ""
+    print "columns are: sequence numbder, csid, displayname, refname"
+    print ""
+    exit(1)
+
+
+
 def extract_tag(xml, tag):
     element = xml.find('.//%s' % tag)
     return element.text

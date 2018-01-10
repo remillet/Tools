@@ -40,8 +40,8 @@ echo 'starting solr refreshes' `date`
 /home/app_solr/solrdatasources/pahma/solrETL-locations.sh         pahma      /home/app_solr/logs/pahma.solr_extract_locations.log  2>&1
 /home/app_solr/solrdatasources/pahma/solrETL-osteology.sh         pahma      /home/app_solr/logs/pahma.solr_extract_osteology.log  2>&1
 
-/home/app_solr/solrdatasources/ucjeps/solrETL-public.sh           ucjeps     /home/app_solr/logs/ucjeps.solr_extract_public.log  2>&1
 /home/app_solr/solrdatasources/ucjeps/solrETL-media.sh            ucjeps     /home/app_solr/logs/ucjeps.solr_extract_media.log  2>&1
+/home/app_solr/solrdatasources/ucjeps/solrETL-public.sh           ucjeps     /home/app_solr/logs/ucjeps.solr_extract_public.log  2>&1
 ##################################################################################
 # optimize all solrcores after refresh
 ##################################################################################

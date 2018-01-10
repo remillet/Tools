@@ -49,6 +49,6 @@ echo 'starting solr refreshes' `date`
 ##################################################################################
 # monitor solr datastores
 ##################################################################################
-if [[ `/home/app_solr/checkstatus.sh` ]] ; then /home/app_solr/checkstatus.sh -v | mail -s "PROBLEM with solr refresh nightly refresh" -- jblowe@berkeley.edu ; fi
+if [[ `/home/app_solr/checkstatus.sh` ]] ; then /home/app_solr/checkstatus.sh -v | mail -s "PROBLEM with solr refresh nightly refresh" -- cspace-support@lists.berkeley.edu ; fi
 /home/app_solr/checkstatus.sh -v
 echo 'done with solr refreshes' `date`

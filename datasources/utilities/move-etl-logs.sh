@@ -2,7 +2,7 @@
 # move logs to new location
 #
 # in principle, this only needed to be done once for dev and prod, so this really
-# record of what what done...
+# record of what was done...
 #
 cd
 SOLRETLDIR=~/solrdatasources

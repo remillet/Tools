@@ -44,7 +44,7 @@ perl -i -pe '$i++;print $i . "\t"' metadata.csv
 ##############################################################################
 time perl mergeObjectsAndMedia.pl media.csv metadata.csv > d6.csv
 ##############################################################################
-# we want to use our "special" solr-friendly header.
+# make sure dates are in ISO-8601 format. Solr accepts nothing else!
 ##############################################################################
 tail -n +2 d6.csv | perl fixdate.pl > d7.csv
 ##############################################################################

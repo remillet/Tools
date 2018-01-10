@@ -8,6 +8,7 @@ my %media ;
 while (<MEDIA>) {
   $count{'media'}++;
   chomp;
+  s/\r//g;
   my ($objectcsid, $objectnumber, $mediacsid, $description, $filename, $creatorrefname, $creator, $blobcsid, $copyrightstatement, $identificationnumber, $rightsholderrefname, $rightsholder, $contributor, $approvedforweb, $imageType) = split /$delim/;
   #print "$blobcsid $objectcsid\n";
   $media{$objectcsid} .= $blobcsid . ',';

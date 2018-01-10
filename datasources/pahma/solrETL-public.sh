@@ -94,8 +94,8 @@ cat header4Solr.csv d8.csv | perl -pe 's/␥/|/g' > internal.csv
 time perl -pe 's/\r//g;s/\\/\//g;s/\t"/\t/g;s/"\t/\t/g;s/\"\"/"/g' restricted.csv > d6a.csv &
 time perl -pe 's/\r//g;s/\\/\//g;s/\t"/\t/g;s/"\t/\t/g;s/\"\"/"/g' internal.csv > d6b.csv &
 wait
-time python evaluate.py d6a.csv temp.public.csv > counts.public.csv &
-time python evaluate.py d6b.csv temp.internal.csv > counts.internal.csv &
+time python evaluate.py d6a.csv temp.public.csv > counts.public.rawdata.csv &
+time python evaluate.py d6b.csv temp.internal.csv > counts.internal.rawdata.csv &
 wait
 ##############################################################################
 # check latlongs for public datastore
@@ -158,8 +158,8 @@ wc -l *.csv
 ##############################################################################
 # count the types and tokens in these final files
 ##############################################################################
-time python evaluate.py 4solr.$TENANT.public.csv /dev/null > counts.public.csv &
-time python evaluate.py 4solr.$TENANT.internal.csv /dev/null > counts.internal.csv &
+time python evaluate.py 4solr.$TENANT.public.csv /dev/null > counts.public.final.csv &
+time python evaluate.py 4solr.$TENANT.internal.csv /dev/null > counts.internal.final.csv &
 ##############################################################################
 # ok, now let's load this into solr...
 # clear out the existing data
@@ -175,12 +175,11 @@ time curl -X POST -S -s "http://localhost:8983/solr/${TENANT}-public/update/csv?
 # wrap things up: make a gzipped version of what was loaded
 ##############################################################################
 # send the errors off to be dealt with
-tar -czf counts.tgz counts*.csv &
-./make_error_report.sh | mail -a counts.tgz -s "PAHMA Solr Refresh Errors `date`" ${CONTACT} &
-# ./make_error_report.sh | mail -a counts.tgz -s "PAHMA Solr Refresh Errors `date`" cspace-app-logs@lists.berkeley.edu
+wait
+tar -czf counts.tgz counts*.csv
+./make_error_report.sh | mail -a counts.tgz -s "PAHMA Solr Counts and Refresh Errors `date`" ${CONTACT}
 # get rid of intermediate files
 rm d?.csv d6?.csv m?.csv part*.csv temp.*.csv basic*.csv errors*.csv header4Solr.csv
 # zip up .csvs, save a bit of space on backups
-gzip -f *.csv &
-wait
+gzip -f *.csv
 date

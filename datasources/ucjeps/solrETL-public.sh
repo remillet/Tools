@@ -25,11 +25,11 @@ CONTACT="jason_alexander@berkeley.edu"
 # extract and massage the metadata from CSpace
 ##############################################################################
 time psql -F $'\t' -R"@@" -A -U $USERNAME -d "$CONNECTSTRING" -f ucjepsMetadata.sql -o d1.csv
-time perl -pe 's/[\r\n]/ /g;s/\@\@/\n/g' d1.csv > d3.csv
+time perl -pe 's/[\r\n]/ /g;s/\@\@/\n/g' d1.csv | perl -ne 'next if / rows/; print $_' > d3.csv
 ##############################################################################
 # count the types and tokens in the sql output, check cell counts
 ##############################################################################
-time python evaluate.py d3.csv metadata.csv > counts.public.errors.csv
+time python evaluate.py d3.csv metadata.csv > counts.public.rawdata.csv
 ##############################################################################
 # get media
 ##############################################################################
@@ -51,7 +51,7 @@ tail -n +2 d6.csv | perl fixdate.pl > d7.csv
 # check latlongs
 ##############################################################################
 perl -ne '@x=split /\t/;print if abs($x[22])<90 && abs($x[23])<180;' d7.csv > d8.csv
-perl -ne '@x=split /\t/;print if !(abs($x[22])<90 && abs($x[23])<180);' d7.csv > errors_in_latlong.csv
+perl -ne '@x=split /\t/;print if !(abs($x[22])<90 && abs($x[23])<180);' d7.csv > counts.errors_in_latlong.csv
 ##############################################################################
 # snag UCBG accession number and stuff it in the right field
 ##############################################################################
@@ -70,25 +70,19 @@ cat header4Solr.csv d9.csv | perl -pe 's/␥/|/g' > 4solr.$TENANT.public.csv
 # clean up some stray quotes. Really this should get fixed properly someday!
 perl -i -pe 's/\\/\//g;s/\t"/\t/g;s/"\t/\t/g;s/\"\"/"/g' 4solr.$TENANT.public.csv
 ##############################################################################
-# here are the schema changes needed: copy all the _s and _ss to _txt, and vv.
-##############################################################################
-perl -pe 's/\t/\n/g' header4Solr.csv| perl -ne 'chomp; next unless /_txt/; s/_txt$//; print "    <copyField source=\"" .$_."_txt\" dest=\"".$_."_s\"/>\n"' > schemaFragment.xml
-perl -pe 's/\t/\n/g' header4Solr.csv| perl -ne 'chomp; next unless /_s$/; s/_s$//; print "    <copyField source=\"" .$_."_s\" dest=\"".$_."_txt\"/>\n"' >> schemaFragment.xml
-perl -pe 's/\t/\n/g' header4Solr.csv| perl -ne 'chomp; next unless /_ss$/; s/_ss$//; print "    <copyField source=\"" .$_."_ss\" dest=\"".$_."_txt\"/>\n"' >> schemaFragment.xml
-##############################################################################
 # here are the solr csv update parameters needed for multivalued fields
 ##############################################################################
 perl -pe 's/\t/\n/g' header4Solr.csv| perl -ne 'chomp; next unless /_ss/; next if /blob/; print "f.$_.split=true&f.$_.separator=%7C&"' > uploadparms.txt
 ##############################################################################
 # mark duplicate accession numbers
 ##############################################################################
-cut -f3 4solr.${TENANT}.public.csv | sort | uniq -c | sort -rn |perl -ne 'print unless / 1 / ' > duplicates.txt
+cut -f3 4solr.${TENANT}.public.csv | sort | uniq -c | sort -rn |perl -ne 'print unless / 1 / ' > counts.duplicates.csv
 cut -c9- duplicates.txt | perl -ne 'chomp; print "s/\\t$_\\t/\\t$_ (duplicate)\\t/;\n"' > fix_dups.sh
 perl -i -p fix_dups.sh 4solr.${TENANT}.public.csv
 ##############################################################################
 # count the types and tokens in the sql output, check cell counts
 ##############################################################################
-time python evaluate.py 4solr.${TENANT}.public.csv /dev/null > counts.public.csv &
+time python evaluate.py 4solr.${TENANT}.public.csv /dev/null > counts.public.final.csv &
 ##############################################################################
 #rm d?.csv m?.csv
 ##############################################################################
@@ -103,9 +97,8 @@ curl -S -s "http://localhost:8983/solr/${TENANT}-public/update" --data '<commit/
 ##############################################################################
 time curl -X POST -S -s 'http://localhost:8983/solr/ucjeps-public/update/csv?commit=true&header=true&trim=true&separator=%09&f.comments_ss.split=true&f.comments_ss.separator=%7C&f.collector_ss.split=true&f.collector_ss.separator=%7C&f.previousdeterminations_ss.split=true&f.previousdeterminations_ss.separator=%7C&f.otherlocalities_ss.split=true&f.otherlocalities_ss.separator=%7C&f.associatedtaxa_ss.split=true&f.associatedtaxa_ss.separator=%7C&f.typeassertions_ss.split=true&f.typeassertions_ss.separator=%7C&f.alllocalities_ss.split=true&f.alllocalities_ss.separator=%7C&f.othernumber_ss.split=true&f.othernumber_ss.separator=%7C&f.blob_ss.split=true&f.blob_ss.separator=,&f.card_ss.split=true&f.card_ss.separator=,&encapsulator=\' -T 4solr.${TENANT}.public.csv -H 'Content-type:text/plain; charset=utf-8' &
 # send the errors off to be dealt with
-tar -czf errors.tgz errors*.csv &
-./make_error_report.sh | mail -a errors.tgz -s "UCJEPS Solr Refresh Errors `date`" ${CONTACT}
-# ./make_error_report.sh | mail -a errors.tgz -s "UCJEPS Solr Refresh Errors `date`" cspace-app-logs@lists.berkeley.edu
+tar -czf counts.tgz counts.*.csv &
+./make_error_report.sh | mail -a counts.tgz -s "UCJEPS Solr Refresh Counts and Errors `date`" ${CONTACT}
 # get rid of intermediate files
 rm d?.csv m?.csv metadata.csv media.csv
 # zip up .csvs, save a bit of space on backups

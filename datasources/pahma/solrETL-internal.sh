@@ -48,5 +48,6 @@ time curl -X POST -S -s "http://localhost:8983/solr/${TENANT}-internal/update/cs
 # wrap things up: make a gzipped version of what was loaded
 ##############################################################################
 gzip -f 4solr.*.csv &
+# wait for everything to finish
 wait
 date

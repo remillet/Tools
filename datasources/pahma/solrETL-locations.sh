@@ -57,7 +57,7 @@ time perl -ne " \$x = \$_ ;s/[^\t]//g; if (length eq 8) { print \$x;}" m4.csv > 
 ##############################################################################
 # count the types and tokens in the final file
 ##############################################################################
-time python evaluate.py 4solr.$TENANT.locations.csv /dev/null > counts.locations.csv &
+time python evaluate.py 4solr.$TENANT.locations.csv /dev/null > counts.locations.csv
 # ok, now let's load this into solr...
 # clear out the existing data
 ##############################################################################

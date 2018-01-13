@@ -24,24 +24,24 @@
 # memory.
 ##################################################################################
 echo 'starting solr refreshes' `date`
-/home/app_solr/solrdatasources/bampfa/solrETL-public.sh           bampfa     /home/app_solr/logs/bampfa.solr_extract_public.log  2>&1
-/home/app_solr/solrdatasources/bampfa/solrETL-internal.sh         bampfa     /home/app_solr/logs/bampfa.solr_extract_internal.log  2>&1
-/home/app_solr/solrdatasources/bampfa/bampfa_collectionitems_vw.sh bampfa    /home/app_solr/logs/bampfa.solr_extract_BAM.log  2>&1
-/home/app_solr/solrdatasources/bampfa/piction_extract.sh          bampfa     /home/app_solr/logs/bampfa.solr_extract_Piction.log  2>&1
+/home/app_solr/solrdatasources/bampfa/solrETL-public.sh           bampfa    > /home/app_solr/logs/bampfa.solr_extract_public.log  2>&1
+/home/app_solr/solrdatasources/bampfa/solrETL-internal.sh         bampfa    > /home/app_solr/logs/bampfa.solr_extract_internal.log  2>&1
+/home/app_solr/solrdatasources/bampfa/bampfa_collectionitems_vw.sh bampfa   > /home/app_solr/logs/bampfa.solr_extract_BAM.log  2>&1
+/home/app_solr/solrdatasources/bampfa/piction_extract.sh          bampfa    > /home/app_solr/logs/bampfa.solr_extract_Piction.log  2>&1
 
-/home/app_solr/solrdatasources/botgarden/solrETL-public.sh        botgarden  /home/app_solr/logs/botgarden.solr_extract_public.log  2>&1
-/home/app_solr/solrdatasources/botgarden/solrETL-internal.sh      botgarden  /home/app_solr/logs/botgarden.solr_extract_internal.log  2>&1
-/home/app_solr/solrdatasources/botgarden/solrETL-propagations.sh  botgarden  /home/app_solr/logs/botgarden.solr_extract_propagations.log  2>&1
+/home/app_solr/solrdatasources/botgarden/solrETL-public.sh        botgarden > /home/app_solr/logs/botgarden.solr_extract_public.log  2>&1
+/home/app_solr/solrdatasources/botgarden/solrETL-internal.sh      botgarden > /home/app_solr/logs/botgarden.solr_extract_internal.log  2>&1
+/home/app_solr/solrdatasources/botgarden/solrETL-propagations.sh  botgarden > /home/app_solr/logs/botgarden.solr_extract_propagations.log  2>&1
 
-/home/app_solr/solrdatasources/cinefiles/solrETL-public.sh        cinefiles  /home/app_solr/logs/cinefiles.solr_extract_public.log  2>&1
+/home/app_solr/solrdatasources/cinefiles/solrETL-public.sh        cinefiles > /home/app_solr/logs/cinefiles.solr_extract_public.log  2>&1
 
-/home/app_solr/solrdatasources/pahma/solrETL-public.sh            pahma      /home/app_solr/logs/pahma.solr_extract_public.log  2>&1
-/home/app_solr/solrdatasources/pahma/solrETL-internal.sh          pahma      /home/app_solr/logs/pahma.solr_extract_internal.log  2>&1
-/home/app_solr/solrdatasources/pahma/solrETL-locations.sh         pahma      /home/app_solr/logs/pahma.solr_extract_locations.log  2>&1
-/home/app_solr/solrdatasources/pahma/solrETL-osteology.sh         pahma      /home/app_solr/logs/pahma.solr_extract_osteology.log  2>&1
+/home/app_solr/solrdatasources/pahma/solrETL-public.sh            pahma     > /home/app_solr/logs/pahma.solr_extract_public.log  2>&1
+/home/app_solr/solrdatasources/pahma/solrETL-internal.sh          pahma     > /home/app_solr/logs/pahma.solr_extract_internal.log  2>&1
+/home/app_solr/solrdatasources/pahma/solrETL-locations.sh         pahma     > /home/app_solr/logs/pahma.solr_extract_locations.log  2>&1
+/home/app_solr/solrdatasources/pahma/solrETL-osteology.sh         pahma     > /home/app_solr/logs/pahma.solr_extract_osteology.log  2>&1
 
-/home/app_solr/solrdatasources/ucjeps/solrETL-media.sh            ucjeps     /home/app_solr/logs/ucjeps.solr_extract_media.log  2>&1
-/home/app_solr/solrdatasources/ucjeps/solrETL-public.sh           ucjeps     /home/app_solr/logs/ucjeps.solr_extract_public.log  2>&1
+/home/app_solr/solrdatasources/ucjeps/solrETL-media.sh            ucjeps    > /home/app_solr/logs/ucjeps.solr_extract_media.log  2>&1
+/home/app_solr/solrdatasources/ucjeps/solrETL-public.sh           ucjeps    > /home/app_solr/logs/ucjeps.solr_extract_public.log  2>&1
 ##################################################################################
 # optimize all solrcores after refresh
 ##################################################################################

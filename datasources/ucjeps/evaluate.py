@@ -44,7 +44,7 @@ with open(sys.argv[2], 'w') as f2:
                 column_count = len(header)
             else:
                 if len(row) != column_count:
-                    print "%s%s%s" % ('error', delim, delim.join(row))
+                    print "%s%s%s" % ('error', delim, delim.join(row).encode('utf-8'))
                     errors += 1
                     continue
                 for i, cell in enumerate(row):

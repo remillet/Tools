@@ -41,17 +41,17 @@ cat header4Solr.csv d7.csv > d8.csv
 ##############################################################################
 time python computeTimeIntegers.py d8.csv 4solr.$TENANT.internal.csv
 wc -l *.csv
+# clear out the existing data
+curl -S -s "http://localhost:8983/solr/${TENANT}-internal/update" --data '<delete><query>*:*</query></delete>' -H 'Content-type:text/xml; charset=utf-8'
+curl -S -s "http://localhost:8983/solr/${TENANT}-internal/update" --data '<commit/>' -H 'Content-type:text/xml; charset=utf-8'
+time curl -X POST -S -s "http://localhost:8983/solr/${TENANT}-internal/update/csv?commit=true&header=true&trim=true&separator=%09&f.grouptitle_ss.split=true&f.grouptitle_ss.separator=;&f.othernumbers_ss.split=true&f.othernumbers_ss.separator=;&f.blob_ss.split=true&f.blob_ss.separator=,&encapsulator=\\" -T 4solr.$TENANT.internal.csv -H 'Content-type:text/plain; charset=utf-8' &
 ##############################################################################
 # count the types and tokens in the final file, check cell counts
 ##############################################################################
 time python evaluate.py 4solr.$TENANT.internal.csv /dev/null > counts.internal.csv &
-# clear out the existing data
-curl -S -s "http://localhost:8983/solr/${TENANT}-internal/update" --data '<delete><query>*:*</query></delete>' -H 'Content-type:text/xml; charset=utf-8'
-curl -S -s "http://localhost:8983/solr/${TENANT}-internal/update" --data '<commit/>' -H 'Content-type:text/xml; charset=utf-8'
-time curl -X POST -S -s "http://localhost:8983/solr/${TENANT}-internal/update/csv?commit=true&header=true&trim=true&separator=%09&f.grouptitle_ss.split=true&f.grouptitle_ss.separator=;&f.othernumbers_ss.split=true&f.othernumbers_ss.separator=;&f.blob_ss.split=true&f.blob_ss.separator=,&encapsulator=\\" -T 4solr.$TENANT.internal.csv -H 'Content-type:text/plain; charset=utf-8'
 # get rid of intermediate files
-rm d?.csv m?.csv b?.csv media.csv metadata.csv
+rm d?.csv m?.csv b?.csv media.csv metadata.csv &
+wait
 # zip up .csvs, save a bit of space on backups
 gzip -f *.csv
-wait
 date

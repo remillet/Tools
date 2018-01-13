@@ -153,13 +153,7 @@ cat header4Solr.csv d8.csv | perl -pe 's/␥/|/g' > d9.csv
 # compute _i values for _dt values (to support BL date range searching
 ##############################################################################
 time python computeTimeIntegers.py d9.csv 4solr.$TENANT.internal.csv
-#
 wc -l *.csv
-##############################################################################
-# count the types and tokens in these final files
-##############################################################################
-time python evaluate.py 4solr.$TENANT.public.csv /dev/null > counts.public.final.csv &
-time python evaluate.py 4solr.$TENANT.internal.csv /dev/null > counts.internal.final.csv &
 ##############################################################################
 # ok, now let's load this into solr...
 # clear out the existing data
@@ -172,14 +166,16 @@ curl -S -s "http://localhost:8983/solr/${TENANT}-public/update" --data '<commit/
 ##############################################################################
 time curl -X POST -S -s "http://localhost:8983/solr/${TENANT}-public/update/csv?commit=true&header=true&separator=%09&f.objpp_ss.split=true&f.objpp_ss.separator=%7C&f.anonymousdonor_ss.split=true&f.anonymousdonor_ss.separator=%7C&f.objaltnum_ss.split=true&f.objaltnum_ss.separator=%7C&f.objfilecode_ss.split=true&f.objfilecode_ss.separator=%7C&f.objdimensions_ss.split=true&f.objdimensions_ss.separator=%7C&f.objmaterials_ss.split=true&f.objmaterials_ss.separator=%7C&f.objinscrtext_ss.split=true&f.objinscrtext_ss.separator=%7C&f.objcollector_ss.split=true&f.objcollector_ss.separator=%7C&f.objaccno_ss.split=true&f.objaccno_ss.separator=%7C&f.objaccdate_ss.split=true&f.objaccdate_ss.separator=%7C&f.objacqdate_ss.split=true&f.objacqdate_ss.separator=%7C&f.objassoccult_ss.split=true&f.objassoccult_ss.separator=%7C&f.objculturetree_ss.split=true&f.objculturetree_ss.separator=%7C&f.objfcptree_ss.split=true&f.objfcptree_ss.separator=%7C&f.grouptitle_ss.split=true&f.grouptitle_ss.separator=%7C&f.objmaker_ss.split=true&f.objmaker_ss.separator=%7C&f.blob_ss.split=true&f.blob_ss.separator=,&f.card_ss.split=true&f.card_ss.separator=,&f.imagetype_ss.split=true&f.imagetype_ss.separator=,&encapsulator=\\" -T 4solr.$TENANT.public.csv -H 'Content-type:text/plain; charset=utf-8' &
 ##############################################################################
-# wrap things up: make a gzipped version of what was loaded
+# while that's running, clean up, generate some stats, mail reports
 ##############################################################################
+time python evaluate.py 4solr.$TENANT.public.csv /dev/null > counts.public.final.csv
+time python evaluate.py 4solr.$TENANT.internal.csv /dev/null > counts.internal.final.csv
 # send the errors off to be dealt with
-wait
 tar -czf counts.tgz counts*.csv
 ./make_error_report.sh | mail -a counts.tgz -s "PAHMA Solr Counts and Refresh Errors `date`" ${CONTACT}
 # get rid of intermediate files
-rm d?.csv d6?.csv m?.csv part*.csv temp.*.csv basic*.csv errors*.csv header4Solr.csv
+rm d?.csv d6?.csv m?.csv part*.csv temp.*.csv basic*.csv errors*.csv header4Solr.csv &
+wait
 # zip up .csvs, save a bit of space on backups
-gzip -f *.csv
+gzip -f *.csv &
 date

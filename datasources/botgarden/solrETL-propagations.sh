@@ -52,10 +52,10 @@ wc -l *.csv
 time python evaluate.py 4solr.$TENANT.propagations.csv /dev/null > counts.propagations.csv &
 curl -S -s "http://localhost:8983/solr/${TENANT}-propagations/update" --data '<delete><query>*:*</query></delete>' -H 'Content-type:text/xml; charset=utf-8'
 curl -S -s "http://localhost:8983/solr/${TENANT}-propagations/update" --data '<commit/>' -H 'Content-type:text/xml; charset=utf-8'
-time curl -X POST -S -s "http://localhost:8983/solr/${TENANT}-propagations/update/csv?commit=true&header=true&trim=true&separator=%09&encapsulator=\\" -T 4solr.$TENANT.propagations.csv -H 'Content-type:text/plain; charset=utf-8'
+time curl -X POST -S -s "http://localhost:8983/solr/${TENANT}-propagations/update/csv?commit=true&header=true&trim=true&separator=%09&encapsulator=\\" -T 4solr.$TENANT.propagations.csv -H 'Content-type:text/plain; charset=utf-8' &
 # get rid of intermediate files
 rm p?.csv header4Solr.csv*
+wait
 # zip up .csvs, save a bit of space on backups
 gzip -f 4solr.$TENANT.propagations.csv
-wait
 date

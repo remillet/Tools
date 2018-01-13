@@ -55,9 +55,6 @@ cat header4Solr.csv m5.csv > m4.csv
 rm m5.csv m3.sort.csv
 time perl -ne " \$x = \$_ ;s/[^\t]//g; if (length eq 8) { print \$x;}" m4.csv > 4solr.${TENANT}.locations.csv
 ##############################################################################
-# count the types and tokens in the final file
-##############################################################################
-time python evaluate.py 4solr.$TENANT.locations.csv /dev/null > counts.locations.csv
 # ok, now let's load this into solr...
 # clear out the existing data
 ##############################################################################
@@ -67,8 +64,12 @@ curl -S -s "http://localhost:8983/solr/${TENANT}-locations/update" --data '<comm
 # this POSTs the csv to the Solr / update endpoint
 # note, among other things, the overriding of the encapsulator with \
 ##############################################################################
-time curl -X POST -s -S 'http://localhost:8983/solr/pahma-locations/update/csv?commit=true&header=true&trim=true&separator=%09&encapsulator=\' -T 4solr.pahma.locations.csv -H 'Content-type:text/plain; charset=utf-8'
+time curl -X POST -s -S 'http://localhost:8983/solr/pahma-locations/update/csv?commit=true&header=true&trim=true&separator=%09&encapsulator=\' -T 4solr.pahma.locations.csv -H 'Content-type:text/plain; charset=utf-8' &
+##############################################################################
+# count the types and tokens in the final file
+##############################################################################
+time python evaluate.py 4solr.$TENANT.locations.csv /dev/null > counts.locations.csv &
 rm m4.csv
-gzip 4solr.$TENANT.locations.csv
 wait
+gzip 4solr.$TENANT.locations.csv
 date

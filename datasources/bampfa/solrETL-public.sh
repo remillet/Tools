@@ -53,10 +53,6 @@ cat header4Solr.csv d7.csv > d8.csv
 ##############################################################################
 time python computeTimeIntegers.py d8.csv 4solr.$TENANT.public.csv
 wc -l *.csv
-##############################################################################
-# count the types and tokens in the final file, check cell counts
-##############################################################################
-time python evaluate.py 4solr.$TENANT.public.csv /dev/null > counts.public.csv &
 # clear out the existing data
 curl -S -s "http://localhost:8983/solr/${TENANT}-public/update" --data '<delete><query>*:*</query></delete>' -H 'Content-type:text/xml; charset=utf-8'
 curl -S -s "http://localhost:8983/solr/${TENANT}-public/update" --data '<commit/>' -H 'Content-type:text/xml; charset=utf-8'
@@ -64,10 +60,14 @@ curl -S -s "http://localhost:8983/solr/${TENANT}-public/update" --data '<commit/
 # in the sql queries themselves.
 # some values were needed for computing the status field (i.e. "on view")
 # TODO however we could also skip them in the Solr load as well...
-time curl -X POST -S -s "http://localhost:8983/solr/${TENANT}-public/update/csv?commit=true&header=true&trim=true&separator=%09&f.grouptitle_ss.split=true&f.grouptitle_ss.separator=;&f.othernumbers_ss.split=true&f.othernumbers_ss.separator=;&f.blob_ss.split=true&f.blob_ss.separator=,&encapsulator=\\" -T 4solr.$TENANT.public.csv -H 'Content-type:text/plain; charset=utf-8'
+time curl -X POST -S -s "http://localhost:8983/solr/${TENANT}-public/update/csv?commit=true&header=true&trim=true&separator=%09&f.grouptitle_ss.split=true&f.grouptitle_ss.separator=;&f.othernumbers_ss.split=true&f.othernumbers_ss.separator=;&f.blob_ss.split=true&f.blob_ss.separator=,&encapsulator=\\" -T 4solr.$TENANT.public.csv -H 'Content-type:text/plain; charset=utf-8' &
+##############################################################################
+# count the types and tokens in the final file, check cell counts
+##############################################################################
+time python evaluate.py 4solr.$TENANT.public.csv /dev/null > counts.public.csv &
 # get rid of intermediate files
 rm d?.csv m?.csv b?.csv media.csv metadata.csv
-# zip up .csvs, save a bit of space on backups
-gzip -f *.csv &
 wait
+# zip up .csvs, save a bit of space on backups
+gzip -f *.csv
 date

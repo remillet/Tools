@@ -70,23 +70,11 @@ cat header4Solr.csv d9.csv | perl -pe 's/␥/|/g' > 4solr.$TENANT.public.csv
 # clean up some stray quotes. Really this should get fixed properly someday!
 perl -i -pe 's/\\/\//g;s/\t"/\t/g;s/"\t/\t/g;s/\"\"/"/g' 4solr.$TENANT.public.csv
 ##############################################################################
-# here are the solr csv update parameters needed for multivalued fields
-##############################################################################
-perl -pe 's/\t/\n/g' header4Solr.csv| perl -ne 'chomp; next unless /_ss/; next if /blob/; print "f.$_.split=true&f.$_.separator=%7C&"' > uploadparms.txt
-##############################################################################
 # mark duplicate accession numbers
 ##############################################################################
 cut -f3 4solr.${TENANT}.public.csv | sort | uniq -c | sort -rn |perl -ne 'print unless / 1 / ' > counts.duplicates.csv
 cut -c9- duplicates.txt | perl -ne 'chomp; print "s/\\t$_\\t/\\t$_ (duplicate)\\t/;\n"' > fix_dups.sh
 perl -i -p fix_dups.sh 4solr.${TENANT}.public.csv
-##############################################################################
-# count the types and tokens in the sql output, check cell counts
-##############################################################################
-time python evaluate.py 4solr.${TENANT}.public.csv /dev/null > counts.public.final.csv &
-##############################################################################
-#rm d?.csv m?.csv
-##############################################################################
-wc -l *.csv &
 ##############################################################################
 # clear out the existing data
 ##############################################################################
@@ -96,14 +84,19 @@ curl -S -s "http://localhost:8983/solr/${TENANT}-public/update" --data '<commit/
 # load the csv file into Solr using the csv DIH
 ##############################################################################
 time curl -X POST -S -s 'http://localhost:8983/solr/ucjeps-public/update/csv?commit=true&header=true&trim=true&separator=%09&f.comments_ss.split=true&f.comments_ss.separator=%7C&f.collector_ss.split=true&f.collector_ss.separator=%7C&f.previousdeterminations_ss.split=true&f.previousdeterminations_ss.separator=%7C&f.otherlocalities_ss.split=true&f.otherlocalities_ss.separator=%7C&f.associatedtaxa_ss.split=true&f.associatedtaxa_ss.separator=%7C&f.typeassertions_ss.split=true&f.typeassertions_ss.separator=%7C&f.alllocalities_ss.split=true&f.alllocalities_ss.separator=%7C&f.othernumber_ss.split=true&f.othernumber_ss.separator=%7C&f.blob_ss.split=true&f.blob_ss.separator=,&f.card_ss.split=true&f.card_ss.separator=,&encapsulator=\' -T 4solr.${TENANT}.public.csv -H 'Content-type:text/plain; charset=utf-8' &
+##############################################################################
+# while that's running, clean up, generate some stats, mail reports
+##############################################################################
+time python evaluate.py 4solr.${TENANT}.public.csv /dev/null > counts.public.final.csv
+wc -l *.csv
 # send the errors off to be dealt with
-tar -czf counts.tgz counts.*.csv &
+tar -czf counts.tgz counts.*.csv
 ./make_error_report.sh | mail -a counts.tgz -s "UCJEPS Solr Refresh Counts and Errors `date`" ${CONTACT}
 # get rid of intermediate files
 rm d?.csv m?.csv metadata.csv media.csv
 # zip up .csvs, save a bit of space on backups
-gzip -f *.csv &
+gzip -f *.csv
 # hack to zap latlong errors and load the records anyway.
-./zapCoords.sh &
+./zapCoords.sh
 wait
 date

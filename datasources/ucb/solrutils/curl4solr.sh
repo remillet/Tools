@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 #
-# fetch all the publicly available solr4 datasources
+# fetches all the publicly available solr4 datasources
+#
+# NB: only work with current UCB setup.
+#     extracts are "manually curated" on Prod, and may not be the latest.
+#
+# see also 'wget4solr.sh', same thing with wget.
 #
 # no authentication required!
 curl -O https://webapps.cspace.berkeley.edu/4solr.bampfa.public.csv.gz

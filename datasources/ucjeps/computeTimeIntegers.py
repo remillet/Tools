@@ -32,6 +32,7 @@ with open(sys.argv[2], 'wb') as f2:
                         row.append(get_year(row[d]))
                 file_with_integer_times.writerow(row)
         except:
+            # really someday we should do something better than just die here...
             raise
             print 'couldnt'
             exit()

@@ -16,7 +16,7 @@ do
     echo "</table>" >> /var/www/static/${t}.counts.public.html
     #count=`curl -S -s "http://localhost:8983/solr/${t}-public/select?q=*%3A*&wt=json&defType=edismax&rows=0" | perl -pe 's/.*numFound..(\d+).*/\1/'`
     count=`curl -S -s "http://localhost:8983/solr/${t}-public/select?q=*%3A*&wt=json&rows=0" | perl -pe 's/.*numFound..(\d+).*/\1/'`
-    echo "<tr><td>${t}</td><td>${count}</td><td><a href=\"${t}.counts.public.html\" target=\"new\">types and tokens</a></td></tr>" >> corestats.html
+    echo "<tr><td>${t}</td><td>${count}</td><td><a href=\"${t}.counts.public.html\">types and tokens</a></td></tr>" >> corestats.html
     echo "<p/>" >> corestats.html
 done
 echo "</table>" >> corestats.html

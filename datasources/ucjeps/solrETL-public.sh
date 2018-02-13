@@ -94,6 +94,7 @@ tar -czf counts.tgz counts.*.csv
 ./make_error_report.sh | mail -a counts.tgz -s "UCJEPS Solr Refresh Counts and Errors `date`" ${CONTACT}
 # get rid of intermediate files
 rm d?.csv m?.csv metadata.csv media.csv
+cp counts.public.final.csv /tmp/$TENANT.counts.public.csv
 # zip up .csvs, save a bit of space on backups
 gzip -f *.csv
 # hack to zap latlong errors and load the records anyway.

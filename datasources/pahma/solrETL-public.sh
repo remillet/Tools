@@ -176,6 +176,7 @@ tar -czf counts.tgz counts*.csv
 # get rid of intermediate files
 rm d?.csv d6?.csv m?.csv part*.csv temp.*.csv basic*.csv errors*.csv header4Solr.csv &
 wait
+cp counts.public.final.csv /tmp/$TENANT.counts.public.csv
 # zip up .csvs, save a bit of space on backups
 gzip -f *.csv &
 date

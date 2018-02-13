@@ -68,6 +68,7 @@ time python evaluate.py 4solr.$TENANT.public.csv /dev/null > counts.public.csv &
 # get rid of intermediate files
 rm d?.csv m?.csv b?.csv media.csv metadata.csv
 wait
+cp counts.public.csv /tmp/$TENANT.counts.public.csv
 # zip up .csvs, save a bit of space on backups
 gzip -f *.csv
 date

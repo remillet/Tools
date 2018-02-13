@@ -50,6 +50,7 @@ curl -S -s "http://localhost:8983/solr/${TENANT}-public/update" --data '<commit/
 time curl -X POST -S -s "http://localhost:8983/solr/${TENANT}-public/update/csv?commit=true&header=true&trim=true&separator=%09&f.grouptitle_ss.split=true&f.grouptitle_ss.separator=;&f.othernumbers_ss.split=true&f.othernumbers_ss.separator=;&f.blob_ss.split=true&f.blob_ss.separator=,&encapsulator=\\" -T 4solr.$TENANT.public.csv -H 'Content-type:text/plain; charset=utf-8'
 # get rid of intermediate files
 rm d?.csv m?.csv b?.csv media.csv metadata.csv
+cp counts.public.csv /tmp/$TENANT.counts.public.csv
 # zip up .csvs, save a bit of space on backups
 gzip -f *.csv
 #

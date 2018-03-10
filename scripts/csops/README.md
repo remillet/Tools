@@ -144,6 +144,14 @@ cscheckjava
 ##### Description
 Checks if the Java installation used by CollectionSpace has been updated. If an update to Java is detected that occurred after the start time of the running CollectionSpace server, the CollectionSpace server is restarted using the `csbounce` program. This ensures that CollectionSpace is using the newest version of Java. This program should be run shortly after the scheduled OS update times.
 
+### cscheckmem - check for high Java memory (heap) usage
+##### Synopsis
+```
+cscheckmem
+```
+##### Description
+Checks if the the CollectionSpace Tomcat JVM exhibits high heap usage. Prints a report to standard out, and appends usage data to a tab-delimited log file (`~/log/cscheckmem.*.csv`). If the usage of any of the generations exceeds 90%, diagnostic files are saved (`~/log/GC.heap_dump.*.hprof` and `~/log/GC.class_histogram.*.txt`).
+
 ### csdeployreports - (re)deploy reports for this deployment
 ##### Synopsis
 ```

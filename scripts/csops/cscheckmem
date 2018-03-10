@@ -23,22 +23,24 @@ my %gc = jstat_hash(`jstat -gc $cspid`);
 
 my $young_gen_max = $gccapacity{NGCMX};
 my $young_gen_used = $gc{EU} + $gc{S0U} + $gc{S1U};
-my $young_gen_pct = $young_gen_used/$young_gen_max * 100;
+my $young_gen_pct = $young_gen_used / $young_gen_max * 100;
 
 my $old_gen_max = $gccapacity{OGCMX};
 my $old_gen_used = $gc{OU};
-my $old_gen_pct = $old_gen_used/$old_gen_max * 100;
+my $old_gen_pct = $old_gen_used / $old_gen_max * 100;
 
 my $perm_gen_max = $gccapacity{PGCMX};
 my $perm_gen_used = $gc{PU};
-my $perm_gen_pct = $perm_gen_used/$perm_gen_max * 100;
+my $perm_gen_pct = $perm_gen_used / $perm_gen_max * 100;
+
+my $gc_time = $gc{GCT};
 
 print_report();
 print_log();
 check_warning();
 
 sub print_report {
-	print "CSpace JVM heap usage (KB) at $timestamp:\n\n";
+	print "CollectionSpace Tomcat JVM heap usage (KB) at $timestamp:\n\n";
 	print "young gen: $young_gen_used / $young_gen_max ", sprintf("(%.2f%%)", $young_gen_pct), "\n";
 	print "old gen:   $old_gen_used / $old_gen_max ", sprintf("(%.2f%%)", $old_gen_pct), "\n";
 	print "perm gen:  $perm_gen_used / $perm_gen_max ", sprintf("(%.2f%%)", $perm_gen_pct), "\n";
@@ -48,14 +50,14 @@ sub print_log {
 	my $log_file = "$ENV{HOME}/log/$script_name.$datestamp.csv";
 	my $log_file_existed = -e $log_file;
 
-	open(my $fh, '>>', $log_file) or die "Could not open file '$log_file' $!";
+	open(my $fh, ">>$log_file") or die "Could not open file '$log_file' $!";
 
 	if (!$log_file_existed) {
-		print $fh join("\t", "time", "young gen used", "young gen max", "young gen pct", "old gen used", "old gen max", "old gen pct", "perm gen used", "perm gen max", "perm gen pct");
+		print $fh join("\t", "time", "young gen used", "young gen max", "young gen pct", "old gen used", "old gen max", "old gen pct", "perm gen used", "perm gen max", "perm gen pct", "gc time");
 		print $fh "\n";
 	}
 
-	print $fh join("\t", $timestamp, $young_gen_used, $young_gen_max, sprintf("%.2f", $young_gen_pct), $old_gen_used, $old_gen_max, sprintf("%.2f", $old_gen_pct), $perm_gen_used, $perm_gen_max, sprintf("%.2f", $perm_gen_pct));
+	print $fh join("\t", $timestamp, $young_gen_used, $young_gen_max, sprintf("%.2f", $young_gen_pct), $old_gen_used, $old_gen_max, sprintf("%.2f", $old_gen_pct), $perm_gen_used, $perm_gen_max, sprintf("%.2f", $perm_gen_pct), $gc_time);
 	print $fh "\n";
 
 	close $fh;
@@ -107,7 +109,7 @@ sub notify {
 
 	print $mail "$script_name has detected high memory use in $service_name on $hostname.\n";
 	print $mail "\n";
-	print $mail "CSpace JVM heap usage (KB) at $timestamp:\n\n";
+	print $mail "CollectionSpace Tomcat JVM heap usage (KB) at $timestamp:\n\n";
 	print $mail "young gen: $young_gen_used / $young_gen_max ", sprintf("(%.2f%%)", $young_gen_pct), "\n";
 	print $mail "old gen:   $old_gen_used / $old_gen_max ", sprintf("(%.2f%%)", $old_gen_pct), "\n";
 	print $mail "perm gen:  $perm_gen_used / $perm_gen_max ", sprintf("(%.2f%%)", $perm_gen_pct), "\n";

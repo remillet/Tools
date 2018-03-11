@@ -8,11 +8,11 @@ SELECT DISTINCT
   STRING_AGG(DISTINCT sad1.datedisplaydate, '␥')                              AS objaccdate_ss,
   STRING_AGG(DISTINCT sad2.datedisplaydate, '␥')                              AS objacqdate_ss,
 
-  STRING_AGG(DISTINCT DATE(sad1.dateearliestscalarvalue)||'T19:00:00Z', '␥')  AS objaccdate_begin_dt,
-  STRING_AGG(DISTINCT DATE(sad1.datelatestscalarvalue)||'T19:00:00Z', '␥')    AS objaccdate_end_dt,
+  STRING_AGG(DISTINCT DATE(sad1.dateearliestscalarvalue)||'T19:00:00Z', '␥')  AS objaccdate_begin_dts,
+  STRING_AGG(DISTINCT DATE(sad1.datelatestscalarvalue)||'T19:00:00Z', '␥')    AS objaccdate_end_dts,
 
-  STRING_AGG(DISTINCT DATE(sad2.dateearliestscalarvalue)||'T19:00:00Z', '␥')  AS objacqdate_begin_dt,
-  STRING_AGG(DISTINCT DATE(sad2.datelatestscalarvalue)||'T19:00:00Z', '␥')    AS objacqdate_end_dt
+  STRING_AGG(DISTINCT DATE(sad2.dateearliestscalarvalue)||'T19:00:00Z', '␥')  AS objacqdate_begin_dts,
+  STRING_AGG(DISTINCT DATE(sad2.datelatestscalarvalue)||'T19:00:00Z', '␥')    AS objacqdate_end_dts
 
 FROM collectionobjects_common cc
   JOIN hierarchy h1 ON (h1.id = cc.id)

@@ -4,10 +4,10 @@ import math
 import sys, csv
 from unicode_hack import UnicodeReader, UnicodeWriter
 
-hashkey_column = 34
-fieldCollectionTree_column = 37
+hashkey_column = 38
+fieldCollectionTree_column = 41
 objecttype_column = 5
-latlong_column = 35
+latlong_column = 39
 delim = '\t'
 
 def pol2cart(rho, phi):

@@ -9,7 +9,7 @@ my %seen;
 my $restricted = '59a733dd-d641-4e1a-8552';
 my $runtype = $ARGV[2]; # generate media for public or internal
 
-my $fcpcol = 35;
+my $fcpcol = 39;
 my $contextofusecol = 13;
 my $objectnamecol = 8;
 

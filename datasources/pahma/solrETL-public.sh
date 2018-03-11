@@ -14,7 +14,7 @@ cd /home/app_solr/solrdatasources/pahma
 # specially, and the scripts need to run in order: public > internal > locations
 # the public script, which runs first, *can* 'stash' last night's files...
 ##############################################################################
-mv 4solr.*.csv.gz /tmp
+#mv 4solr.*.csv.gz /tmp
 ##############################################################################
 # while most of this script is already tenant specific, many of the specific commands
 # are shared between the different scripts; having them be as similar as possible
@@ -25,10 +25,12 @@ SERVER="dba-postgres-prod-42.ist.berkeley.edu port=5307 sslmode=prefer"
 USERNAME="reporter_$TENANT"
 DATABASE="${TENANT}_domain_${TENANT}"
 CONNECTSTRING="host=$SERVER dbname=$DATABASE"
-CONTACT="mtblack@berkeley.edu"
+CONTACT="jblowe@berkeley.edu"
 # field collection place ("FCP") is used in various calculations, set a
 # variable to indicate which column it is in the extract
-FCPCOL=35
+# (it has to be exported so the perl one-liner below can get the value from
+# the environment; the value is used in 2 places below.)
+export FCPCOL=39
 ##############################################################################
 # run the "all media query"
 ##############################################################################
@@ -100,19 +102,19 @@ wait
 ##############################################################################
 # check latlongs for public datastore
 ##############################################################################
-perl -ne '@y=split /\t/;@x=split ",",$y[35];print if     ((abs($x[0])<90 && abs($x[1])<180 && $y[35]!~/[^0-9\, \.\-]/) || $y[35]=~/_p/);' temp.public.csv > d6a.csv &
-perl -ne '@y=split /\t/;@x=split ",",$y[35];print unless ((abs($x[0])<90 && abs($x[1])<180 && $y[35]!~/[^0-9\, \.\-]/) || $y[35]=~/_p/);' temp.public.csv > counts.latlong_errors.csv &
+perl -ne '@y=split /\t/;$x=$y[$ENV{"FCPCOL"}];print if     $x =~ /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/ || $x =~ /_p/ || $x eq "" ;' temp.public.csv >d6a.csv &
+perl -ne '@y=split /\t/;$x=$y[$ENV{"FCPCOL"}];print unless $x =~ /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/ || $x =~ /_p/ || $x eq "" ;' temp.public.csv > counts.latlong_errors.csv &
 ##############################################################################
 # check latlongs for internal datastore
 ##############################################################################
-perl -ne '@y=split /\t/;@x=split ",",$y[35];print if     ((abs($x[0])<90 && abs($x[1])<180 && $y[35]!~/[^0-9\, \.\-]/) || $y[35]=~/_p/);' temp.internal.csv > d6b.csv &
-# nb: we don't have to save the errors in this datastore, they will be the same as the restricted one.
-# perl -ne "@y=split /\t/;@x=split ',',$y[\$ENV{FCPCOL}];print unless ((abs($x[0])<90 && abs($x[1])<180 && $y[\$ENV{FCPCOL}]!~/[^0-9\, \.\-]/) || $y[\$ENV{FCPCOL}]=~/_p/);" temp.internal.csv > errors_in_latlong.csv
+perl -ne '@y=split /\t/;$x=$y[$ENV{"FCPCOL"}];print if     $x =~ /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/ || $x =~ /_p/ || $x eq "" ;' temp.internal.csv > d6b.csv &
+# nb: we don"t have to save the errors in this datastore, they will be the same as the restricted one.
 wait
 mv d6a.csv temp.public.csv
 mv d6b.csv temp.internal.csv
 ##############################################################################
 # add the blob and card csids and other flags to the rest of the metadata
+# nb: has dependencies on the media file order; less so on the metadata.
 ##############################################################################
 time perl mergeObjectsAndMediaPAHMA.pl 4solr.$TENANT.allmedia.csv temp.public.csv public > d6a.csv &
 time perl mergeObjectsAndMediaPAHMA.pl 4solr.$TENANT.allmedia.csv temp.internal.csv internal > d6b.csv &
@@ -127,6 +129,8 @@ time perl setCoords.pl ${FCPCOL} < temp.internal.csv > d6b.csv &
 wait
 ##############################################################################
 #  Obfuscate the lat-longs of sensitive sites for public portal
+#  nb: this script has dependencies on 4 columns in the input file.
+#      if you change them or other order, you'll need to modify this script.
 ##############################################################################
 time python obfuscateUSArchaeologySites.py d6a.csv d7.csv
 ##############################################################################
@@ -164,19 +168,19 @@ curl -S -s "http://localhost:8983/solr/${TENANT}-public/update" --data '<commit/
 # this POSTs the csv to the Solr / update endpoint
 # note, among other things, the overriding of the encapsulator with \
 ##############################################################################
-time curl -X POST -S -s "http://localhost:8983/solr/${TENANT}-public/update/csv?commit=true&header=true&separator=%09&f.objpp_ss.split=true&f.objpp_ss.separator=%7C&f.anonymousdonor_ss.split=true&f.anonymousdonor_ss.separator=%7C&f.objaltnum_ss.split=true&f.objaltnum_ss.separator=%7C&f.objfilecode_ss.split=true&f.objfilecode_ss.separator=%7C&f.objdimensions_ss.split=true&f.objdimensions_ss.separator=%7C&f.objmaterials_ss.split=true&f.objmaterials_ss.separator=%7C&f.objinscrtext_ss.split=true&f.objinscrtext_ss.separator=%7C&f.objcollector_ss.split=true&f.objcollector_ss.separator=%7C&f.objaccno_ss.split=true&f.objaccno_ss.separator=%7C&f.objaccdate_ss.split=true&f.objaccdate_ss.separator=%7C&f.objacqdate_ss.split=true&f.objacqdate_ss.separator=%7C&f.objassoccult_ss.split=true&f.objassoccult_ss.separator=%7C&f.objculturetree_ss.split=true&f.objculturetree_ss.separator=%7C&f.objfcptree_ss.split=true&f.objfcptree_ss.separator=%7C&f.grouptitle_ss.split=true&f.grouptitle_ss.separator=%7C&f.objmaker_ss.split=true&f.objmaker_ss.separator=%7C&f.blob_ss.split=true&f.blob_ss.separator=,&f.card_ss.split=true&f.card_ss.separator=,&f.imagetype_ss.split=true&f.imagetype_ss.separator=,&encapsulator=\\" -T 4solr.$TENANT.public.csv -H 'Content-type:text/plain; charset=utf-8' &
+time curl -X POST -S -s 'http://localhost:8983/solr/pahma-public/update/csv?commit=true&header=true&separator=%09&f.objpp_ss.split=true&f.objpp_ss.separator=%7C&f.anonymousdonor_ss.split=true&f.anonymousdonor_ss.separator=%7C&f.objaltnum_ss.split=true&f.objaltnum_ss.separator=%7C&f.objfilecode_ss.split=true&f.objfilecode_ss.separator=%7C&f.objdimensions_ss.split=true&f.objdimensions_ss.separator=%7C&f.objmaterials_ss.split=true&f.objmaterials_ss.separator=%7C&f.objinscrtext_ss.split=true&f.objinscrtext_ss.separator=%7C&f.objcollector_ss.split=true&f.objcollector_ss.separator=%7C&f.objaccno_ss.split=true&f.objaccno_ss.separator=%7C&f.objaccdate_ss.split=true&f.objaccdate_ss.separator=%7C&f.objacqdate_ss.split=true&f.objacqdate_ss.separator=%7C&f.objassoccult_ss.split=true&f.objassoccult_ss.separator=%7C&f.objculturetree_ss.split=true&f.objculturetree_ss.separator=%7C&f.objfcptree_ss.split=true&f.objfcptree_ss.separator=%7C&f.grouptitle_ss.split=true&f.grouptitle_ss.separator=%7C&f.objmaker_ss.split=true&f.objmaker_ss.separator=%7C&f.objaccdate_begin_dts.split=true&f.objaccdate_begin_dts.separator=%7C&f.objacqdate_begin_dts.split=true&f.objacqdate_begin_dts.separator=%7C&f.objaccdate_end_dts.split=true&f.objaccdate_end_dts.separator=%7C&f.objacqdate_end_dts.split=true&f.objacqdate_end_dts.separator=%7C&f.blob_ss.split=true&f.blob_ss.separator=,&f.card_ss.split=true&f.card_ss.separator=,&f.imagetype_ss.split=true&f.imagetype_ss.separator=,&encapsulator=\' -T 4solr.${TENANT}.public.csv -H 'Content-type:text/plain; charset=utf-8'
 ##############################################################################
 # while that's running, clean up, generate some stats, mail reports
 ##############################################################################
-time python evaluate.py 4solr.$TENANT.public.csv /dev/null > counts.public.final.csv
-time python evaluate.py 4solr.$TENANT.internal.csv /dev/null > counts.internal.final.csv
+time python evaluate.py 4solr.$TENANT.public.csv /dev/null > counts.public.final.csv &
+time python evaluate.py 4solr.$TENANT.internal.csv /dev/null > counts.internal.final.csv &
+wait
+cp counts.public.final.csv /tmp/$TENANT.counts.public.csv
 # send the errors off to be dealt with
 tar -czf counts.tgz counts*.csv
 ./make_error_report.sh | mail -a counts.tgz -s "PAHMA Solr Counts and Refresh Errors `date`" ${CONTACT}
 # get rid of intermediate files
-rm d?.csv d6?.csv m?.csv part*.csv temp.*.csv basic*.csv errors*.csv header4Solr.csv &
-wait
-cp counts.public.final.csv /tmp/$TENANT.counts.public.csv
+rm d?.csv d6?.csv m?.csv part*.csv temp.*.csv basic*.csv errors*.csv header4Solr.csv
 # zip up .csvs, save a bit of space on backups
 gzip -f *.csv &
 date

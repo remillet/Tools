@@ -25,7 +25,7 @@ SERVER="dba-postgres-prod-42.ist.berkeley.edu port=5307 sslmode=prefer"
 USERNAME="reporter_$TENANT"
 DATABASE="${TENANT}_domain_${TENANT}"
 CONNECTSTRING="host=$SERVER dbname=$DATABASE"
-CONTACT="jblowe@berkeley.edu"
+CONTACT="mtblack@berkeley.edu"
 # field collection place ("FCP") is used in various calculations, set a
 # variable to indicate which column it is in the extract
 # (it has to be exported so the perl one-liner below can get the value from

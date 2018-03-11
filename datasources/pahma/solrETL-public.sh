@@ -14,7 +14,7 @@ cd /home/app_solr/solrdatasources/pahma
 # specially, and the scripts need to run in order: public > internal > locations
 # the public script, which runs first, *can* 'stash' last night's files...
 ##############################################################################
-#mv 4solr.*.csv.gz /tmp
+mv 4solr.*.csv.gz /tmp
 ##############################################################################
 # while most of this script is already tenant specific, many of the specific commands
 # are shared between the different scripts; having them be as similar as possible

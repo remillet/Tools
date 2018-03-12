@@ -1,8 +1,7 @@
 import sys, csv
-import hashlib
-import math
 
-
+# these represent the "non-bone" fields, which should be added as is.
+# the "bone" fields are aggregated into one multi-valued field, aggregate_ss
 skip_columns = ["id",
                 "csid_s",
                 "objectnumber_s",
@@ -25,10 +24,10 @@ skip_columns = ["id",
                 "notes_culturalmodifications_s"]
 
 
-def processHeader(header):
+def process_header(line1):
     outputheader =[]
-    for j, cell in enumerate(header):
-        if header[j] in skip_columns:
+    for k, cell in enumerate(line1):
+        if line1[k] in skip_columns:
             outputheader.append(cell)
     outputheader.append('aggregate_ss')
     return outputheader
@@ -42,20 +41,20 @@ with open(sys.argv[2], "wb") as out:
             bunch = []
             outputrow = []
             if i == 0:
-                writer.writerow(processHeader(row))
-                h = row
+                writer.writerow(process_header(row))
+                header = row
                 continue
             try:
                 for j, cell in enumerate(row):
-                    if h[j] in skip_columns:
+                    if header[j] in skip_columns:
                         outputrow.append(cell)
                     else:
                         if cell != '' and cell != '0':
-                            bunch.append(h[j][:-2]+'='+cell)
+                            bunch.append(header[j][:-2] + '=' + cell)
             except:
                 raise
                 print 'problem!!!'
                 print row
                 sys.exit()
-            outputrow.append((',').join(bunch))
+            outputrow.append(','.join(bunch))
             writer.writerow(outputrow)

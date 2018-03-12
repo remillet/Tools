@@ -22,7 +22,7 @@ mv 4solr.*.csv.gz /tmp
 ##############################################################################
 TENANT=$1
 SERVER="dba-postgres-prod-42.ist.berkeley.edu port=5307 sslmode=prefer"
-USERNAME="reporter_$TENANT"
+USERNAME="reporter_${TENANT}"
 DATABASE="${TENANT}_domain_${TENANT}"
 CONNECTSTRING="host=$SERVER dbname=$DATABASE"
 CONTACT="mtblack@berkeley.edu"
@@ -36,7 +36,7 @@ export FCPCOL=39
 ##############################################################################
 time psql -F $'\t' -R"@@" -A -U $USERNAME -d "$CONNECTSTRING" -f mediaAllImages.sql -o i4.csv
 # cleanup newlines and crlf in data, then switch record separator.
-time perl -pe 's/[\r\n]/ /g;s/\@\@/\n/g' i4.csv > 4solr.$TENANT.allmedia.csv
+time perl -pe 's/[\r\n]/ /g;s/\@\@/\n/g' i4.csv > 4solr.${TENANT}.allmedia.csv
 rm i4.csv
 ##############################################################################
 # start the stitching process: extract the "basic" data (both restricted and unrestricted)
@@ -88,7 +88,7 @@ cat header4Solr.csv d8.csv | perl -pe 's/␥/|/g' > internal.csv
 # no other accesses to the database are made after this point
 #
 # the script from here on uses only three files: these two and
-# 4solr.$TENANT.allmedia.csv, so if you wanted to re-run the next chunks of
+# 4solr.${TENANT}.allmedia.csv, so if you wanted to re-run the next chunks of
 # the ETL, you can use these files for that purpose.
 ##############################################################################
 # check to see that each row has the right number of columns (solr will barf)
@@ -116,8 +116,8 @@ mv d6b.csv temp.internal.csv
 # add the blob and card csids and other flags to the rest of the metadata
 # nb: has dependencies on the media file order; less so on the metadata.
 ##############################################################################
-time perl mergeObjectsAndMediaPAHMA.pl 4solr.$TENANT.allmedia.csv temp.public.csv public > d6a.csv &
-time perl mergeObjectsAndMediaPAHMA.pl 4solr.$TENANT.allmedia.csv temp.internal.csv internal > d6b.csv &
+time perl mergeObjectsAndMediaPAHMA.pl 4solr.${TENANT}.allmedia.csv temp.public.csv public > d6a.csv &
+time perl mergeObjectsAndMediaPAHMA.pl 4solr.${TENANT}.allmedia.csv temp.internal.csv internal > d6b.csv &
 wait
 mv d6a.csv temp.public.csv
 mv d6b.csv temp.internal.csv
@@ -147,7 +147,7 @@ cat header4Solr.csv d8.csv | perl -pe 's/␥/|/g' > d9.csv
 ##############################################################################
 # compute _i values for _dt values (to support BL date range searching
 ##############################################################################
-time python computeTimeIntegers.py d9.csv 4solr.$TENANT.public.csv
+time python computeTimeIntegers.py d9.csv 4solr.${TENANT}.public.csv
 #
 time grep -P "^id\t" d6b.csv > header4Solr.csv &
 time grep -v -P "^id\t" d6b.csv > d8.csv &
@@ -156,7 +156,7 @@ cat header4Solr.csv d8.csv | perl -pe 's/␥/|/g' > d9.csv
 ##############################################################################
 # compute _i values for _dt values (to support BL date range searching
 ##############################################################################
-time python computeTimeIntegers.py d9.csv 4solr.$TENANT.internal.csv
+time python computeTimeIntegers.py d9.csv 4solr.${TENANT}.internal.csv
 wc -l *.csv
 ##############################################################################
 # ok, now let's load this into solr...
@@ -168,14 +168,14 @@ curl -S -s "http://localhost:8983/solr/${TENANT}-public/update" --data '<commit/
 # this POSTs the csv to the Solr / update endpoint
 # note, among other things, the overriding of the encapsulator with \
 ##############################################################################
-time curl -X POST -S -s 'http://localhost:8983/solr/pahma-public/update/csv?commit=true&header=true&separator=%09&f.objpp_ss.split=true&f.objpp_ss.separator=%7C&f.anonymousdonor_ss.split=true&f.anonymousdonor_ss.separator=%7C&f.objaltnum_ss.split=true&f.objaltnum_ss.separator=%7C&f.objfilecode_ss.split=true&f.objfilecode_ss.separator=%7C&f.objdimensions_ss.split=true&f.objdimensions_ss.separator=%7C&f.objmaterials_ss.split=true&f.objmaterials_ss.separator=%7C&f.objinscrtext_ss.split=true&f.objinscrtext_ss.separator=%7C&f.objcollector_ss.split=true&f.objcollector_ss.separator=%7C&f.objaccno_ss.split=true&f.objaccno_ss.separator=%7C&f.objaccdate_ss.split=true&f.objaccdate_ss.separator=%7C&f.objacqdate_ss.split=true&f.objacqdate_ss.separator=%7C&f.objassoccult_ss.split=true&f.objassoccult_ss.separator=%7C&f.objculturetree_ss.split=true&f.objculturetree_ss.separator=%7C&f.objfcptree_ss.split=true&f.objfcptree_ss.separator=%7C&f.grouptitle_ss.split=true&f.grouptitle_ss.separator=%7C&f.objmaker_ss.split=true&f.objmaker_ss.separator=%7C&f.objaccdate_begin_dts.split=true&f.objaccdate_begin_dts.separator=%7C&f.objacqdate_begin_dts.split=true&f.objacqdate_begin_dts.separator=%7C&f.objaccdate_end_dts.split=true&f.objaccdate_end_dts.separator=%7C&f.objacqdate_end_dts.split=true&f.objacqdate_end_dts.separator=%7C&f.blob_ss.split=true&f.blob_ss.separator=,&f.card_ss.split=true&f.card_ss.separator=,&f.imagetype_ss.split=true&f.imagetype_ss.separator=,&encapsulator=\' -T 4solr.${TENANT}.public.csv -H 'Content-type:text/plain; charset=utf-8'
+time curl -X POST -S -s "http://localhost:8983/solr/${TENANT}-public/update/csv?commit=true&header=true&separator=%09&f.objpp_ss.split=true&f.objpp_ss.separator=%7C&f.anonymousdonor_ss.split=true&f.anonymousdonor_ss.separator=%7C&f.objaltnum_ss.split=true&f.objaltnum_ss.separator=%7C&f.objfilecode_ss.split=true&f.objfilecode_ss.separator=%7C&f.objdimensions_ss.split=true&f.objdimensions_ss.separator=%7C&f.objmaterials_ss.split=true&f.objmaterials_ss.separator=%7C&f.objinscrtext_ss.split=true&f.objinscrtext_ss.separator=%7C&f.objcollector_ss.split=true&f.objcollector_ss.separator=%7C&f.objaccno_ss.split=true&f.objaccno_ss.separator=%7C&f.objaccdate_ss.split=true&f.objaccdate_ss.separator=%7C&f.objacqdate_ss.split=true&f.objacqdate_ss.separator=%7C&f.objassoccult_ss.split=true&f.objassoccult_ss.separator=%7C&f.objculturetree_ss.split=true&f.objculturetree_ss.separator=%7C&f.objfcptree_ss.split=true&f.objfcptree_ss.separator=%7C&f.grouptitle_ss.split=true&f.grouptitle_ss.separator=%7C&f.objmaker_ss.split=true&f.objmaker_ss.separator=%7C&f.objaccdate_begin_dts.split=true&f.objaccdate_begin_dts.separator=%7C&f.objacqdate_begin_dts.split=true&f.objacqdate_begin_dts.separator=%7C&f.objaccdate_end_dts.split=true&f.objaccdate_end_dts.separator=%7C&f.objacqdate_end_dts.split=true&f.objacqdate_end_dts.separator=%7C&f.blob_ss.split=true&f.blob_ss.separator=,&f.card_ss.split=true&f.card_ss.separator=,&f.imagetype_ss.split=true&f.imagetype_ss.separator=,&encapsulator=\\" -T 4solr.${TENANT}.public.csv -H 'Content-type:text/plain; charset=utf-8'
 ##############################################################################
 # while that's running, clean up, generate some stats, mail reports
 ##############################################################################
-time python evaluate.py 4solr.$TENANT.public.csv /dev/null > counts.public.final.csv &
-time python evaluate.py 4solr.$TENANT.internal.csv /dev/null > counts.internal.final.csv &
+time python evaluate.py 4solr.${TENANT}.public.csv /dev/null > counts.public.final.csv &
+time python evaluate.py 4solr.${TENANT}.internal.csv /dev/null > counts.internal.final.csv &
 wait
-cp counts.public.final.csv /tmp/$TENANT.counts.public.csv
+cp counts.public.final.csv /tmp/${TENANT}.counts.public.csv
 # send the errors off to be dealt with
 tar -czf counts.tgz counts*.csv
 ./make_error_report.sh | mail -a counts.tgz -s "PAHMA Solr Counts and Refresh Errors `date`" ${CONTACT}

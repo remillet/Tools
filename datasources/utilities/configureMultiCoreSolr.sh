@@ -156,7 +156,7 @@ echo
 echo "*** Multicore solr4 installed for UCB deployments! ****"
 echo "You can now start solr4. A good way to do this for development purposes is to use"
 echo "the script made for the purpose, in the $TOOLS/datasources/ucb/solrutils directory:"
-echo "cp $TOOLS/datasources/ucb/solrutils/startSolr.sh ${SOLR4}/ucb"
+echo "cp $TOOLS/datasources/utilities/startSolr.sh ${SOLR4}/ucb"
 echo "cd ${SOLR4}/ucb"
 echo "./startSolr.sh"
 echo
@@ -165,6 +165,6 @@ echo "think you'll need it again."
 echo "rm -rf $TOOLS"
 echo
 echo "Let me try it for you..."
-cp $TOOLS/datasources/ucb/solrutils/startSolr.sh ${SOLR4}/ucb
+cp $TOOLS/datasources/utilities/startSolr.sh ${SOLR4}/ucb
 cd ${SOLR4}/ucb
 ./startSolr.sh

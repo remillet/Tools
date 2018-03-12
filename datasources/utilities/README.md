@@ -11,8 +11,8 @@ Currently there are 7 tools, some mature, but mostly unripe, raw, and needy:
 * configureMultiCoreSolr.sh -- installs and configures the "standard" multicore configuration
 * scp4solr.sh -- attempts to scp (copy via ssh) the available nightly solr extracts
 * curl4solr.sh -- attempts to cURL the available nightly solr public extracts from the Production server
-* loadAllDatasourcees.sh -- loads all the solr datasources, assuming you've downloaded the nightly .gz file(s).
 * startSolr.sh -- starts Solr4 from the command line and puts it in the background. Useful only for development.
+* allcurls.sh -- clears out and refreshes all UCB solr cores (provide you have the input files!)
 * checkstatus.sh -- *on UCB managed servers only* this script checks the ETL logs and counts records in all the solr cores
 * countSolr4.sh -- if your Solr4 server is running, this script will count the records in the UCB cores
 
@@ -51,14 +51,14 @@ git clone https://github.com/cspace-deployment/Tools
 #
 # run the following script which unpacks solr, makes the UCB cores in multicore, copies the customized files needed
 #
-cd ~/Tools/datasources/ucb/solrutils
+cd ~/Tools/datasources/utilities
 ./configureMultiCoreSolr.sh ~/Tools ~/solr4 4.10.4
 #
 #
 # 3. Install the startup script and start solr (NB: this script puts the process into the background)
 #
 cd ~/solr4/ucb
-cp ~/Tools/datasources/ucb/solrutils/startSolr.sh .
+cp ~/Tools/datasources/utilities/startSolr.sh .
 ./startSolr.sh
 #
 # 4. You should now be able to see the Solr4 admin console in your browser:
@@ -69,7 +69,7 @@ cp ~/Tools/datasources/ucb/solrutils/startSolr.sh .
 # 
 #    You can also check the contents of the solr server using the countSolr4.sh script:
 #
-~/Tools/datasources/ucb/solrutils/countSolr4.sh
+~/Tools/datasources/utilities/countSolr4.sh
 #
 # 5. download all the current nightly dumps from UCB servers. 
 #
@@ -78,13 +78,14 @@ cd ~
 mkdir solrdumps
 cd solrdumps
 #
-# There are two ways to get the files:
+# There are several ways to get the files:
 #
 # to get a subset of the dumps (i.e. the public ones), you can download them via HTTP:
-~/Tools/datasources/ucb/solrutils/curl4solr.sh
+~/Tools/datasources/utilities/curl4solr.sh
+~/Tools/datasources/utilities/wget4solr.sh
 #
 # or, if you have ssh access to either Dev or Prod, you can scp them:
-~/Tools/datasources/ucb/solrutils/scp4solr.sh mylogin@cspace-prod.cspace.berkeley.edu
+~/Tools/datasources/utilities/scp4solr.sh mylogin@cspace-prod.cspace.berkeley.edu
 #
 # NB: this script makes *a lot* of assumptions!
 # * You must be able to connect to the CSpace production or development servers, 
@@ -108,7 +109,11 @@ cd solrdumps
 #    this script cleans out each solr core and then loads the dump file.
 #    all the work is done via HTTP
 #
-~/Tools/datasources/ucb/solrutils//loadAllDatasources.sh
+# IMPORTANT!! the specifics of the cURLs to refresh the solr cores change frequently
+# make sure you get the right ones -- you may need to recreate the allcurls.sh
+# script on Production using the make_curls.sh script...
+#
+~/Tools/datasources/utilities/allcurls.sh
 #
 #    as noted above, you can check the contents of your Solr cores in the admin console or via
 #    a script, as described in 4. above.
@@ -146,10 +151,10 @@ git clone https://github.com/cspace-deployment/Tools
 # get rid of any existing solr4 install here
 sudo rm -rf ~/solr4/
 # install the multicore: assume you have clones of Tools and deployandrelease repos in ~
-~/Tools/datasources/ucb/solrutils/configureMultiCoreSolr.sh ~/Tools ~/solr4 4.10.4
+~/Tools/datasources/utilities/configureMultiCoreSolr.sh ~/Tools ~/solr4 4.10.4
 # start solr4...assumes solr4 is already installed as a service
 sudo service solr4 start
-~/Tools/datasources/ucb/solrutils/checkstatus.sh
+~/Tools/datasources/utilities/checkstatus.sh
 # now load the datastores (takes about 15 minutes or so, depending)
 # three ways to do this:
 # 1. if you're running solr on a server which has the solr ETL for UCB installed (i.e. in ~/solrdatasources)

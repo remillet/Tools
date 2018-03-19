@@ -1,1 +1,2 @@
-01 3 * * * /home/app_solr/one_job.sh >> /home/app_solr/refresh.log
+01 03 * * * /home/app_solr/one_job.sh >> /home/app_solr/refresh.log
+01 08 * * * for t in bampfa botgarden cinefiles pahma ucjeps; do gunzip -c ~/solrdatasources/$t/counts.public*.csv.gz > /tmp/$t.counts.public.csv ; done

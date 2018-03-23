@@ -11,7 +11,9 @@ echo '
 for t in bampfa botgarden cinefiles pahma ucjeps
 do
     echo "processing ${t} ..."
-    echo "<table>" > /var/www/static/${t}.counts.public.html
+    echo "<a href=\"corestats.html\">Back</a>" > /var/www/static/${t}.counts.public.html
+    echo "<h2>${t}: Type and Token Counts for Public Solr Core</h2>" >> /var/www/static/${t}.counts.public.html
+    echo "<table class=\"\">" >> /var/www/static/${t}.counts.public.html
     perl -pe "s/\t/<td>/g; print '<tr><td>'" /var/www/static/${t}.counts.public.csv >> /var/www/static/${t}.counts.public.html
     echo "</table>" >> /var/www/static/${t}.counts.public.html
     #count=`curl -S -s "http://localhost:8983/solr/${t}-public/select?q=*%3A*&wt=json&defType=edismax&rows=0" | perl -pe 's/.*numFound..(\d+).*/\1/'`

@@ -65,13 +65,11 @@ sub print_log {
 
 sub check_warning {
 	if (
-		$young_gen_pct > $WARNING_THRESHOLD ||
 		$old_gen_pct > $WARNING_THRESHOLD ||
 		$perm_gen_pct > $WARNING_THRESHOLD
 	) {
 		print "\n";
 
-		print "WARNING: young gen usage exceeds $WARNING_THRESHOLD% of max\n" if ($young_gen_pct > $WARNING_THRESHOLD);
 		print "WARNING: old gen usage exceeds $WARNING_THRESHOLD% of max\n" if ($old_gen_pct > $WARNING_THRESHOLD);
 		print "WARNING: perm gen usage exceeds $WARNING_THRESHOLD% of max\n" if ($perm_gen_pct > $WARNING_THRESHOLD);
 
@@ -114,7 +112,6 @@ sub notify {
 	print $mail "old gen:   $old_gen_used / $old_gen_max ", sprintf("(%.2f%%)", $old_gen_pct), "\n";
 	print $mail "perm gen:  $perm_gen_used / $perm_gen_max ", sprintf("(%.2f%%)", $perm_gen_pct), "\n";
 	print $mail "\n";
-	print $mail "WARNING: young gen usage exceeds $WARNING_THRESHOLD% of max\n" if ($young_gen_pct > $WARNING_THRESHOLD);
 	print $mail "WARNING: old gen usage exceeds $WARNING_THRESHOLD% of max\n" if ($old_gen_pct > $WARNING_THRESHOLD);
 	print $mail "WARNING: perm gen usage exceeds $WARNING_THRESHOLD% of max\n" if ($perm_gen_pct > $WARNING_THRESHOLD);
 

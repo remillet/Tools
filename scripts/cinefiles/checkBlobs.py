@@ -273,6 +273,22 @@ def getBloblist(blobpath):
     count = len(records)
     return records, count
 
+def getListOfFiles(blobpath, inputFile):
+
+    with open(join(blobpath, inputFile), 'rb') as csvfile:
+        inputfh = csv.reader(csvfile,  delimiter="|")
+        filelist = [cells[0] for cells in inputfh]
+
+    filelist = filelist[1:]
+    records = []
+    for f in sorted(filelist):
+        tif = {}
+        tif['name'] = f
+        tif['fullpathtofile'] = join(blobpath, f)
+        records.append(tif)
+    count = len(records)
+    return records, count
+
 
 def doChecks(args):
     if len(args) < 1:
@@ -317,8 +333,19 @@ def doChecks(args):
         print 'MEDIA: %s files found in directory %s' % (count, args[2])
         outputFile = args[3]
 
+    elif args[1] == 'file':
+
+        if len(args) < 5:
+            sys.exit('Usage: %s dir directory inputfile reportname' % args[0])
+
+        blobpath = args[2]
+        inputFile = args[3]
+        outputFile = args[4]
+        records, count = getListOfFiles(blobpath, inputFile)
+        print 'MEDIA: %s files found in file %s' % (count, args[3])
+
     else:
-        print 'datasource must either "db" or "dir"'
+        print 'datasource must be "db", "file" or "dir"'
         sys.exit()
 
     columns = 'name imageOK isTiff sizeOK syntaxOK resolutionOK isCompressed depthOK colorOK imagesize filesize updatedat updatedby format mode palette compression dpi blobcsid fullpathtofile'.split(' ')

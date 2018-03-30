@@ -42,11 +42,11 @@ with open(sys.argv[2], 'wb') as f2:
         reader = UnicodeReader(f1, delimiter=delim, quoting=csv.QUOTE_NONE, quotechar=chr(255))
         try:
             for i,row in enumerate(reader):
-                row[object_materials_column] = fix_materials(row[object_materials_column])
-                row[object_name_column] = fix_name(row[object_name_column])
                 if i == 0:
                     date_rows, int_year_names  = get_date_rows(row)
                 else:
+                    row[object_materials_column] = fix_materials(row[object_materials_column])
+                    row[object_name_column] = fix_name(row[object_name_column])
                     years = {}
                     for j, d in enumerate(date_rows):
                         years[int_year_names[j]] = get_year(row[d])

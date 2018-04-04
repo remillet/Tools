@@ -147,10 +147,17 @@ Checks if the Java installation used by CollectionSpace has been updated. If an 
 ### cscheckmem - check for high Java memory (heap) usage
 ##### Synopsis
 ```
-cscheckmem
+cscheckmem [-d] [-n]
 ```
 ##### Description
-Checks if the the CollectionSpace Tomcat JVM exhibits high heap usage. Prints a report to standard output, and appends memory usage data to a tab-delimited log file (`~/log/cscheckmem.*.csv`). If the usage of the old or permanent generations exceeds 90%, diagnostic files are saved (`~/log/GC.heap_dump.*.hprof` and `~/log/GC.class_histogram.*.txt`).
+Checks if the the CollectionSpace Tomcat JVM exhibits high heap usage. Prints a report to standard output, and appends memory usage data to a tab-delimited log file (`~/log/cscheckmem.*.csv`). Optionally saves diagnostic files and/or sends a notification if usage exceeds a threshold.
+
+##### Options
+`-d`
+	If the usage of the old or permanent generations exceeds 90%, save diagnostic files to `~/log/GC.heap_dump.*.hprof` and `~/log/GC.class_histogram.*.txt`.
+
+`-n`
+	If the usage of the old or permanent generations exceeds 90%, send an email notification to the cspace-support mailing list.
 
 ### csdeployreports - (re)deploy reports for this deployment
 ##### Synopsis

@@ -1,11 +1,16 @@
 #!/usr/bin/perl
 
-use strict;
+# Check JVM memory (heap) usage statistics. This script prints a report to standard out and appends data to a log file. It may optionally send an email notification and/or dump heap diagnostics if heap usage exceeds a threshold.
 
-# Check JVM memory (heap) usage statistics. This script prints a report to standard out, appends to a log file, and sends email if heap usage exceeds the threshold.
+use strict;
+use Getopt::Std;
+
+our($opt_n, $opt_d);
+
+getopts('nd');
 
 my $WARNING_THRESHOLD = 90;
-my $MAIL_TO = 'rhlee@berkeley.edu';
+my $MAIL_TO = 'cspace-support@lists.berkeley.edu';
 
 my @script_name_parts = split(/\//, $0);
 my $script_name = $script_name_parts[-1];
@@ -73,8 +78,8 @@ sub check_warning {
 		print "WARNING: old gen usage exceeds $WARNING_THRESHOLD% of max\n" if ($old_gen_pct > $WARNING_THRESHOLD);
 		print "WARNING: perm gen usage exceeds $WARNING_THRESHOLD% of max\n" if ($perm_gen_pct > $WARNING_THRESHOLD);
 
-		dump_heap();
-		notify();
+		dump_heap() if $opt_d;
+		notify() if $opt_n;
 	}
 }
 

@@ -1,4 +1,5 @@
 import sys, csv
+from datetime import datetime
 from unicode_hack import UnicodeReader, UnicodeWriter
 from fix_fields import fix_materials, fix_name
 
@@ -9,6 +10,8 @@ delim = '\t'
 
 object_name_column = 10
 object_materials_column = 17
+
+current_year = datetime.today().strftime("%Y")
 
 def get_date_rows(row):
     date_rows = []
@@ -29,9 +32,10 @@ def get_year(date_value):
 def compare_years(years, int_year_names, musno):
     new_years = []
     for year in int_year_names:
-        if years[year] < '1595' and years[year.replace('begin','end')] != '':
-            print 'replaced %s (%s) with %s (%s) for %s' % (years[year], year, years[year.replace('begin','end')], year.replace('begin','end'), musno)
-            years[year] = years[year.replace('begin','end')]
+        candidate_replacement_year = years[year.replace('begin','end')]
+        if years[year] < '1695' and candidate_replacement_year != '' and candidate_replacement_year <= current_year:
+            print 'replaced %s (%s) with %s (%s) for %s' % (years[year], year, candidate_replacement_year, year.replace('begin','end'), musno)
+            years[year] = candidate_replacement_year
         new_years.append(years[year])
     return new_years
 

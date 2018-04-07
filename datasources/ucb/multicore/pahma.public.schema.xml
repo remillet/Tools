@@ -224,6 +224,7 @@
     <copyField source="objacqdate_ss" dest="objacqdate_txt"/>
     <copyField source="objassoccult_ss" dest="objassoccult_txt"/>
     <copyField source="objculturetree_ss" dest="objculturetree_txt"/>
+    <copyField source="objmaker_ss" dest="objmaker_txt"/>
 
     <copyField source="*_s" dest="text"/>
     <copyField source="*_ss" dest="text"/>

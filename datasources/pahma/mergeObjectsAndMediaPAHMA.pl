@@ -51,7 +51,15 @@ while (<MEDIA>) {
     }
     do {
       # add this blob to the list of blobs, unless we somehow already have it (no dups allowed!)
-      $blobs{$objectcsid}{'images'} .= $blobcsid . ',' unless $blobs{$objectcsid}{'images'} =~ /$blobcsid/;
+      unless ($blobs{$objectcsid}{'images'} =~ /$blobcsid/) {
+        # put primary images first
+        if ($primarydisplay eq 't') {
+          $blobs{$objectcsid}{'images'} = $blobcsid . ',' . $blobs{$objectcsid}{'images'};
+        }
+        else {
+          $blobs{$objectcsid}{'images'} .= $blobcsid . ',';
+        }
+      }
     }
   }
   $blobs{$objectcsid}{'type'} .= $imagetype  . ',' unless $blobs{$objectcsid}{'type'} =~ /$imagetype/;

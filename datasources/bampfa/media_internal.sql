@@ -11,7 +11,8 @@ mc.copyrightstatement,
 mc.identificationnumber,
 mc.rightsholder rightsholderRefname,
 mc.rightsholder rightsholder,
-mc.contributor
+mc.contributor,
+mb.imageNumber
 
 FROM media_common mc
 
@@ -25,4 +26,6 @@ LEFT OUTER JOIN collectionobjects_bampfa cop on (h2.id = cop.id)
 
 JOIN hierarchy h3 ON (mc.blobcsid = h3.name)
 LEFT OUTER JOIN blobs_common b on (h3.id = b.id)
+
+ORDER BY mb.imageNumber ASC
 

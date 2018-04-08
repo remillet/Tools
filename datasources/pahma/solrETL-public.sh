@@ -147,7 +147,7 @@ cat header4Solr.csv d8.csv | perl -pe 's/␥/|/g' > d9.csv
 ##############################################################################
 # compute _i values for _dt values (to support BL date range searching
 ##############################################################################
-time python computeTimeIntegers.py d9.csv 4solr.${TENANT}.public.csv
+time python computeTimeIntegersPAHMA.py d9.csv 4solr.${TENANT}.public.csv
 #
 time grep -P "^id\t" d6b.csv > header4Solr.csv &
 time grep -v -P "^id\t" d6b.csv > d8.csv &
@@ -156,7 +156,7 @@ cat header4Solr.csv d8.csv | perl -pe 's/␥/|/g' > d9.csv
 ##############################################################################
 # compute _i values for _dt values (to support BL date range searching
 ##############################################################################
-time python computeTimeIntegersPAHMA.py d9.csv 4solr.${TENANT}.internal.csv
+time python computeTimeIntegers.py d9.csv 4solr.${TENANT}.internal.csv
 wc -l *.csv
 ##############################################################################
 # ok, now let's load this into solr...

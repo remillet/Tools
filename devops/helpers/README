@@ -178,3 +178,6 @@ rm nohup.out toDelete.csv extracted.csv 3col*.csv
 
 # a collectionobject on dev...just for easy reference
 https://ucjeps-dev.cspace.berkeley.edu/cspace-services/collectionobjects/bb8ccf9e-dfe5-4747-b156-5a5a54a07785
+
+# to upload a single column list of orgauthorities:
+python loadGeneric.py algaeNON1-collectors_to_add.txt ucjeps_DWC2Cspace_Dev.cfg OrgauthoritiesMapping.csv orgauthorities-template.xml orgauthorities-results.csv

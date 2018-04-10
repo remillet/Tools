@@ -1,7 +1,7 @@
 import sys, csv
 from datetime import datetime
 from unicode_hack import UnicodeReader, UnicodeWriter
-from fix_fields import fix_materials, fix_name
+from fix_fields import fix_materials, fix_name, fix_proper_name
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -10,6 +10,11 @@ delim = '\t'
 
 object_name_column = 10
 object_materials_column = 17
+name_columns = [27, 29, 43]
+#    27	objcollector_ss
+#    29	anonymousdonor_ss
+#    43	objmaker_ss
+
 
 current_year = datetime.today().strftime("%Y")
 
@@ -54,6 +59,11 @@ with open(sys.argv[2], 'wb') as f2:
                 else:
                     row[object_materials_column] = fix_materials(row[object_materials_column])
                     row[object_name_column] = fix_name(row[object_name_column])
+
+                    # "proper name reversal": save this for eventualities
+                    #for n in name_columns:
+                    #    row[n] = fix_proper_name(row[n])
+
                     years = {}
                     for j, d in enumerate(date_rows):
                         years[int_year_names[j]] = get_year(row[d])

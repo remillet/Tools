@@ -27,3 +27,7 @@ def fix_proper_name(field):
     fields = [last_name_first(f) for f in fields]
     field = '|'.join(fields)
     return field
+
+
+def fix_culture(field):
+    return field.replace('@', '')

@@ -13,10 +13,13 @@ The example shows:
 Specifically, the process requires the following:
 
 | item | in this example |
+| --- | --- |
 | a file contain terms to add, one per line | ```test-org.txt``` |
+| XML template for our authority | ```orgauthorities-template.xml``` |
 | config file for CSpace server | ```ucjeps_DWC2Cspace_Dev.cfg``` |
+| config file for delete helper script | ```set-config-ucjeps-dev.sh.example``` and ```set-config-ucjeps-dev.sh``` |
 | authority name and its CSID | ```orgauthorities/6d89bda7-867a-4b97-b22f``` |
-| the code | ```loadAuthority.py``` and ```delete-multiple.sh```
+| the code | ```loadAuthority.py``` and ```delete-multiple.sh``` |
 
 First, let's get set up:
 

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document name="organizations">
+  <ns2:organizations_common xmlns:ns2="http://collectionspace.org/services/organization" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <functions>
+      <function>{function}</function>
+    </functions>
+    <dissolutionDateGroup>
+      <dateDisplayDate/>
+    </dissolutionDateGroup>
+    <foundingDateGroup>
+      <dateDisplayDate/>
+    </foundingDateGroup>
+    <inAuthority>6d89bda7-867a-4b97-b22f</inAuthority>
+    <contactNames>
+      <contactName>{contactrefname}</contactName>
+    </contactNames>
+    <refName/>
+    <historyNotes/>
+    <!-- csid -->
+    <orgTermGroupList>
+      <orgTermGroup>
+        <termPrefForLang>true</termPrefForLang>
+        <termDisplayName>{termDisplayName}</termDisplayName>
+        <termType>descriptor</termType>
+        <termStatus>approved</termStatus>
+        <termFormattedDisplayName/>
+      </orgTermGroup>
+    </orgTermGroupList>
+    <groups/>
+  </ns2:organizations_common>
+  <ns2:organizations_naturalhistory xmlns:ns2="http://collectionspace.org/services/organization/domain/naturalhistory" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <associatedPersonGroupList/>
+  </ns2:organizations_naturalhistory>
+</document>

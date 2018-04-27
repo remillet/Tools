@@ -154,5 +154,6 @@ grep DELETE nohup.out | wc -l
 grep DELETE nohup.out | head -2
 curl -X DELETE https://ucjeps-dev.cspace.berkeley.edu/cspace-services/orgauthorities/6d89bda7-867a-4b97-b22f/items/ae894eb4-5bc2-4a9e-9642 -u "xxx@berkeley.edu:xxx" -H "Content-Type: application/xml"
 curl -X DELETE https://ucjeps-dev.cspace.berkeley.edu/cspace-services/orgauthorities/6d89bda7-867a-4b97-b22f/items/24676fee-d678-4d4c-90ca -u "xxx@berkeley.edu:xxx" -H "Content-Type: application/xml"
+```
 
-OK, good luck. This should work on other authorties with the appropriate substitutions.
+OK, good luck. This should work on other authorities with the appropriate substitutions.

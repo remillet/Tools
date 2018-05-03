@@ -6,14 +6,14 @@
 #
 # see also 'scp4solr.sh' to get all extracts, with authentication
 #
-wget https://webapps.cspace.berkeley.edu/4solr.bampfa.internal.csv.gz
+#wget https://webapps.cspace.berkeley.edu/4solr.bampfa.internal.csv.gz
 wget https://webapps.cspace.berkeley.edu/4solr.bampfa.public.csv.gz
-wget https://webapps.cspace.berkeley.edu/4solr.botgarden.internal.csv.gz
+#wget https://webapps.cspace.berkeley.edu/4solr.botgarden.internal.csv.gz
 wget https://webapps.cspace.berkeley.edu/4solr.botgarden.media.csv.gz
 wget https://webapps.cspace.berkeley.edu/4solr.botgarden.propagations.csv.gz
 wget https://webapps.cspace.berkeley.edu/4solr.botgarden.public.csv.gz
 wget https://webapps.cspace.berkeley.edu/4solr.pahma.allmedia.csv.gz
-wget https://webapps.cspace.berkeley.edu/4solr.pahma.internal.csv.gz
+#wget https://webapps.cspace.berkeley.edu/4solr.pahma.internal.csv.gz
 wget https://webapps.cspace.berkeley.edu/4solr.pahma.locations.csv.gz
 wget https://webapps.cspace.berkeley.edu/4solr.pahma.media.csv.gz
 wget https://webapps.cspace.berkeley.edu/4solr.pahma.osteology.csv.gz

@@ -13,10 +13,13 @@ The example shows:
 Specifically, the process requires the following:
 
 | item | in this example |
+| --- | --- |
 | a file contain terms to add, one per line | ```test-org.txt``` |
+| XML template for our authority | ```orgauthorities-template.xml``` |
 | config file for CSpace server | ```ucjeps_DWC2Cspace_Dev.cfg``` |
+| config file for delete helper script | ```set-config-ucjeps-dev.sh.example``` and ```set-config-ucjeps-dev.sh``` |
 | authority name and its CSID | ```orgauthorities/6d89bda7-867a-4b97-b22f``` |
-| the code | ```loadAuthority.py``` and ```delete-multiple.sh```
+| the code | ```loadAuthority.py``` and ```delete-multiple.sh``` |
 
 First, let's get set up:
 
@@ -40,6 +43,8 @@ cp ../../scripts/ucjeps/cspace-fims-integration/orgauthorities-template.xml .
 vi orgauthorities-template.xml
 
 # note: only one field is substituted in this template: termDisplayName
+# exercise for the reader: if only this minimal data is provided, the CSID and refName for the
+# record are created by the CSpace service. what will be the shortID of the record?
 cat orgauthorities-template.xml 
 <?xml version="1.0" encoding="UTF-8"?>
 <document name="organizations">
@@ -63,7 +68,7 @@ cat ucjeps_DWC2Cspace_Dev.cfg
 # this config file tells the uploader which CSpace server to upload to.
 #
 # only institution is used in the [info] block at the moment.
-# however, the other values are being retained in case they are needed later
+# however, the other values (e.g. 'updatetype', connect parameters are being retained in case they are needed later
 #
 [info]
 institution       = ucjeps
@@ -151,5 +156,6 @@ grep DELETE nohup.out | wc -l
 grep DELETE nohup.out | head -2
 curl -X DELETE https://ucjeps-dev.cspace.berkeley.edu/cspace-services/orgauthorities/6d89bda7-867a-4b97-b22f/items/ae894eb4-5bc2-4a9e-9642 -u "xxx@berkeley.edu:xxx" -H "Content-Type: application/xml"
 curl -X DELETE https://ucjeps-dev.cspace.berkeley.edu/cspace-services/orgauthorities/6d89bda7-867a-4b97-b22f/items/24676fee-d678-4d4c-90ca -u "xxx@berkeley.edu:xxx" -H "Content-Type: application/xml"
+```
 
-OK, good luck. This should work on other authorties with the appropriate substitutions.
+OK, good luck. This should work on other authorities with the appropriate substitutions.

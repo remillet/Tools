@@ -43,6 +43,8 @@ cp ../../scripts/ucjeps/cspace-fims-integration/orgauthorities-template.xml .
 vi orgauthorities-template.xml
 
 # note: only one field is substituted in this template: termDisplayName
+# exercise for the reader: if only this minimal data is provided, the CSID and refName for the
+# record are created by the CSpace service. what will be the shortID of the record?
 cat orgauthorities-template.xml 
 <?xml version="1.0" encoding="UTF-8"?>
 <document name="organizations">
@@ -66,7 +68,7 @@ cat ucjeps_DWC2Cspace_Dev.cfg
 # this config file tells the uploader which CSpace server to upload to.
 #
 # only institution is used in the [info] block at the moment.
-# however, the other values are being retained in case they are needed later
+# however, the other values (e.g. 'updatetype', connect parameters are being retained in case they are needed later
 #
 [info]
 institution       = ucjeps

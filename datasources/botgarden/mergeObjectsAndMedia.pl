@@ -13,9 +13,9 @@ while (<MEDIA>) {
   s/\r//g;
   my ($objectcsid, $objectnumber, $mediacsid, $description, $filename, $creatorrefname, $creator, $blobcsid, $copyrightstatement, $identificationnumber, $rightsholderrefname, $rightsholder, $contributor, $imageNumber, $approvedforweb) = split /$delim/;
   #print "$blobcsid $objectcsid\n";
-  $media{$objectcsid} .= $blobcsid . ',';
   # eliminate non-public images from public portal
   next if ($approvedforweb eq 'no') && ($runtype eq 'public');
+  $media{$objectcsid} .= $blobcsid . ',';
 }
 
 open METADATA,$ARGV[1] || die "couldn't open metadata file $ARGV[1]";

@@ -2,6 +2,8 @@ use strict;
 
 my %count ;
 my $delim = "\t";
+my $runtype = $ARGV[2]; # generate media for public or internal
+
 
 open MEDIA,$ARGV[0] || die "couldn't open media file $ARGV[0]";
 my %media ;
@@ -9,9 +11,11 @@ while (<MEDIA>) {
   $count{'media'}++;
   chomp;
   s/\r//g;
-  my ($objectcsid, $objectnumber, $mediacsid, $description, $filename, $creatorrefname, $creator, $blobcsid, $copyrightstatement, $identificationnumber, $rightsholderrefname, $rightsholder, $contributor, $approvedforweb, $imageType) = split /$delim/;
+  my ($objectcsid, $objectnumber, $mediacsid, $description, $filename, $creatorrefname, $creator, $blobcsid, $copyrightstatement, $identificationnumber, $rightsholderrefname, $rightsholder, $contributor, $imageNumber, $approvedforweb) = split /$delim/;
   #print "$blobcsid $objectcsid\n";
   $media{$objectcsid} .= $blobcsid . ',';
+  # eliminate non-public images from public portal
+  next if ($approvedforweb eq 'no') && ($runtype eq 'public');
 }
 
 open METADATA,$ARGV[1] || die "couldn't open metadata file $ARGV[1]";

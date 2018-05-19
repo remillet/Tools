@@ -80,7 +80,7 @@ python fixfruits.py d7.csv > d8.csv
 ##############################################################################
 # add the blob csids to the rest of the internal
 ##############################################################################
-time perl mergeObjectsAndMedia.pl 4solr.$TENANT.media.csv d8.csv > d9.csv
+time perl mergeObjectsAndMedia.pl 4solr.$TENANT.media.csv d8.csv public > d9.csv
 cat header4Solr.csv d9.csv | perl -pe 's/␥/|/g' > d10.csv
 ##############################################################################
 # compute _i values for _dt values (to support BL date range searching)

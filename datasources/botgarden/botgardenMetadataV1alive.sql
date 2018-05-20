@@ -1,40 +1,12 @@
 select
     co.id as id,
     co.objectnumber as AccessionNumber_s,
-    case when (tig.taxon is not null and tig.taxon <> '')
-                then regexp_replace(tig.taxon, '^.*\)''(.*)''$', '\1')
-    end as Determination_s,
-    case when (fc.item is not null and fc.item <> '')
-                then regexp_replace(fc.item, '^.*\)''(.*)''$', '\1')
-    end as Collector_s,
+    regexp_replace(tig.taxon, '^.*\)''(.*)''$', '\1') as Determination_s,
+    regexp_replace(fc.item, '^.*\)''(.*)''$', '\1') as Collector_s,
     co.fieldcollectionnumber as CollectorNumber_s,
     sdg.datedisplaydate as CollectionDate_s,
-    case
-        when
-            sdg.dateearliestsingleyear != 0
-            and sdg.dateearliestsinglemonth != 0
-            and sdg.dateearliestsingleday != 0
-        then
-            to_date(
-            sdg.dateearliestsingleyear::varchar(4) || '-' ||
-            sdg.dateearliestsinglemonth::varchar(2) || '-' ||
-            sdg.dateearliestsingleday::varchar(2),
-            'yyyy-mm-dd')
-        else null
-    end as EarlyCollectionDate_s,
-    case
-        when
-            sdg.datelatestyear != 0
-            and sdg.datelatestmonth != 0
-            and sdg.datelatestday != 0
-        then
-            to_date(
-            sdg.datelatestyear::varchar(4) || '-' ||
-            sdg.datelatestmonth::varchar(2) || '-' ||
-            sdg.datelatestday::varchar(2),
-            'yyyy-mm-dd')
-        else null
-    end as LateCollectionDate_s,
+    to_char(sdg.dateearliestscalarvalue, 'YYYY-MM-DD') as EarlyCollectionDate_s,
+    to_char(sdg.datelatestscalarvalue, 'YYYY-MM-DD') as LateCollectionDate_s,
     lg.fieldlocverbatim as fcpverbatim_s,
     lg.fieldloccounty as CollCounty_ss,
 -- adding state and country
@@ -44,22 +16,16 @@ select
     lg.minelevation as MinElevation_s,
     lg.maxelevation as MaxElevation_s,
     lg.elevationunit as ElevationUnit_s,
-        co.fieldcollectionnote as Habitat_s,
+    co.fieldcollectionnote as Habitat_s,
     lg.decimallatitude || ',' || lg.decimallongitude as latlong_p,
-    case when lg.vcoordsys like 'Township%'
-                then lg.vcoordinates
-    end as TRSCoordinates_s,
+    case when lg.vcoordsys like 'Township%' then lg.vcoordinates end as TRSCoordinates_s,
     lg.geodeticdatum as Datum_s,
     lg.localitysource as CoordinateSource_s,
     lg.coorduncertainty as CoordinateUncertainty_s,
     lg.coorduncertaintyunit as CoordinateUncertaintyUnit_s,
 
-case when (tn.family is not null and tn.family <> '')
-     then regexp_replace(tn.family, '^.*\)''(.*)''$', '\1')
-end as family_s,
-case when (mc.currentlocation is not null and mc.currentlocation <> '')
-     then regexp_replace(mc.currentlocation, '^.*\)''(.*)''$', '\1')
-end as gardenlocation_s,
+    regexp_replace(tn.family, '^.*\)''(.*)''$', '\1') as family_s,
+    regexp_replace(mc.currentlocation, '^.*\)''(.*)''$', '\1') as gardenlocation_s,
 co.recordstatus dataQuality_s,
 case when (lg.fieldlocplace is not null and lg.fieldlocplace <> '') then regexp_replace(lg.fieldlocplace, '^.*\)''(.*)''$', '\1')
      when (lg.fieldlocplace is null and lg.taxonomicrange is not null) then 'Geographic range: '||lg.taxonomicrange
@@ -90,7 +56,8 @@ concat_ws('|', flowersjan,flowersfeb,flowersmar,flowersapr,flowersmay,flowersjun
 con.provenancetype as provenancetype_s,
 tn.accessrestrictions as accessrestrictions_s,
 coc.item as accessionnotes_s,
-findcommonname(tig.taxon) as commonname_s
+findcommonname(tig.taxon) as commonname_s,
+con.source as source_s
 
 from collectionobjects_common co
 inner join misc on (co.id = misc.id and misc.lifecyclestate <> 'deleted')

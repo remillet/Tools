@@ -57,7 +57,20 @@ con.provenancetype as provenancetype_s,
 tn.accessrestrictions as accessrestrictions_s,
 coc.item as accessionnotes_s,
 findcommonname(tig.taxon) as commonname_s,
-con.source as source_s
+con.source as source_s,
+lg.decimallatitude as latitude_f,
+lg.decimallongitude as longitude_f,
+'' as researcher_s,
+array_to_string(array
+   (SELECT CASE WHEN (gc.title IS NOT NULL AND gc.title <> '') THEN (gc.title) END
+    from collectionobjects_common co2
+    inner join hierarchy h2int on co2.id = h2int.id
+    join relations_common rc ON (h2int.name = rc.subjectcsid AND rc.objectdocumenttype = 'Group')
+    join hierarchy h16 ON (rc.objectcsid = h16.name)
+    left outer join groups_common gc ON (h16.id = gc.id)
+    join misc mm ON (gc.id=mm.id AND mm.lifecyclestate <> 'deleted')
+    where h2int.name = h1.name), '|', '') as grouptitle_ss
+
 
 from collectionobjects_common co
 inner join misc on (co.id = misc.id and misc.lifecyclestate <> 'deleted')

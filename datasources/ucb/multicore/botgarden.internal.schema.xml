@@ -253,6 +253,8 @@
     <copyField source="accessionnotes_s" dest="accessionnotes_txt"/>
     <copyField source="commonname_s" dest="commonname_txt"/>
     <copyField source="source_s" dest="source_txt"/>
+    <copyField source="grouptitle_ss" dest="grouptitle_txt"/>
+    <copyField source="reasearcher_s" dest="researcher_txt"/>
 
 
    <copyField source="*_s" dest="text"/>

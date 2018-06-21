@@ -28,7 +28,7 @@ if [[ $FORCE == true ]]; then
 else
 	idle_time=`csidletime`
 
-	if [[ -z idle_time ]]; then
+	if [[ -z $idle_time ]]; then
 		IDLE_CHECK=true
 	else
 		if (( idle_time > CS_MIN_IDLE_TIME )); then

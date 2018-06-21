@@ -87,7 +87,7 @@ echo "Installing from tag $TAG"
 
 # Check out the desired tag.
 
-declare -A rebuild_needed
+declare -A commit_changed
 
 INSTALLED_VERSION=`csver`
 
@@ -107,26 +107,63 @@ for repo in ${REPOSITORIES[@]}; do
 	current_commit=`git rev-parse HEAD`
 
 	if [[ $installed_commit != $current_commit ]]; then
-		rebuild_needed[$repo]=true
+		commit_changed[$repo]=true
 	else
-		rebuild_needed[$repo]=false
+		commit_changed[$repo]=false
 	fi
 done
 
-# Some services layer changes require rebuilding the app layer, since
-# the app layer has dependencies on certain modules in the services layer.
-# It's hard to detect this, so just always rebuild the app layer
-# whenever the services layer has changed.
+rebuild_services_needed=false
+rebuild_application_needed=false
+deploy_ui_needed=false
+deploy_services_artifacts_needed=false
 
-if [[ ${rebuild_needed[services]} == true ]]; then
-	rebuild_needed[application]=true
+if [[ ${commit_changed[application]} == true ]]; then
+	rebuild_application_needed=true
+
+	# Some app layer changes require redeploying services artifacts. Since it's hard to detect when it's
+	# needed, just always deploy services artifacts whenever the app layer has changed.
+
+	deploy_services_artifacts_needed=true
+fi
+
+if [[ ${commit_changed[services]} == true ]]; then
+	# See if we need to do a full rebuild, or if redeploying the ui project is sufficient.
+
+	cd $SOURCE_DIR/services
+
+	deploy_ui_only=false
+	non_ui_files_changed_count=`git diff --name-only $INSTALLED_VERSION $TAG | egrep -v '^build.properties|^cspace-ui-ucb/*' | wc -l`
+
+	if (( non_ui_files_changed_count == 0 )); then
+		# Check if any non-ui properties changed in build.properties.
+
+		non_ui_properties_changed_count=`git diff -U0 $INSTALLED_VERSION $TAG -- build.properties | egrep '^[+-][a-z]' | egrep -v '^[+-]((ucb\.release=)|(cspace\.ui\.))' | wc -l`
+
+		if (( non_ui_properties_changed_count == 0 )); then
+			deploy_ui_only=true
+		fi
+	fi
+
+	if [[ $deploy_ui_only == true ]]; then
+		deploy_ui_needed=true
+	else
+		rebuild_services_needed=true
+
+		# Some services layer changes require rebuilding the app layer, since
+		# the app layer has dependencies on certain modules in the services layer.
+		# It's hard to detect this, so just always rebuild the app layer
+		# whenever the services layer needs to be rebuilt.
+
+		rebuild_application_needed=true
+	fi
 fi
 
 # Build and deploy.
 
 # First build the services layer, if necessary.
 
-if [[ ${rebuild_needed[services]} == true ]]; then
+if [[ $rebuild_services_needed == true ]]; then
 	echo "Building services..."
 
 	cd $SOURCE_DIR/services
@@ -136,13 +173,13 @@ if [[ ${rebuild_needed[services]} == true ]]; then
 		exit 1
 	fi
 else
-	echo "No change in services, skipping build"
+	echo "Build not needed in services"
 fi
 
 # Build/deploy the application layer, if necessary. Tomcat should be stopped.
 
-if [[ ${rebuild_needed[application]} == true ]]; then
-	echo "Building and deploying application..."
+if [[ $rebuild_application_needed == true ]]; then
+	echo "Building application..."
 
 	if ! $CSDOWN; then
 		echo "ERROR: Failed to stop CollectionSpace"
@@ -160,65 +197,45 @@ if [[ ${rebuild_needed[application]} == true ]]; then
 	# It's just helpful for testing during the upgrade.
 
 	rm $TOMCAT_DIR/webapps/collectionspace.war
-
-	# Some app layer changes require redeploying services artifacts. Since it's hard to detect when it's
-	# needed, just always deploy services artifacts whenever the app layer has changed.
-
-	$deploy_services_artifacts_needed=true
 else
-	echo "No change in application, skipping build"
+	echo "Build not needed in application"
 fi
 
-# Deploy the services layer, if necessary.
+# Deploy the services layer, if necessary. Tomcat should be stopped.
 
-if [[ ${rebuild_needed[services]} == true ]]; then
+if [[ $rebuild_services_needed == true ]]; then
 	cd $SOURCE_DIR/services
 
-	# See if we need to do a full rebuild and deploy, or if redeploying the ui project is sufficient.
+	echo "Deploying services..."
 
-	deploy_ui_only=false
-
-	non_ui_files_changed_count=`git diff --name-only $INSTALLED_VERSION $TAG | egrep -v '^build.properties|^cspace-ui-ucb/*' | wc -l`
-
-	if (( non_ui_files_changed_count == 0 )); then
-		# Check if any non-ui properties changed in build.properties.
-
-		non_ui_properties_changed_count=`git diff -U0 $INSTALLED_VERSION $TAG -- build.properties | egrep '^[+-][a-z]' | egrep -v '^[+-]((ucb\.release=)|(cspace\.ui\.))' | wc -l`
-
-		if (( non_ui_properties_changed_count == 0 )); then
-			deploy_ui_only=true
-		fi
+	if ! $CSDOWN; then
+		echo "ERROR: Failed to stop CollectionSpace"
+		exit 1
 	fi
 
-	if [[ deploy_ui_only == true ]];
-		cd cspace-ui-ucb
+	if ! ant undeploy deploy; then
+		echo "ERROR: Failed to deploy services"
+		exit 1
+	fi
 
-		echo "Deploying ui..."
+	rm -r /tmp/cspace-bindings-*
+	rm -r /tmp/merged-app-config-*
 
-		if ! ant deploy; then
-			echo "ERROR: Failed to deploy ui"
-			exit 1
-		fi
-	else
-		echo "Deploying services..."
+	# A full deploy of the services layer deploys the ui and services artifacts,
+	# so set these to false.
 
-		if ! $CSDOWN; then
-			echo "ERROR: Failed to stop CollectionSpace"
-			exit 1
-		fi
+	deploy_ui_needed=false
+	deploy_services_artifacts_needed=false
+fi
 
-		if ! ant undeploy deploy; then
-			echo "ERROR: Failed to deploy services"
-			exit 1
-		fi
+if [[ $deploy_ui_needed == true ]]; then
+	cd $SOURCE_DIR/services/cspace-ui-ucb
 
-		rm -r /tmp/cspace-bindings-*
-		rm -r /tmp/merged-app-config-*
+	echo "Deploying ui..."
 
-		# A full deploy of the services layer includes deploying services artifacts, so set this to
-		# false.
-
-		$deploy_services_artifacts_needed=false
+	if ! ant deploy; then
+		echo "ERROR: Failed to deploy ui"
+		exit 1
 	fi
 fi
 

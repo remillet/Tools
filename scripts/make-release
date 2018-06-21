@@ -17,7 +17,7 @@ sub make_release {
 	my $release_branch = determine_release_branch();
 	my $version_number = shift || determine_version_number($release_branch);
 
-	print "making release tag $version_number from branch $release_branch\n";
+	print "Making release tag $version_number from branch $release_branch\n";
 
 	# TODO: Check for uncommitted changes, and prompt/warn/fail if there are any
 
@@ -113,9 +113,34 @@ sub update_version_number {
 
 	chdir_to_project('services');
 
-	# TODO: If any of the files are already modified, prompt/warn/fail.
+	# Update the release version.
 
 	system "perl -pi -e 's/^ucb.release=.*/ucb.release=$version_number/' $BUILD_PROPERTIES_FILE";
+
+	# Update UI packages to the latest published versions.
+
+	my $latest_ui_version = get_latest_ui_version();
+
+	system "perl -pi -e 's/^cspace.ui.version=.*/cspace.ui.version=$latest_ui_version/' $BUILD_PROPERTIES_FILE";
+
+	my $ui_profile_name;
+
+	open(my $file, $BUILD_PROPERTIES_FILE);
+
+	while (my $line = <$file>) {
+		chomp $line;
+
+		if ($line =~ /^cspace.ui.profile.name=(.*)$/) {
+			$ui_profile_name = $1;
+			last;
+		}
+	}
+
+	close $file;
+
+	my $latest_ui_profile_version = get_latest_ui_profile_version($ui_profile_name);
+
+	system "perl -pi -e 's/^cspace.ui.profile.version=.*/cspace.ui.profile.version=$latest_ui_profile_version/' $BUILD_PROPERTIES_FILE";
 
 	# Verify that the files were changed.
 
@@ -425,4 +450,24 @@ sub get_remote_branch {
 	$remote_branch =~ s/^cspace-deployment_//;
 
 	return $remote_branch;
+}
+
+sub get_latest_ui_version {
+	return get_npm_package_latest_version('cspace-ui');
+}
+
+sub get_latest_ui_profile_version {
+	my $profile_name = shift;
+
+	return get_npm_package_latest_version("cspace-ui-plugin-profile-$profile_name");
+}
+
+sub get_npm_package_latest_version {
+	my $package_name = shift;
+
+	my $url = "https://registry.npmjs.com/$package_name";
+	my $response = decode_json(`curl -s $url`);
+	my $version = $response->{'dist-tags'}->{latest};
+
+	return $version;
 }

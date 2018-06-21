@@ -2,7 +2,8 @@
 
 # Install UCB CollectionSpace.
 
-# TODO: Detect when only the UI needs to be updated, so we can avoid a full service layer build.
+# Usage: csi [tag]
+# If tag is not specified, the latest tag in GitHub is used.
 
 SOURCE_DIR=~/src/cspace-deployment
 REPOSITORIES=(services application)
@@ -29,6 +30,8 @@ else
 fi
 
 # Update the source code from git.
+
+mkdir -p $SOURCE_DIR
 
 for repo in ${REPOSITORIES[@]}; do
 	if [[ -d $SOURCE_DIR/$repo ]]; then
@@ -160,40 +163,72 @@ if [[ ${rebuild_needed[application]} == true ]]; then
 
 	# Some app layer changes require redeploying services artifacts. Since it's hard to detect when it's
 	# needed, just always deploy services artifacts whenever the app layer has changed.
-	# If the services layer is going to be fully built and redeployed, redeploying services artifacts
-	# will happen as part of that. Otherwise, just deploy services artifacts.
 
-	if [[ ${rebuild_needed[services]} == false ]]; then
-		echo "Deploying services artifacts..."
+	$deploy_services_artifacts_needed=true
+else
+	echo "No change in application, skipping build"
+fi
 
-		cd $SOURCE_DIR/services/services/JaxRsServiceProvider
+# Deploy the services layer, if necessary.
 
-		if ! ant deploy_services_artifacts; then
-			echo "ERROR: Failed to deploy services artifacts"
+if [[ ${rebuild_needed[services]} == true ]]; then
+	cd $SOURCE_DIR/services
+
+	# See if we need to do a full rebuild and deploy, or if redeploying the ui project is sufficient.
+
+	deploy_ui_only=false
+
+	non_ui_files_changed_count=`git diff --name-only $INSTALLED_VERSION $TAG | egrep -v '^build.properties|^cspace-ui-ucb/*' | wc -l`
+
+	if (( non_ui_files_changed_count == 0 )); then
+		# Check if any non-ui properties changed in build.properties.
+
+		non_ui_properties_changed_count=`git diff -U0 $INSTALLED_VERSION $TAG -- build.properties | egrep '^[+-][a-z]' | egrep -v '^[+-]((ucb\.release=)|(cspace\.ui\.))' | wc -l`
+
+		if (( non_ui_properties_changed_count == 0 )); then
+			deploy_ui_only=true
+		fi
+	fi
+
+	if [[ deploy_ui_only == true ]];
+		cd cspace-ui-ucb
+
+		echo "Deploying ui..."
+
+		if ! ant deploy; then
+			echo "ERROR: Failed to deploy ui"
+			exit 1
+		fi
+	else
+		echo "Deploying services..."
+
+		if ! $CSDOWN; then
+			echo "ERROR: Failed to stop CollectionSpace"
+			exit 1
+		fi
+
+		if ! ant undeploy deploy; then
+			echo "ERROR: Failed to deploy services"
 			exit 1
 		fi
 
 		rm -r /tmp/cspace-bindings-*
 		rm -r /tmp/merged-app-config-*
+
+		# A full deploy of the services layer includes deploying services artifacts, so set this to
+		# false.
+
+		$deploy_services_artifacts_needed=false
 	fi
-else
-	echo "No change in application, skipping build"
 fi
 
-# Deploy the services layer, if necessary. Tomcat should be stopped.
+if [[ $deploy_services_artifacts_needed == true ]]; then
+	echo "Deploying services artifacts..."
 
-if [[ ${rebuild_needed[services]} == true ]]; then
-	echo "Deploying services..."
+	cd $SOURCE_DIR/services/services/JaxRsServiceProvider
 
-	if ! $CSDOWN; then
-		echo "ERROR: Failed to stop CollectionSpace"
-		exit 1
-	fi
-
-	cd $SOURCE_DIR/services
-
-	if ! ant undeploy deploy; then
-		echo "ERROR: Failed to deploy services"
+	if ! ant deploy_services_artifacts; then
+		echo "ERROR: Failed to deploy services artifacts"
 		exit 1
 	fi
 

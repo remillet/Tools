@@ -7,7 +7,7 @@
 SOURCE_DIR=~/src/cspace-deployment
 REPOSITORIES=(services application)
 DEPLOYMENT_NAME=`csname`
-TOMCAT_DIR=~/`csservname`
+TOMCAT_DIR=$CATALINA_HOME
 OPTIND=1
 FORCE=false
 

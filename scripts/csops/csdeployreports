@@ -5,8 +5,7 @@
 SOURCE_DIR=~/src/cspace-deployment
 TOOLS_DIR=$SOURCE_DIR/Tools
 DEPLOYMENT_NAME=`csname`
-TOMCAT_DIR=~/`csservname`
-REPORT_DIR=$TOMCAT_DIR/cspace/reports
+REPORT_DIR=$CATALINA_HOME/cspace/reports
 
 cd $TOOLS_DIR
 

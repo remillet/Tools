@@ -2,12 +2,12 @@
 
 # Print the amount of time elapsed since the last access to CollectionSpace.
 
-NAGIOS_IP=128.32.189.84
-ACCESS_PATTERN="^(.*?) - .*? \\[(.*?)\\] \"(GET|POST|PUT|DELETE)\ /(collectionspace|cspace-services)/"
+IGNORE_IP=" 128.32.189.84 169.229.216.224 " # Ignore requests from Nagios servers
+ACCESS_PATTERN="^(.*?) - .*? \\[(.*?)\\] \"(GET|POST|PUT|DELETE)\ /(cspace-ui|cspace-services)/"
 TIMESTAMP_PATTERN="^([0-9]+)/([A-Za-z]+)/([0-9]+):(.*?) (.*?)$"
 LAST_ACCESS_TIMESTAMP=''
 
-cd ~/`csservname`/logs
+cd $CATALINA_HOME/logs
 
 for logfile in `ls -1r localhost_access_log.*.txt`
 do
@@ -18,7 +18,7 @@ do
 		if [[ $line =~ $ACCESS_PATTERN ]]; then
 			ip=${BASH_REMATCH[1]}
 
-			if [[ $ip != $NAGIOS_IP ]]; then
+			if [[ " $IGNORE_IP " != *" $ip "* ]]; then
 				LAST_ACCESS_TIMESTAMP=${BASH_REMATCH[2]}
 				break
 			fi

@@ -2,6 +2,6 @@
 
 # Print the pid of the CollectionSpace tomcat service.
 
-SERVICE_NAME=`csservname`
+DEPLOYMENT_NAME=`csname`
 
-pgrep -fn -u $USER "java .* -Dcatalina.base=/home/$USER/$SERVICE_NAME"
+pgrep -fn -u $USER "java .* -Dcatalina.base=/var/lib/tomcats/$DEPLOYMENT_NAME"

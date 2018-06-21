@@ -34,10 +34,6 @@ my $old_gen_max = $gccapacity{OGCMX};
 my $old_gen_used = $gc{OU};
 my $old_gen_pct = $old_gen_used / $old_gen_max * 100;
 
-my $perm_gen_max = $gccapacity{PGCMX};
-my $perm_gen_used = $gc{PU};
-my $perm_gen_pct = $perm_gen_used / $perm_gen_max * 100;
-
 my $gc_time = $gc{GCT};
 
 print_report();
@@ -48,7 +44,6 @@ sub print_report {
 	print "CollectionSpace Tomcat JVM heap usage (KB) at $timestamp:\n\n";
 	print "young gen: $young_gen_used / $young_gen_max ", sprintf("(%.2f%%)", $young_gen_pct), "\n";
 	print "old gen:   $old_gen_used / $old_gen_max ", sprintf("(%.2f%%)", $old_gen_pct), "\n";
-	print "perm gen:  $perm_gen_used / $perm_gen_max ", sprintf("(%.2f%%)", $perm_gen_pct), "\n";
 }
 
 sub print_log {
@@ -58,25 +53,21 @@ sub print_log {
 	open(my $fh, ">>$log_file") or die "Could not open file '$log_file' $!";
 
 	if (!$log_file_existed) {
-		print $fh join("\t", "time", "young gen used", "young gen max", "young gen pct", "old gen used", "old gen max", "old gen pct", "perm gen used", "perm gen max", "perm gen pct", "gc time");
+		print $fh join("\t", "time", "young gen used", "young gen max", "young gen pct", "old gen used", "old gen max", "old gen pct", "gc time");
 		print $fh "\n";
 	}
 
-	print $fh join("\t", $timestamp, $young_gen_used, $young_gen_max, sprintf("%.2f", $young_gen_pct), $old_gen_used, $old_gen_max, sprintf("%.2f", $old_gen_pct), $perm_gen_used, $perm_gen_max, sprintf("%.2f", $perm_gen_pct), $gc_time);
+	print $fh join("\t", $timestamp, $young_gen_used, $young_gen_max, sprintf("%.2f", $young_gen_pct), $old_gen_used, $old_gen_max, sprintf("%.2f", $old_gen_pct), $gc_time);
 	print $fh "\n";
 
 	close $fh;
 }
 
 sub check_warning {
-	if (
-		$old_gen_pct > $WARNING_THRESHOLD ||
-		$perm_gen_pct > $WARNING_THRESHOLD
-	) {
+	if ($old_gen_pct > $WARNING_THRESHOLD) {
 		print "\n";
 
 		print "WARNING: old gen usage exceeds $WARNING_THRESHOLD% of max\n" if ($old_gen_pct > $WARNING_THRESHOLD);
-		print "WARNING: perm gen usage exceeds $WARNING_THRESHOLD% of max\n" if ($perm_gen_pct > $WARNING_THRESHOLD);
 
 		dump_heap() if $opt_d;
 		notify() if $opt_n;
@@ -84,19 +75,20 @@ sub check_warning {
 }
 
 sub dump_heap {
-	my $heap_dump_file = "$ENV{HOME}/log/GC.heap_dump.$timestamp.hprof";
-	my $class_histogram_file = "$ENV{HOME}/log/GC.class_histogram.$timestamp.txt";
+	# FIXME: jcmd not connecting to jvm on the RHEL7 server.
+	# my $heap_dump_file = "$ENV{HOME}/log/GC.heap_dump.hprof";
+	# my $class_histogram_file = "$ENV{HOME}/log/GC.class_histogram.txt";
 
-	print "\n";
-	print "Saving diagnostics...\n";
+	# print "\n";
+	# print "Saving diagnostics...\n";
 
-	system "jcmd $cspid GC.heap_dump $heap_dump_file > /dev/null";
+	# system "jcmd $cspid GC.heap_dump $heap_dump_file > /dev/null";
 
-	print "Saved heap dump to $heap_dump_file\n";
+	# print "Saved heap dump to $heap_dump_file\n";
 
-	system "jcmd $cspid GC.class_histogram > $class_histogram_file";
+	# system "jcmd $cspid GC.class_histogram > $class_histogram_file";
 
-	print "Saved class histogram to $class_histogram_file\n";
+	# print "Saved class histogram to $class_histogram_file\n";
 }
 
 sub notify {
@@ -115,10 +107,8 @@ sub notify {
 	print $mail "CollectionSpace Tomcat JVM heap usage (KB) at $timestamp:\n\n";
 	print $mail "young gen: $young_gen_used / $young_gen_max ", sprintf("(%.2f%%)", $young_gen_pct), "\n";
 	print $mail "old gen:   $old_gen_used / $old_gen_max ", sprintf("(%.2f%%)", $old_gen_pct), "\n";
-	print $mail "perm gen:  $perm_gen_used / $perm_gen_max ", sprintf("(%.2f%%)", $perm_gen_pct), "\n";
 	print $mail "\n";
 	print $mail "WARNING: old gen usage exceeds $WARNING_THRESHOLD% of max\n" if ($old_gen_pct > $WARNING_THRESHOLD);
-	print $mail "WARNING: perm gen usage exceeds $WARNING_THRESHOLD% of max\n" if ($perm_gen_pct > $WARNING_THRESHOLD);
 
 	close $mail;
 }

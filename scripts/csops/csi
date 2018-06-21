@@ -2,8 +2,10 @@
 
 # Install UCB CollectionSpace.
 
+# TODO: Detect when only the UI needs to be updated, so we can avoid a full service layer build.
+
 SOURCE_DIR=~/src/cspace-deployment
-REPOSITORIES=(services application ui)
+REPOSITORIES=(services application)
 DEPLOYMENT_NAME=`csname`
 TOMCAT_DIR=~/`csservname`
 OPTIND=1
@@ -60,7 +62,7 @@ if [[ -z $TAG ]]; then
 		latest_tag=`git for-each-ref --sort=-taggerdate --format '%(refname:short)' --count=1 refs/tags/${DEPLOYMENT_NAME}_*`
 		latest_tags[$latest_tag]=1
 	done
-	
+
 	possible_tags=${!latest_tags[@]}
 	num_possible_tags=${#possible_tags[@]};
 
@@ -91,7 +93,7 @@ echo "Installed version is $INSTALLED_VERSION"
 for repo in ${REPOSITORIES[@]}; do
 	echo "Checking out $TAG in $repo"
 	cd $SOURCE_DIR/$repo
-	
+
 	installed_commit=`git rev-list --max-count=1 $INSTALLED_VERSION`
 
 	if ! git checkout $TAG; then
@@ -125,7 +127,7 @@ if [[ ${rebuild_needed[services]} == true ]]; then
 	echo "Building services..."
 
 	cd $SOURCE_DIR/services
-	
+
 	if ! mvn clean install -DskipTests; then
 		echo "ERROR: Failed to build services"
 		exit 1
@@ -141,7 +143,7 @@ if [[ ${rebuild_needed[application]} == true ]]; then
 
 	if ! $CSDOWN; then
 		echo "ERROR: Failed to stop CollectionSpace"
-		exit 1	
+		exit 1
 	fi
 
 	cd $SOURCE_DIR/application
@@ -151,11 +153,10 @@ if [[ ${rebuild_needed[application]} == true ]]; then
 		exit 1
 	fi
 
-	rm /tmp/collectionspace.war
+	# Remove the war. This is temporary, until we re-disable the deploy of the application layer.
+	# It's just helpful for testing during the upgrade.
 
-	# Delete the old exploded war.
-
-	rm -r $TOMCAT_DIR/webapps/collectionspace
+	rm $TOMCAT_DIR/webapps/collectionspace.war
 
 	# Some app layer changes require redeploying services artifacts. Since it's hard to detect when it's
 	# needed, just always deploy services artifacts whenever the app layer has changed.
@@ -172,34 +173,11 @@ if [[ ${rebuild_needed[application]} == true ]]; then
 			exit 1
 		fi
 
-		rm /tmp/merged*.properties
-		rm /tmp/merged*.xml
+		rm -r /tmp/cspace-bindings-*
+		rm -r /tmp/merged-app-config-*
 	fi
 else
 	echo "No change in application, skipping build"
-fi
-
-# Build/deploy the UI layer, if necessary.
-
-if [[ ${rebuild_needed[ui]} == true ]]; then
-	echo "Building and deploying ui..."
-
-	cd $SOURCE_DIR/ui
-
-	if ! mvn clean install -DskipTests; then
-		echo "ERROR: Failed to build ui"
-		exit 1
-	fi 
-
-	rm /tmp/cspace-ui.war
-
-	# If tomcat is not running, delete the old exploded war.
-
-	if [[ -z `csuptime` ]]; then
-		rm -r $TOMCAT_DIR/webapps/cspace-ui
-	fi
-else 
-	echo "No change in ui, skipping build"
 fi
 
 # Deploy the services layer, if necessary. Tomcat should be stopped.
@@ -219,8 +197,8 @@ if [[ ${rebuild_needed[services]} == true ]]; then
 		exit 1
 	fi
 
-	rm /tmp/merged*.properties
-	rm /tmp/merged*.xml
+	rm -r /tmp/cspace-bindings-*
+	rm -r /tmp/merged-app-config-*
 fi
 
 # Start tomcat

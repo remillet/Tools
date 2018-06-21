@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Stop the CollectionSpace tomcat service. An attempt is made to determine if the server is in use. If
+# it is, the server is not stopped, unless the force (-f) flag is supplied.
+
 if [[ -z $CS_MIN_IDLE_TIME ]]; then
 	CS_MIN_IDLE_TIME=600 # Seconds of inactivity required
 fi
@@ -26,7 +29,7 @@ else
 	idle_time=`csidletime`
 
 	if [[ -z idle_time ]]; then
-		IDLE_CHECK=true	
+		IDLE_CHECK=true
 	else
 		if (( idle_time > CS_MIN_IDLE_TIME )); then
 			IDLE_CHECK=true
@@ -36,7 +39,7 @@ fi
 
 if [[ $IDLE_CHECK == true ]]; then
 	echo 'Stopping CollectionSpace...'
-	sudo service `csservname` stop
+	sudo /bin/systemctl stop `csservname`
 else
 	echo "ERROR: CollectionSpace user activity detected. Use -f to force."
 	exit 1

@@ -253,6 +253,13 @@ if [[ $deploy_services_artifacts_needed == true ]]; then
 	rm -r /tmp/merged-app-config-*
 fi
 
+# Deploy reports
+
+if ! csdeployreports; then
+	echo "ERROR: Failed to deploy reports"
+	exit 1
+fi
+
 # Start tomcat
 
 if ! csup; then

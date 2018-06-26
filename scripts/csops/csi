@@ -138,18 +138,21 @@ fi
 if [[ ${commit_changed[services]} == true ]]; then
 	# See if we need to do a full rebuild, or if redeploying the ui project is sufficient.
 
-	cd $SOURCE_DIR/services
-
 	deploy_ui_only=false
-	non_ui_files_changed_count=`git diff --name-only $INSTALLED_VERSION $TAG | egrep -v '^build.properties|^cspace-ui-ucb/*' | wc -l`
 
-	if (( non_ui_files_changed_count == 0 )); then
-		# Check if any non-ui properties changed in build.properties.
+	if [[ ! -z $INSTALLED_VERSION ]]; then
+		cd $SOURCE_DIR/services
 
-		non_ui_properties_changed_count=`git diff -U0 $INSTALLED_VERSION $TAG -- build.properties | egrep '^[+-][a-z]' | egrep -v '^[+-]((ucb\.release=)|(cspace\.ui\.))' | wc -l`
+		non_ui_files_changed_count=`git diff --name-only $INSTALLED_VERSION $TAG | egrep -v '^build.properties|^cspace-ui-ucb/*' | wc -l`
 
-		if (( non_ui_properties_changed_count == 0 )); then
-			deploy_ui_only=true
+		if (( non_ui_files_changed_count == 0 )); then
+			# Check if any non-ui properties changed in build.properties.
+
+			non_ui_properties_changed_count=`git diff -U0 $INSTALLED_VERSION $TAG -- build.properties | egrep '^[+-][a-z]' | egrep -v '^[+-]((ucb\.release=)|(cspace\.ui\.))' | wc -l`
+
+			if (( non_ui_properties_changed_count == 0 )); then
+				deploy_ui_only=true
+			fi
 		fi
 	fi
 

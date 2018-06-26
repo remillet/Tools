@@ -91,13 +91,21 @@ declare -A commit_changed
 
 INSTALLED_VERSION=`csver`
 
-echo "Installed version is $INSTALLED_VERSION"
+if [[ -z $INSTALLED_VERSION ]]; then
+	echo "CollectionSpace is not installed"
+else
+	echo "Installed version is $INSTALLED_VERSION"
+fi
 
 for repo in ${REPOSITORIES[@]}; do
 	echo "Checking out $TAG in $repo"
 	cd $SOURCE_DIR/$repo
 
-	installed_commit=`git rev-list --max-count=1 $INSTALLED_VERSION`
+	if [[ -z $INSTALLED_VERSION ]]; then
+		installed_commit=''
+	else
+		installed_commit=`git rev-list --max-count=1 $INSTALLED_VERSION`
+	fi
 
 	if ! git checkout $TAG; then
 		echo "ERROR: Failed to check out $TAG in $repo"

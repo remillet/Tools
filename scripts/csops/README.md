@@ -166,3 +166,12 @@ csdeployreports
 ```
 ##### Description
 Copies the JRXML files for this deployment into the reports directory, and cleans out the existing compiled reports. CollectionSpace will recompile them as needed.
+
+### cssetup - perform one-time set up of a new CollectionSpace service
+
+##### Synopsis
+```
+cssetup
+```
+##### Description
+Sets up a new CollectionSpace service. This should be run once in each application owner account, after that account has been created. The program performs the set up that can be automated, and prints instructions for manually completing the installation. This program is not designed to be run more than once by an application owner.

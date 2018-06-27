@@ -130,7 +130,7 @@ echo "Writing tomcat configuration..."
 perl -pi -e "s/8005/${config[${DEPLOYMENT_NAME}${DEV}_tomcat_port_shutdown]}/g" $TOMCAT_SERVER_CONFIG_FILE
 perl -pi -e "s/8080/${config[${DEPLOYMENT_NAME}${DEV}_tomcat_port_http]}/g" $TOMCAT_SERVER_CONFIG_FILE
 perl -pi -e "s/8009/${config[${DEPLOYMENT_NAME}${DEV}_tomcat_port_ajp]}/g" $TOMCAT_SERVER_CONFIG_FILE
-perl -pi -e 's/Note: the pattern used .*? -->/-->/' $TOMCAT_SERVER_CONFIG_FILE
+perl -pi -e 's/Note: The pattern used .*? -->/-->/' $TOMCAT_SERVER_CONFIG_FILE
 perl -pi -e 's/pattern=".*?"/pattern="%h %l %{org.collectionspace.authentication.user}r %t &quot;%r&quot; %s %b %T"/' $TOMCAT_SERVER_CONFIG_FILE
 
 cat <<EOF > ~/tmp/$TOMCAT_SERVICE_NAME

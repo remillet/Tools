@@ -1,0 +1,298 @@
+#!/bin/bash
+
+# Perform initial set up of a UCB CollectionSpace server.
+
+# This script is designed to operate on a clean RHEL installation, and may have undesired
+# results if executed more than once.
+
+DEPLOYMENT_NAME=`csname`
+TOMCAT_SERVICE_NAME=`csservname`
+TOMCAT_DIR=~/tomcat7
+TOMCAT_CONF_DIR=$TOMCAT_DIR/conf
+TOMCAT_SERVER_CONFIG_FILE=$TOMCAT_CONF_DIR/server.xml
+CSPACE_ENV_FILE=~/.cspace
+PG_ENV_FILE=~/.pg
+PGPASS_FILE=~/.pgpass
+BASH_PROFILE_FILE=~/.bash_profile
+DEV=""
+
+if [[ `hostname` = *-dev-* ]]; then
+	DEV="-dev"
+fi
+
+VHOST=$DEPLOYMENT_NAME$DEV.cspace.berkeley.edu
+
+declare -A config=(
+	[pahma-dev_tomcat_port_shutdown]=8010
+	[pahma-dev_tomcat_port_http]=8080
+	[pahma-dev_tomcat_port_ajp]=8000
+	[pahma-dev_tomcat_java_opts]="-Xmx1024m"
+	[pahma-dev_db_host]=dba-postgres-dev-42.ist.berkeley.edu
+	[pahma-dev_db_port]=5117
+
+	[ucjeps-dev_tomcat_port_shutdown]=8011
+	[ucjeps-dev_tomcat_port_http]=8081
+	[ucjeps-dev_tomcat_port_ajp]=8001
+	[ucjeps-dev_tomcat_java_opts]="-Xmx1024m"
+	[ucjeps-dev_db_host]=dba-postgres-dev-42.ist.berkeley.edu
+	[ucjeps-dev_db_port]=5119
+
+	[botgarden-dev_tomcat_port_shutdown]=8016
+	[botgarden-dev_tomcat_port_http]=8086
+	[botgarden-dev_tomcat_port_ajp]=8006
+	[botgarden-dev_tomcat_java_opts]="-Xmx1024m"
+	[botgarden-dev_db_host]=dba-postgres-dev-42.ist.berkeley.edu
+	[botgarden-dev_db_port]=5114
+
+	[cinefiles-dev_tomcat_port_shutdown]=8014
+	[cinefiles-dev_tomcat_port_http]=8084
+	[cinefiles-dev_tomcat_port_ajp]=8004
+	[cinefiles-dev_tomcat_java_opts]="-Xmx1024m"
+	[cinefiles-dev_db_host]=dba-postgres-dev-42.ist.berkeley.edu
+	[cinefiles-dev_db_port]=5114
+
+	[bampfa-dev_tomcat_port_shutdown]=8013
+	[bampfa-dev_tomcat_port_http]=8083
+	[bampfa-dev_tomcat_port_ajp]=8003
+	[bampfa-dev_tomcat_java_opts]="-Xmx1024m"
+	[bampfa-dev_db_host]=dba-postgres-dev-42.ist.berkeley.edu
+	[bampfa-dev_db_port]=5114
+
+	[pahma_tomcat_port_shutdown]=8010
+	[pahma_tomcat_port_http]=8080
+	[pahma_tomcat_port_ajp]=8000
+	[pahma_tomcat_java_opts]="-Xmx4g -Xms1g -XX:GCTimeRatio=7"
+	[pahma_db_host]=dba-postgres-prod-42.ist.berkeley.edu
+	[pahma_db_port]=5307
+
+	[ucjeps_tomcat_port_shutdown]=8011
+	[ucjeps_tomcat_port_http]=8081
+	[ucjeps_tomcat_port_ajp]=8001
+	[ucjeps_tomcat_java_opts]="-Xmx2g -XX:GCTimeRatio=9"
+	[ucjeps_db_host]=dba-postgres-prod-42.ist.berkeley.edu
+	[ucjeps_db_port]=5310
+
+	[botgarden_tomcat_port_shutdown]=8016
+	[botgarden_tomcat_port_http]=8086
+	[botgarden_tomcat_port_ajp]=8006
+	[botgarden_tomcat_java_opts]="-Xmx1024m"
+	[botgarden_db_host]=dba-postgres-prod-42.ist.berkeley.edu
+	[botgarden_db_port]=5313
+
+	[cinefiles_tomcat_port_shutdown]=8014
+	[cinefiles_tomcat_port_http]=8084
+	[cinefiles_tomcat_port_ajp]=8004
+	[cinefiles_tomcat_java_opts]="-Xmx1024m"
+	[cinefiles_db_host]=dba-postgres-prod-42.ist.berkeley.edu
+	[cinefiles_db_port]=5313
+
+	[bampfa_tomcat_port_shutdown]=8013
+	[bampfa_tomcat_port_http]=8083
+	[bampfa_tomcat_port_ajp]=8003
+	[bampfa_tomcat_java_opts]="-Xmx1024m"
+	[bampfa_db_host]=dba-postgres-prod-42.ist.berkeley.edu
+	[bampfa_db_port]=5313
+)
+
+echo "Installing tomcat..."
+
+cd $TOMCAT_CONF_DIR
+GLOBIGNORE="/etc/tomcat/tomcat-users.xml" # Not readable, and don't need it.
+cp -rn /etc/tomcat/* .
+unset GLOBIGNORE
+
+cd ~
+
+if [ ! -d tmp ]; then
+	mkdir tmp
+fi
+
+cd tmp
+wget -nv ftp://nightly.collectionspace.org/pub/collectionspace/releases/5.0/cspace-server-5.0.tar.gz
+tar -zxf cspace-server-5.0.tar.gz
+rm cspace-server-5.0.tar.gz
+
+cd $TOMCAT_DIR
+cp -rn ~/tmp/apache-tomcat-7.0.64/lib .
+cp -rn ~/tmp/apache-tomcat-7.0.64/nuxeo-server .
+cp -rn ~/tmp/apache-tomcat-7.0.64/nxserver .
+
+cd nuxeo-server
+
+if [ -h data ]; then
+	rm data
+fi
+
+ln -s /srv/nfs/$DEPLOYMENT_NAME-data data
+
+echo "Writing tomcat configuration..."
+
+perl -pi -e "s/8005/${config[${DEPLOYMENT_NAME}${DEV}_tomcat_port_shutdown]}/g" $TOMCAT_SERVER_CONFIG_FILE
+perl -pi -e "s/8080/${config[${DEPLOYMENT_NAME}${DEV}_tomcat_port_http]}/g" $TOMCAT_SERVER_CONFIG_FILE
+perl -pi -e "s/8009/${config[${DEPLOYMENT_NAME}${DEV}_tomcat_port_ajp]}/g" $TOMCAT_SERVER_CONFIG_FILE
+perl -pi -e 's/pattern=".*?"/pattern="%h %l %{org.collectionspace.authentication.user}r %t &quot;%r&quot; %s %b %T"/' $TOMCAT_SERVER_CONFIG_FILE
+
+cat <<EOF > ~/tmp/$TOMCAT_SERVICE_NAME
+# This file is initially deployed by Puppet, but will not override any values
+# set in this file.
+#
+# This file contains environment settings for $TOMCAT_SERVICE_NAME. Note
+# that the following environment values will not be recognized if set:
+#   CATALINA_BASE, CATALINA_TMPDIR, TOMCAT_USER
+
+JAVA_OPTS="${config[${DEPLOYMENT_NAME}${DEV}_tomcat_java_opts]}"
+EOF
+
+echo "Writing apache configuration..."
+
+cat <<EOF > ~/tmp/$VHOST.ssl.include
+# This file is user-editable using "sudoedit FILENAME".
+
+ServerAlias ${DEPLOYMENT_NAME}-v5${DEV}.cspace.berkeley.edu
+DocumentRoot /var/www/html
+
+ProxyTimeout 1200
+
+ProxyPass / ajp://localhost:${config[${DEPLOYMENT_NAME}${DEV}_tomcat_port_ajp]}/
+ProxyPassReverse / ajp://localhost:${config[${DEPLOYMENT_NAME}${DEV}_tomcat_port_ajp]}/
+
+RewriteEngine On
+# Redirect pre-5.0 login page to the 5.0 login page.
+RewriteRule ^/collectionspace/ui/$DEPLOYMENT_NAME/html(/(index.html)?)?$ https://%{SERVER_NAME}/login [R=301,L]
+EOF
+
+cat <<EOF > ~/tmp/$VHOST.include
+# This file is user-editable using "sudoedit FILENAME".
+
+DocumentRoot /var/www/html
+
+RewriteEngine On
+RewriteCond %{HTTPS} !=on
+RewriteRule ^/?(.*) https://%{SERVER_NAME}/\$1 [R=301,L]
+EOF
+
+echo "Writing cspace environment files..."
+
+touch $CSPACE_ENV_FILE
+chmod 0600 $CSPACE_ENV_FILE
+
+cat << EOF > $CSPACE_ENV_FILE
+# CollectionSpace environment variables
+
+export CSPACE_JEESERVER_HOME=$TOMCAT_DIR
+export CATALINA_HOME=\$CSPACE_JEESERVER_HOME
+export JAVA_HOME=/usr/lib/jvm/java
+export DB_HOST=${config[${DEPLOYMENT_NAME}${DEV}_db_host]}
+export DB_PORT=${config[${DEPLOYMENT_NAME}${DEV}_db_port]}
+export DB_CSADMIN_PASSWORD='REPLACEME'
+export DB_NUXEO_PASSWORD='REPLACEME'
+export DB_CSPACE_PASSWORD='REPLACEME'
+export DB_READER_PASSWORD='REPLACEME'
+export CSPACE_INSTANCE_ID=_$DEPLOYMENT_NAME
+export JEE_PORT=${config[${DEPLOYMENT_NAME}${DEV}_tomcat_port_http]}
+export ANT_OPTS="-Xmx768m -XX:MaxPermSize=512m"
+export MAVEN_OPTS="-Xmx1024m -XX:MaxPermSize=512m"
+EOF
+
+source $CSPACE_ENV_FILE
+
+echo "Writing postgres environment files..."
+
+touch $PG_ENV_FILE
+chmod 0600 $PG_ENV_FILE
+
+cat << EOF > $PG_ENV_FILE
+# Environment variables for PostgreSQL clients
+
+export PGHOST=\$DB_HOST
+export PGPORT=\$DB_PORT
+export PGUSER=reporter_${DEPLOYMENT_NAME}
+export PGDATABASE=${DEPLOYMENT_NAME}_domain_${DEPLOYMENT_NAME}
+EOF
+
+source $PG_ENV_FILE
+
+touch $PGPASS_FILE
+chmod 0600 $PGPASS_FILE
+
+cat << EOF > $PGPASS_FILE
+${DB_HOST}:${DB_PORT}:${DEPLOYMENT_NAME}_domain_${DEPLOYMENT_NAME}:nuxeo_${DEPLOYMENT_NAME}:REPLACEME
+${DB_HOST}:${DB_PORT}:${DEPLOYMENT_NAME}_domain_${DEPLOYMENT_NAME}:reporter_${DEPLOYMENT_NAME}:REPLACEME
+EOF
+
+echo "Writing bash profile..."
+
+cat << EOF > $BASH_PROFILE_FILE
+# .bash_profile
+
+# Get the aliases and functions
+if [ -f ~/.bashrc ]; then
+        . ~/.bashrc
+fi
+
+if [ -f ~/.cspace ]; then
+        . ~/.cspace
+fi
+
+if [ -f ~/.pg ]; then
+        . ~/.pg
+fi
+
+# User specific environment and startup programs
+
+PATH=\$PATH:\$HOME/.local/bin:\$HOME/bin
+
+export PATH
+EOF
+
+source $BASH_PROFILE_FILE;
+
+echo "Installing maven..."
+
+cd ~
+
+if [ ! -d bin ]; then
+        mkdir bin
+fi
+
+if [ ! -d opt ]; then
+        mkdir opt
+fi
+
+cd ~/opt
+wget -nv http://mirrors.ocf.berkeley.edu/apache/maven/maven-3/3.5.3/binaries/apache-maven-3.5.3-bin.tar.gz
+tar -zxf apache-maven-3.5.3-bin.tar.gz
+rm apache-maven-3.5.3-bin.tar.gz
+cd ~/bin
+ln -sf ~/opt/apache-maven-3.5.3/bin/mvn
+
+echo "Creating log dir..."
+
+cd ~
+
+if [[ ! -d log ]]; then
+	mkdir log
+fi
+
+cd log
+ln -s $TOMCAT_DIR/logs tomcat
+
+echo "Writing crontab..."
+
+cat <<EOF | crontab -
+00 23 * * * ~/bin/cscleantemp >>~/log/cscleantemp.log.txt 2>&1
+15 23 * * * ~/bin/cscleanlog >/dev/null 2>&1
+30 18 * * 2,4 ~/bin/cscheckjava >>~/log/cscheckjava.log.txt 2>&1
+*/10 * * * * bash -l -c '~/bin/cscheckmem -dn >/dev/null 2>&1'
+EOF
+
+echo
+echo "To complete setup:"
+echo "- Copy the contents of $HOME/tmp/$TOMCAT_SERVICE_NAME into /etc/sysconfig/$TOMCAT_SERVICE_NAME (using sudoedit)"
+echo "- Copy the contents of $HOME/tmp/$VHOST.ssl.include into /etc/httpd/websites/$VHOST.ssl.include (using sudoedit)"
+echo "- Copy the contents of $HOME/tmp/$VHOST.include into /etc/httpd/websites/$VHOST.include (using sudoedit)"
+echo "- Reload apache config (sudo /usr/bin/systemctl reload httpd)"
+echo "- Set passwords in $PGPASS_FILE (replacing REPLACEME text)"
+echo "- Set passwords in $CSPACE_ENV_FILE (replacing REPLACEME text)"
+echo "- Source $BASH_PROFILE_FILE"
+echo "- Install the CollectionSpace application (csi)"

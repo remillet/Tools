@@ -66,7 +66,7 @@ Shows the amount of time the CollectionSpace server has been running. The time i
 csidletime
 ```
 ##### Description
-Shows the amount of time elapsed since the last user activity in CollectionSpace. The time is printed to standard output, in seconds.  The time of last user activity is heuristically determined using log files, and therefore may not be accurate. For example, requests do not appear in certain logs until they have completed, so a long running request that is still in progress may not be detected. If no idle time can be determined (for example, if no logs exist), nothing is printed.
+Shows the amount of time elapsed since the last user activity in CollectionSpace. The time is printed to standard output, in seconds.  The time of last user activity is heuristically determined using log files, and therefore may not be entirely accurate. For example, requests do not appear in certain logs until they have completed, so a long running request that is still in progress may not be detected. If the idle time cannot be determined (for example, if no logs exist), nothing is printed.
 
 ### csstarttime - show when CollectionSpace started
 ##### Synopsis
@@ -98,7 +98,7 @@ Shows the version number of the installed version of CollectionSpace. This corre
 csname
 ```
 ##### Description
-Shows the name of the CollectionSpace deployment. This is the name of the deployment's primary tenant.
+Shows the name of the CollectionSpace deployment. This is the name of the deployment's primary tenant. The name is printed to standard output.
 
 ### csservname - show the name of the CollectionSpace service
 ##### Synopsis
@@ -106,7 +106,7 @@ Shows the name of the CollectionSpace deployment. This is the name of the deploy
 csservname
 ```
 ##### Description
-Shows the name of the CollectionSpace service. This is the name of the init script, suitable for passing into the `service` program.
+Shows the name of the CollectionSpace service, suitable for passing to the `systemctl` program. The name is printed to standard output.
 
 ### csi - install CollectionSpace
 ##### Synopsis
@@ -114,7 +114,7 @@ Shows the name of the CollectionSpace service. This is the name of the init scri
 csi [-f] [versionnumber]
 ```
 ##### Description
-Installs the specified version of CollectionSpace. The version number must correspond to a tag in git. If no version number is specified, the most recently created tag that is appropriate to this deployment is used. Installation may require that the CollectionSpace server be stopped and started. If this is necessary, the `csdown` program is invoked, which will do its usual user activity check. Use the `-f` flag to force the restart even if user activity is detected.
+Installs the specified version of CollectionSpace. The version number must correspond to a tag in git. If no version number is specified, the most recently created tag that is appropriate for the user is used. Installation may require that the CollectionSpace server be stopped and started. If this is necessary, the `csdown` program is invoked, which will do its usual user activity check. Use the `-f` flag to force the restart even if user activity is detected.
 
 ##### Options
 `-f`
@@ -134,7 +134,7 @@ Removes old files from the CollectionSpace temporary file directory. Files with 
 cscleanlog
 ```
 ##### Description
-Rotates log files. Currently, this script only rotates tomcat's catalina.out log. In the future, this script may also rotate and/or remove additional log files.
+Rotates log files. This program rotates tomcat's catalina.out log, archives (using tar and gzip) access logs over two months old, and deletes other log files over two months old.
 
 ### cscheckjava - check for Java updates
 ##### Synopsis
@@ -142,7 +142,7 @@ Rotates log files. Currently, this script only rotates tomcat's catalina.out log
 cscheckjava
 ```
 ##### Description
-Checks if the Java installation used by CollectionSpace has been updated. If an update to Java is detected that occurred after the start time of the running CollectionSpace server, the CollectionSpace server is restarted using the `csbounce` program. This ensures that CollectionSpace is using the newest version of Java. This program should be run shortly after the scheduled OS update times.
+Checks if the Java installation used by CollectionSpace has been updated. If an update to Java is detected that occurred after the start time of the running CollectionSpace server, the CollectionSpace server is restarted using the `csbounce` program. This ensures that CollectionSpace is using the newest version of Java, and prevents bugs that occur from Java files disappearing out from under the running JVM. This program should be run shortly after the scheduled OS update times. The UNIX team schedules updates for Tuesday at 6pm on dev, and Thursday at 6pm on production.
 
 ### cscheckmem - check for high Java memory (heap) usage
 ##### Synopsis
@@ -165,7 +165,7 @@ Checks if the the CollectionSpace Tomcat JVM exhibits high heap usage. Prints a 
 csdeployreports
 ```
 ##### Description
-Copies the JRXML files for this deployment into the reports directory, and cleans out the existing compiled reports. CollectionSpace will recompile them as needed.
+Copies report JRXML files for this deployment into the cspace reports directory, and removes existing compiled reports. CollectionSpace will recompile them as needed.
 
 ### cssetup - perform one-time set up of a new CollectionSpace service
 
@@ -174,4 +174,4 @@ Copies the JRXML files for this deployment into the reports directory, and clean
 cssetup
 ```
 ##### Description
-Sets up a new CollectionSpace service. This should be run once in each application owner account, after that account has been created. The program performs the set up that can be automated, and prints instructions for manually completing the installation. This program is not designed to be run more than once by an application owner.
+Sets up a new CollectionSpace service. This program should be run once in each application owner account, after that account has been created. The program performs the set up that can be automated, and prints instructions for manually completing the installation. This program is not designed to be run more than once by an application owner.

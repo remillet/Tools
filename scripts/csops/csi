@@ -282,6 +282,10 @@ if ! csdeployreports; then
 	exit 1
 fi
 
+# Ensure selinux context is correct
+
+restorecon -R /var/lib/tomcats/$DEPLOYMENT_NAME
+
 # Start tomcat
 
 if ! csup; then

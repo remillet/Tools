@@ -276,6 +276,11 @@ if [[ ! -d log ]]; then
 fi
 
 cd log
+
+if [ -h tomcat ]; then
+	rm tomcat
+fi
+
 ln -s $TOMCAT_DIR/logs tomcat
 
 echo "Writing crontab..."

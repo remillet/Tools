@@ -23,9 +23,9 @@ fi
 VHOST=$DEPLOYMENT_NAME$DEV.cspace.berkeley.edu
 
 declare -A config=(
-	[pahma-dev_tomcat_port_shutdown]=8010
-	[pahma-dev_tomcat_port_http]=8080
-	[pahma-dev_tomcat_port_ajp]=8000
+	[pahma-dev_tomcat_port_shutdown]=8017
+	[pahma-dev_tomcat_port_http]=8087
+	[pahma-dev_tomcat_port_ajp]=8007
 	[pahma-dev_tomcat_java_opts]="-Xmx1024m"
 	[pahma-dev_db_host]=dba-postgres-dev-42.ist.berkeley.edu
 	[pahma-dev_db_port]=5117
@@ -58,9 +58,9 @@ declare -A config=(
 	[bampfa-dev_db_host]=dba-postgres-dev-42.ist.berkeley.edu
 	[bampfa-dev_db_port]=5114
 
-	[pahma_tomcat_port_shutdown]=8010
-	[pahma_tomcat_port_http]=8080
-	[pahma_tomcat_port_ajp]=8000
+	[pahma_tomcat_port_shutdown]=8017
+	[pahma_tomcat_port_http]=8087
+	[pahma_tomcat_port_ajp]=8007
 	[pahma_tomcat_java_opts]="-Xmx4g -Xms1g -XX:GCTimeRatio=7"
 	[pahma_db_host]=dba-postgres-prod-42.ist.berkeley.edu
 	[pahma_db_port]=5307

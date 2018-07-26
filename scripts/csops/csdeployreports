@@ -19,6 +19,9 @@ fi
 echo "Deploying reports..."
 
 cp reports/$DEPLOYMENT_NAME/*.jrxml $REPORT_DIR
-rm $REPORT_DIR/*.jasper
+
+if ls $REPORT_DIR/*.jasper &> /dev/null; then
+	rm $REPORT_DIR/*.jasper
+fi
 
 echo "Reports for $DEPLOYMENT_NAME deployed"

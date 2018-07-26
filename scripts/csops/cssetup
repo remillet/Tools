@@ -9,6 +9,7 @@ DEPLOYMENT_NAME=`csname`
 TOMCAT_SERVICE_NAME=`csservname`
 TOMCAT_DIR=~/tomcat7
 TOMCAT_CONF_DIR=$TOMCAT_DIR/conf
+TOMCAT_LIB_DIR=$TOMCAT_DIR/lib
 TOMCAT_SERVER_CONFIG_FILE=$TOMCAT_CONF_DIR/server.xml
 CSPACE_ENV_FILE=~/.cspace
 PG_ENV_FILE=~/.pg
@@ -142,6 +143,12 @@ cat <<EOF > ~/tmp/$TOMCAT_SERVICE_NAME
 #   CATALINA_BASE, CATALINA_TMPDIR, TOMCAT_USER
 
 JAVA_OPTS="${config[${DEPLOYMENT_NAME}${DEV}_tomcat_java_opts]}"
+EOF
+
+cat <<EOF > $TOMCAT_LIB_DIR/security.properties
+# Security settings for CollectionSpace.
+
+cors.allowed.origins=
 EOF
 
 echo "Writing apache configuration..."

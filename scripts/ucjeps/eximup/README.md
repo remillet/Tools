@@ -11,15 +11,20 @@ scp cspace-prod.cspace.berkeley.edu:/tmp/unverified_auth.txt.gz .
 scp cspace-prod.cspace.berkeley.edu:/tmp/major_group.txt.gz .
 python extractFromAuthority.py organization.xml organization.csv > duplicates.txt
 
-./makeSubsTables.sh 
-less occurrences_Jul102018.txt
+# this script takes the XML authority files and other extracts and makes the 
+# "*-2col.csv" replace files used further on down
+./makeSubsTables.sh
 
-python checkcsv.py july.csv checked_file.csv > micro_algae_stats.csv
+# recode all the columns
+./recode.sh
+# this is the script that is run by the above recode.sh...just an example of how to invoke it.
+# perl recodeColumns.pl taxon-2cols.csv /dev/null july.csv part.1.csv 15 999 > test3.csv
+
+# this is the 'source file' (i.e. Symbiota 'native extract file', almost Darwin Core...)
+less occurrences_Jul102018.tab
+
+python checkcsv.py occurrences_Jul102018.tab checked_file.csv > micro_algae_stats.csv
 expand -30 micro_algae_stats.csv 
-perl recodeColumns.pl taxon-2cols.csv /dev/null july.csv part.1.csv 15 999
-
-head -3 test50.csv > test3.csv
-python DWC2CSpace.py test3.csv ucjeps_DWC2Cspace_Dev.cfg DWC2CSpace.csv collectionobject.xml output.txt
 
 # $ python loadAuthority.py
 # loadAuthority.py <csv input file> <config file> <mapping file> <template> <output file>
@@ -37,5 +42,9 @@ vi csids.txt
 
 # here's how to delete the authority records you added in the step above:
 nohup ./delete-multiple.sh orgauthorities/6d89bda7-867a-4b97-b22f/items csids.txt &
+
+# finally, we can load the recode, verified file into CSpace
+# don't forget to edit the .cfg file so that is has the correct login and password
+python DWC2CSpace.py test3.csv ucjeps_DWC2Cspace_Dev.cfg DWC2CSpace.csv ucjeps.collectionobject.xml output.txt
 
 ```

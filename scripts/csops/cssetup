@@ -9,6 +9,7 @@ DEPLOYMENT_NAME=`csname`
 TOMCAT_SERVICE_NAME=`csservname`
 TOMCAT_DIR=~/tomcat7
 TOMCAT_CONF_DIR=$TOMCAT_DIR/conf
+TOMCAT_LIB_DIR=$TOMCAT_DIR/lib
 TOMCAT_SERVER_CONFIG_FILE=$TOMCAT_CONF_DIR/server.xml
 CSPACE_ENV_FILE=~/.cspace
 PG_ENV_FILE=~/.pg
@@ -23,9 +24,9 @@ fi
 VHOST=$DEPLOYMENT_NAME$DEV.cspace.berkeley.edu
 
 declare -A config=(
-	[pahma-dev_tomcat_port_shutdown]=8010
-	[pahma-dev_tomcat_port_http]=8080
-	[pahma-dev_tomcat_port_ajp]=8000
+	[pahma-dev_tomcat_port_shutdown]=8017
+	[pahma-dev_tomcat_port_http]=8087
+	[pahma-dev_tomcat_port_ajp]=8007
 	[pahma-dev_tomcat_java_opts]="-Xmx1024m"
 	[pahma-dev_db_host]=dba-postgres-dev-42.ist.berkeley.edu
 	[pahma-dev_db_port]=5117
@@ -58,9 +59,9 @@ declare -A config=(
 	[bampfa-dev_db_host]=dba-postgres-dev-42.ist.berkeley.edu
 	[bampfa-dev_db_port]=5114
 
-	[pahma_tomcat_port_shutdown]=8010
-	[pahma_tomcat_port_http]=8080
-	[pahma_tomcat_port_ajp]=8000
+	[pahma_tomcat_port_shutdown]=8017
+	[pahma_tomcat_port_http]=8087
+	[pahma_tomcat_port_ajp]=8007
 	[pahma_tomcat_java_opts]="-Xmx4g -Xms1g -XX:GCTimeRatio=7"
 	[pahma_db_host]=dba-postgres-prod-42.ist.berkeley.edu
 	[pahma_db_port]=5307
@@ -142,6 +143,12 @@ cat <<EOF > ~/tmp/$TOMCAT_SERVICE_NAME
 #   CATALINA_BASE, CATALINA_TMPDIR, TOMCAT_USER
 
 JAVA_OPTS="${config[${DEPLOYMENT_NAME}${DEV}_tomcat_java_opts]}"
+EOF
+
+cat <<EOF > $TOMCAT_LIB_DIR/security.properties
+# Security settings for CollectionSpace.
+
+cors.allowed.origins=
 EOF
 
 echo "Writing apache configuration..."

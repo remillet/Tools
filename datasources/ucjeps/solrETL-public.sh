@@ -73,7 +73,7 @@ perl -i -pe 's/\\/\//g;s/\t"/\t/g;s/"\t/\t/g;s/\"\"/"/g' 4solr.$TENANT.public.cs
 # mark duplicate accession numbers
 ##############################################################################
 cut -f3 4solr.${TENANT}.public.csv | sort | uniq -c | sort -rn |perl -ne 'print unless / 1 / ' > counts.duplicates.csv
-cut -c9- duplicates.txt | perl -ne 'chomp; print "s/\\t$_\\t/\\t$_ (duplicate)\\t/;\n"' > fix_dups.sh
+cut -c9- counts.duplicates.csv | perl -ne 'chomp; print "s/\\t$_\\t/\\t$_ (duplicate)\\t/;\n"' > fix_dups.sh
 perl -i -p fix_dups.sh 4solr.${TENANT}.public.csv
 ##############################################################################
 # clear out the existing data

@@ -166,7 +166,7 @@ ProxyPassReverse / ajp://localhost:${config[${DEPLOYMENT_NAME}${DEV}_tomcat_port
 
 RewriteEngine On
 # Redirect pre-5.0 login page to the 5.0 login page.
-RewriteRule ^/collectionspace/ui/$DEPLOYMENT_NAME/html(/(index.html)?)?$ https://%{SERVER_NAME}/login [R=301,L]
+RewriteRule ^/collectionspace/ui/$DEPLOYMENT_NAME/html(/(index.html)?)?$ https://%{SERVER_NAME}/ [R=301,L]
 EOF
 
 cat <<EOF > ~/tmp/$VHOST.include

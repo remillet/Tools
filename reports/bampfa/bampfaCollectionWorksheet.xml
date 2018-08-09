@@ -11,6 +11,6 @@
     <supportsGroup>false</supportsGroup>
     <supportsNoContext>true</supportsNoContext>
     <filename>bampfaCollectionsWorksheet.jasper</filename>
-    <outputMIME>application/msword</outputMIME>
+    <outputMIME>application/vnd.openxmlformats-officedocument.wordprocessingml.document</outputMIME>
   </ns2:reports_common>
 </document>

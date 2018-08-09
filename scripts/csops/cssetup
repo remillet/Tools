@@ -263,19 +263,19 @@ echo "Installing maven..."
 cd ~
 
 if [ ! -d bin ]; then
-        mkdir bin
+	mkdir bin
 fi
 
 if [ ! -d opt ]; then
-        mkdir opt
+	mkdir opt
 fi
 
 cd ~/opt
-wget -nv http://mirrors.ocf.berkeley.edu/apache/maven/maven-3/3.5.3/binaries/apache-maven-3.5.3-bin.tar.gz
-tar -zxf apache-maven-3.5.3-bin.tar.gz
-rm apache-maven-3.5.3-bin.tar.gz
+wget -nv http://mirrors.ocf.berkeley.edu/apache/maven/maven-3/3.5.4/binaries/apache-maven-3.5.4-bin.tar.gz
+tar -zxf apache-maven-3.5.4-bin.tar.gz
+rm apache-maven-3.5.4-bin.tar.gz
 cd ~/bin
-ln -sf ~/opt/apache-maven-3.5.3/bin/mvn
+ln -sf ~/opt/apache-maven-3.5.4/bin/mvn
 
 echo "Creating log dir..."
 

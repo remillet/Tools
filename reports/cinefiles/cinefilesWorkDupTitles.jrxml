@@ -74,15 +74,15 @@ order by string1]]>
 	</detail>
 	<pageFooter>
 		<band height="24" splitType="Stretch">
-			<textField>
-				<reportElement uuid="8fc0002a-ee4c-4378-a211-77d7f7934068" x="218" y="8" width="80" height="16"/>
+			<textField evaluationTime="Now">
+				<reportElement uuid="8fc0002a-ee4c-4378-a211-77d7f7934068" x="0" y="8" width="300" height="16"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
-				<reportElement uuid="45792f78-4cd1-42b7-b114-88e573a9682e" x="297" y="8" width="40" height="16"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+				<reportElement uuid="45792f78-4cd1-42b7-b114-88e573a9682e" x="303" y="8" width="10" height="16"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageFooter>

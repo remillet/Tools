@@ -125,7 +125,7 @@ order by authority_name, term_name]]>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{csid}]]></textFieldExpression>
 			</textField>
-			<textField isBlankWhenNull="true">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="7a215486-c7dd-4a46-a785-adda78b80f9f" x="0" y="0" width="100" height="12"/>
 				<textElement>
 					<font fontName="Serif" pdfFontName="Times-Roman"/>
@@ -143,16 +143,17 @@ order by authority_name, term_name]]>
 	</detail>
 	<pageFooter>
 		<band height="24" splitType="Stretch">
-			<textField>
-				<reportElement uuid="8fc0002a-ee4c-4378-a211-77d7f7934068" x="225" y="8" width="80" height="16"/>
+			<textField evaluationTime="Now">
+				<reportElement uuid="8fc0002a-ee4c-4378-a211-77d7f7934068" x="0" y="8" width="300" height="16"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
-				<reportElement uuid="45792f78-4cd1-42b7-b114-88e573a9682e" x="304" y="8" width="40" height="16"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+				<reportElement uuid="45792f78-4cd1-42b7-b114-88e573a9682e" x="303" y="8" width="40" height="16"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageFooter>
 </jasperReport>
+

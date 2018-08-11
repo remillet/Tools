@@ -159,14 +159,17 @@ cat <<EOF > ~/tmp/$VHOST.ssl.include
 ServerAlias ${DEPLOYMENT_NAME}-v5${DEV}.cspace.berkeley.edu
 DocumentRoot /var/www/html
 
+RewriteEngine On
+# Redirect pre-5.0 login page to the 5.0 login page.
+RewriteRule ^/collectionspace/ui/$DEPLOYMENT_NAME/html(/(index\.html)?)?$ https://%{SERVER_NAME}/ [R=301,L]
+# Redirect pre-5.0 record pages to 5.0 record pages.
+RewriteCond %{QUERY_STRING} (&|^)csid=(.*?)(&|$)
+RewriteRule ^/collectionspace/ui/$DEPLOYMENT_NAME/html/(.*)\.html$ https://%{SERVER_NAME}/record/all/%2 [R=301,L,QSD]
+
 ProxyTimeout 1200
 
 ProxyPass / ajp://localhost:${config[${DEPLOYMENT_NAME}${DEV}_tomcat_port_ajp]}/
 ProxyPassReverse / ajp://localhost:${config[${DEPLOYMENT_NAME}${DEV}_tomcat_port_ajp]}/
-
-RewriteEngine On
-# Redirect pre-5.0 login page to the 5.0 login page.
-RewriteRule ^/collectionspace/ui/$DEPLOYMENT_NAME/html(/(index.html)?)?$ https://%{SERVER_NAME}/login [R=301,L]
 EOF
 
 cat <<EOF > ~/tmp/$VHOST.include
@@ -260,19 +263,19 @@ echo "Installing maven..."
 cd ~
 
 if [ ! -d bin ]; then
-        mkdir bin
+	mkdir bin
 fi
 
 if [ ! -d opt ]; then
-        mkdir opt
+	mkdir opt
 fi
 
 cd ~/opt
-wget -nv http://mirrors.ocf.berkeley.edu/apache/maven/maven-3/3.5.3/binaries/apache-maven-3.5.3-bin.tar.gz
-tar -zxf apache-maven-3.5.3-bin.tar.gz
-rm apache-maven-3.5.3-bin.tar.gz
+wget -nv http://mirrors.ocf.berkeley.edu/apache/maven/maven-3/3.5.4/binaries/apache-maven-3.5.4-bin.tar.gz
+tar -zxf apache-maven-3.5.4-bin.tar.gz
+rm apache-maven-3.5.4-bin.tar.gz
 cd ~/bin
-ln -sf ~/opt/apache-maven-3.5.3/bin/mvn
+ln -sf ~/opt/apache-maven-3.5.4/bin/mvn
 
 echo "Creating log dir..."
 

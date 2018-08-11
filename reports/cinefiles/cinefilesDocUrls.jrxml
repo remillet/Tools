@@ -76,18 +76,18 @@ order by doc_id, doc_source, doc_url]]>
 	<detail>
 		<band height="14" splitType="Stretch">
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="ccd172fa-2de0-42fa-8bdb-c5373d5b7a03" stretchType="RelativeToBandHeight" x="40" y="0" width="95" height="12"/>
-				<textElement>
-					<font fontName="Serif" pdfFontName="Times-Roman"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{doc_source}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
 				<reportElement uuid="7a215486-c7dd-4a46-a785-adda78b80f9f" x="0" y="0" width="40" height="12"/>
 				<textElement>
 					<font fontName="Serif" pdfFontName="Times-Roman"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{doc_id}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="ccd172fa-2de0-42fa-8bdb-c5373d5b7a03" stretchType="RelativeToBandHeight" x="40" y="0" width="95" height="12"/>
+				<textElement>
+					<font fontName="Serif" pdfFontName="Times-Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{doc_source}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="ed80a646-fa4d-4257-8278-01fbde34c71c" stretchType="RelativeToBandHeight" x="135" y="0" width="615" height="12"/>
@@ -100,16 +100,16 @@ order by doc_id, doc_source, doc_url]]>
 	</detail>
 	<pageFooter>
 		<band height="24" splitType="Stretch">
-			<textField>
-				<reportElement uuid="8fc0002a-ee4c-4378-a211-77d7f7934068" x="314" y="8" width="80" height="16"/>
+			<textField evaluationTime="Now">
+				<reportElement uuid="8fc0002a-ee4c-4378-a211-77d7f7934068" x="0" y="8" width="390" height="16"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Report">
-				<reportElement uuid="45792f78-4cd1-42b7-b114-88e573a9682e" x="393" y="8" width="40" height="16"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
-			</textField>
+                        <textField evaluationTime="Report">
+                                <reportElement uuid="45792f78-4cd1-42b7-b114-88e573a9682e" x="393" y="8" width="10" height="16"/>
+                                <textElement textAlignment="Left"/>
+                                <textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+                        </textField>
 		</band>
 	</pageFooter>
 </jasperReport>

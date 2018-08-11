@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <document name="report">
   <ns2:reports_common xmlns:ns2="http://collectionspace.org/services/report">
-    <name>Exhibition Checklist (Single Artist)</name>
+    <name>Location Report (Sort by Artist)</name>
     <notes></notes>
     <forDocTypes>
       <forDocType>Group</forDocType>
@@ -10,7 +10,7 @@
     <supportsDocList>false</supportsDocList>
     <supportsGroup>true</supportsGroup>
     <supportsNoContext>true</supportsNoContext>
-    <filename>bampfaExhibitionChecklistGroupSingleArtist.jasper</filename>
+    <filename>bampfaGroupLocation_artist.jasper</filename>
     <outputMIME>application/vnd.openxmlformats-officedocument.wordprocessingml.document</outputMIME>
   </ns2:reports_common>
 </document>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="CineFiles: Missing Report" language="groovy" columnCount="2" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="375" leftMargin="21" rightMargin="21" topMargin="21" bottomMargin="36" uuid="00039d14-8750-45ca-b1fa-81722dbd5f9d">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="CineFiles: Missing Report" language="groovy" columnCount="2" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="364" leftMargin="21" rightMargin="21" topMargin="21" bottomMargin="36" uuid="00039d14-8750-45ca-b1fa-81722dbd5f9d">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
@@ -145,14 +145,14 @@ order by title, description]]>
 				<text><![CDATA[Doc ID]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="4e5b008e-23e6-4faa-8312-1fa6084fc67c" x="40" y="0" width="255" height="16"/>
+				<reportElement uuid="4e5b008e-23e6-4faa-8312-1fa6084fc67c" x="45" y="0" width="240" height="16"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Document and/or Media Title]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="1e5deee1-32b4-4fff-b655-d312ba1b9d70" x="300" y="0" width="75" height="16"/>
+				<reportElement uuid="1e5deee1-32b4-4fff-b655-d312ba1b9d70" x="290" y="0" width="74" height="16"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
@@ -162,7 +162,7 @@ order by title, description]]>
 	</columnHeader>
 	<detail>
 		<band height="14" splitType="Stretch">
-			<textField isBlankWhenNull="true">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="ccd172fa-2de0-42fa-8bdb-c5373d5b7a03" x="0" y="0" width="40" height="12"/>
 				<textElement>
 					<font fontName="Serif" pdfFontName="Times-Roman"/>
@@ -170,14 +170,14 @@ order by title, description]]>
 				<textFieldExpression><![CDATA[$F{doc_id}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="74bbc319-5476-4350-9043-29cd32744f83" stretchType="RelativeToBandHeight" x="40" y="0" width="255" height="12"/>
+				<reportElement uuid="74bbc319-5476-4350-9043-29cd32744f83" stretchType="RelativeToBandHeight" x="45" y="0" width="240" height="12"/>
 				<textElement>
 					<font fontName="Serif" pdfFontName="Times-Roman"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{title}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="61620fa5-a1a1-427b-ad11-3cc578ae1867" stretchType="RelativeToBandHeight" x="300" y="0" width="75" height="12"/>
+				<reportElement uuid="61620fa5-a1a1-427b-ad11-3cc578ae1867" stretchType="RelativeToBandHeight" x="290" y="0" width="74" height="12"/>
 				<textElement>
 					<font fontName="Serif" pdfFontName="Times-Roman"/>
 				</textElement>
@@ -187,15 +187,15 @@ order by title, description]]>
 	</detail>
 	<pageFooter>
 		<band height="24" splitType="Stretch">
-			<textField>
-				<reportElement uuid="8fc0002a-ee4c-4378-a211-77d7f7934068" x="309" y="8" width="80" height="16"/>
+			<textField evaluationTime="Now">
+				<reportElement uuid="8fc0002a-ee4c-4378-a211-77d7f7934068" x="0" y="8" width="390" height="16"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
-				<reportElement uuid="45792f78-4cd1-42b7-b114-88e573a9682e" x="388" y="8" width="40" height="16"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+				<reportElement uuid="45792f78-4cd1-42b7-b114-88e573a9682e" x="393" y="8" width="20" height="16"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageFooter>

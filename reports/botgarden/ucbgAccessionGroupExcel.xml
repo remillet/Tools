@@ -11,6 +11,6 @@
     <supportsGroup>false</supportsGroup>
     <supportsNoContext>true</supportsNoContext>
     <filename>ucbgAccessionGroupExcel.jasper</filename>
-    <outputMIME>application/vnd.ms-excel</outputMIME>
+    <outputMIME>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</outputMIME>
   </ns2:reports_common>
 </document>

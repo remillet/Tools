@@ -19,6 +19,7 @@ fi
 echo "Deploying reports..."
 
 cp reports/$DEPLOYMENT_NAME/*.jrxml $REPORT_DIR
+cp reports/$DEPLOYMENT_NAME/images/* ~/tomcat7/webapps/reports/images
 
 if ls $REPORT_DIR/*.jasper &> /dev/null; then
 	rm $REPORT_DIR/*.jasper

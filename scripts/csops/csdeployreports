@@ -6,6 +6,7 @@ SOURCE_DIR=~/src/cspace-deployment
 TOOLS_DIR=$SOURCE_DIR/Tools
 DEPLOYMENT_NAME=`csname`
 REPORT_DIR=$CATALINA_HOME/cspace/reports
+IMAGE_DEST_DIR=$CATALINA_HOME/webapps/reports/images
 
 cd $TOOLS_DIR
 
@@ -19,10 +20,16 @@ fi
 echo "Deploying reports..."
 
 cp reports/$DEPLOYMENT_NAME/*.jrxml $REPORT_DIR
-cp reports/$DEPLOYMENT_NAME/images/* ~/tomcat7/webapps/reports/images
 
 if ls $REPORT_DIR/*.jasper &> /dev/null; then
 	rm $REPORT_DIR/*.jasper
+fi
+
+IMAGE_SRC_DIR=reports/$DEPLOYMENT_NAME/images
+
+if ls $IMAGE_SRC_DIR/* &> /dev/null; then
+	mkdir -p $IMAGE_DEST_DIR
+	cp $IMAGE_SRC_DIR/* $IMAGE_DEST_DIR
 fi
 
 echo "Reports for $DEPLOYMENT_NAME deployed"

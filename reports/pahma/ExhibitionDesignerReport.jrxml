@@ -152,7 +152,7 @@ ORDER BY eog.exhibitionobjectsection, eog.exhibitionobjectcase, eog.exhibitionob
 		<groupExpression><![CDATA[$F{Section}]]></groupExpression>
 		<groupHeader>
 			<band height="16">
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement mode="Opaque" x="0" y="1" width="566" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" forecolor="#FFFFFF" backcolor="#660000" uuid="d1c40b0a-1645-4524-ad2b-7107e2784f60">
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
@@ -169,7 +169,7 @@ ORDER BY eog.exhibitionobjectsection, eog.exhibitionobjectcase, eog.exhibitionob
 		<groupExpression><![CDATA[$F{Case}]]></groupExpression>
 		<groupHeader>
 			<band height="14">
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement mode="Opaque" x="10" y="1" width="556" height="13" isPrintInFirstWholeBand="true" forecolor="#FFFFFF" backcolor="#804D4D" uuid="5308370f-ebb5-4365-aff0-890e930da846">
 						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
@@ -206,7 +206,7 @@ ORDER BY eog.exhibitionobjectsection, eog.exhibitionobjectcase, eog.exhibitionob
 				<reportElement x="303" y="0" width="270" height="51" uuid="8f134e47-0be0-4c4b-82a7-931499dac371">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
-				<imageExpression><![CDATA["https://pahma.cspace.berkeley.edu/collectionspace/ui/pahma/images/logored100.png"]]></imageExpression>
+				<imageExpression><![CDATA["https://pahma.cspace.berkeley.edu/reports/images/pahmalogo.png"]]></imageExpression>
 			</image>
 		</band>
 	</title>

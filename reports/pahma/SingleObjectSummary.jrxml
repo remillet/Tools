@@ -100,9 +100,9 @@ order by objectnumber]]>
 				</textElement>
 				<text><![CDATA[Object Summary]]></text>
 			</staticText>
-			<image>
+			<image onErrorType="Icon">
 				<reportElement x="530" y="3" width="270" height="51"/>
-				<imageExpression class="java.lang.String"><![CDATA["https://pahma.cspace.berkeley.edu/collectionspace/ui/pahma/images/logored100.png"]]></imageExpression>
+				<imageExpression class="java.lang.String"><![CDATA["https://pahma.cspace.berkeley.edu/reports/images/pahmalogo.png"]]></imageExpression>
 			</image>
 		</band>
 	</title>

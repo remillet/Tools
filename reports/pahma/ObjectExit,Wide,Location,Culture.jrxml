@@ -38,9 +38,6 @@ case when (pef.item is not null and pef.item <> '') then
  regexp_replace(pef.item, '^.*\)''(.*)''$', '\1')
  else ''
 end as ethnographicfilecode,
-CASE WHEN (fcp.item IS NOT NULL AND fcp.item <> '') THEN
-        regexp_replace(fcp.item, '^.*\)''(.*)''$', '\1')
-END AS "Site",
 case when ca.computedcrate is null then regexp_replace(co.computedcurrentlocation, '^.*\)''(.*)''$', '\1')
 	  else regexp_replace(co.computedcurrentlocation, '^.*\)''(.*)''$', '\1')||' '||regexp_replace(ca.computedcrate, '^.*\)''(.*)''$', '\1')
 	end as "currentlocation"

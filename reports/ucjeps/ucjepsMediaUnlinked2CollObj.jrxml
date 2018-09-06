@@ -30,9 +30,9 @@ order by mc.identificationnumber]]>
 	<field name="scientific_name" class="java.lang.String"/>
 	<title>
 		<band height="84" splitType="Stretch">
-			<image>
+			<image onErrorType="Icon">
 				<reportElement uuid="38ebc361-38be-4ce7-9525-42dade10d093" x="0" y="0" width="366" height="61"/>
-				<imageExpression><![CDATA["https://ucjeps.cspace.berkeley.edu/collectionspace/ui/ucjeps/images/header-logo-cspace.png"]]></imageExpression>
+				<imageExpression><![CDATA["https://ucjeps.cspace.berkeley.edu/reports/images/header-logo-cspace.png"]]></imageExpression>
 			</image>
 			<staticText>
 				<reportElement uuid="610bdc26-3968-4115-b85c-cc9f1cbc3630" mode="Transparent" x="0" y="64" width="570" height="20" forecolor="#000000"/>
@@ -81,21 +81,21 @@ order by mc.identificationnumber]]>
 	</columnHeader>
 	<detail>
 		<band height="14" splitType="Stretch">
-			<textField isBlankWhenNull="true">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="61620fa5-a1a1-427b-ad11-3cc578ae1867" x="0" y="0" width="70" height="12"/>
 				<textElement>
 					<font fontName="Serif" pdfFontName="Times-Roman"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{accession_id}]]></textFieldExpression>
 			</textField>
-			<textField isBlankWhenNull="true">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="5f715b3d-dfd8-45e5-9f47-454e2b7a143b" x="70" y="0" width="190" height="12"/>
 				<textElement>
 					<font fontName="Serif" pdfFontName="Times-Roman"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{media_csid}]]></textFieldExpression>
 			</textField>
-			<textField isBlankWhenNull="true">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="b2774bdb-bff4-407c-87f7-b3917d04807d" x="260" y="0" width="310" height="12"/>
 				<textElement>
 					<font fontName="Serif" pdfFontName="Times-Roman"/>

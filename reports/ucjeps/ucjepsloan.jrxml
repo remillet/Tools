@@ -98,13 +98,13 @@ UNIVERSITY OF CALIFORNIA, BERKELEY, CA 94720-2465
 TEL: (510) 642-2465   FAX: (510) 643-5390
 URL: http://ucjeps.berkeley.edu]]></text>
 			</staticText>
-			<image onErrorType="Blank">
+			<image onErrorType="Icon">
 				<reportElement x="500" y="11" width="72" height="72"/>
-				<imageExpression><![CDATA["https://ucjeps.cspace.berkeley.edu/collectionspace/ui/ucjeps/images/jepslogosmall.png"]]></imageExpression>
+				<imageExpression><![CDATA["https://ucjeps.cspace.berkeley.edu/reports/images/jepslogosmall.png"]]></imageExpression>
 			</image>
-			<image onErrorType="Blank">
+			<image onErrorType="Icon">
 				<reportElement x="0" y="11" width="72" height="72"/>
-				<imageExpression><![CDATA["https://ucjeps.cspace.berkeley.edu/collectionspace/ui/ucjeps/images/uclogosmall.png"]]></imageExpression>
+				<imageExpression><![CDATA["https://ucjeps.cspace.berkeley.edu/reports/images/uclogosmall.png"]]></imageExpression>
 			</image>
 		</band>
 	</title>

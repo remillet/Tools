@@ -106,9 +106,9 @@ order by accession]]>
 	</background>
 	<title>
 		<band height="83">
-			<image>
+			<image onErrorType="Icon">
 				<reportElement x="447" y="3" width="72" height="72"/>
-				<imageExpression class="java.lang.String"><![CDATA["https://ucjeps.cspace.berkeley.edu/collectionspace/ui/ucjeps/images/jepslogosmall.png"]]></imageExpression>
+				<imageExpression class="java.lang.String"><![CDATA["https://ucjeps.cspace.berkeley.edu/reports/images/jepslogosmall.png"]]></imageExpression>
 			</image>
 			<staticText>
 				<reportElement x="80" y="18" width="66" height="15"/>
@@ -145,9 +145,9 @@ order by accession]]>
 				</textElement>
 				<text><![CDATA[Loan No.:]]></text>
 			</staticText>
-			<image>
+			<image onErrorType="Icon">
 				<reportElement x="2" y="3" width="72" height="72"/>
-				<imageExpression class="java.lang.String"><![CDATA["https://ucjeps.cspace.berkeley.edu/collectionspace/ui/ucjeps/images/uclogosmall.png"]]></imageExpression>
+				<imageExpression class="java.lang.String"><![CDATA["https://ucjeps.cspace.berkeley.edu/reports/images/uclogosmall.png"]]></imageExpression>
 			</image>
 		</band>
 	</title>

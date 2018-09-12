@@ -97,9 +97,9 @@ ORDER BY cp.sortableobjectnumber]]>
 		</band>
 	</title>
 	<detail>
-		<band height="120" splitType="Stretch">
+		<band height="105" splitType="Stretch">
 			<image>
-				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="457" y="2" width="110" height="114" uuid="b47b794e-de72-4495-9b9b-b2fe2f5e48ba">
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="457" y="1" width="110" height="100" uuid="b47b794e-de72-4495-9b9b-b2fe2f5e48ba">
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
@@ -208,7 +208,7 @@ ORDER BY cp.sortableobjectnumber]]>
 				<textFieldExpression><![CDATA[$F{Culture}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="90" y="71" width="360" height="48" uuid="d17d2487-27d9-4e1e-a1a6-27c35bb0c3f1">
+				<reportElement stretchType="RelativeToTallestObject" x="90" y="71" width="360" height="25" uuid="d17d2487-27d9-4e1e-a1a6-27c35bb0c3f1">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 				<textElement>
@@ -217,7 +217,7 @@ ORDER BY cp.sortableobjectnumber]]>
 				<textFieldExpression><![CDATA[$F{Description}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement stretchType="RelativeToTallestObject" x="-20" y="119" width="591" height="1" uuid="32f9c462-0109-4b55-bdbb-9e199640ae69">
+				<reportElement positionType="Float" x="-20" y="103" width="591" height="1" uuid="32f9c462-0109-4b55-bdbb-9e199640ae69">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 			</line>

@@ -7,6 +7,7 @@ TOOLS_DIR=$SOURCE_DIR/Tools
 DEPLOYMENT_NAME=`csname`
 REPORT_DIR=$CATALINA_HOME/cspace/reports
 IMAGE_DEST_DIR=$CATALINA_HOME/webapps/reports/images
+LIB_DEST_DIR=$CATALINA_HOME/lib
 
 cd $TOOLS_DIR
 
@@ -30,6 +31,13 @@ IMAGE_SRC_DIR=reports/$DEPLOYMENT_NAME/images
 if ls $IMAGE_SRC_DIR/* &> /dev/null; then
 	mkdir -p $IMAGE_DEST_DIR
 	cp $IMAGE_SRC_DIR/* $IMAGE_DEST_DIR
+fi
+
+LIB_SRC_DIR=reports/$DEPLOYMENT_NAME/lib
+
+if ls $LIB_SRC_DIR/* &> /dev/null; then
+	mkdir -p $LIB_DEST_DIR
+	cp $LIB_SRC_DIR/* $LIB_DEST_DIR
 fi
 
 echo "Reports for $DEPLOYMENT_NAME deployed"

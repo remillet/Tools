@@ -1,8 +1,0 @@
--rw-r--r--. 1 app_botgarden app_botgarden 274404 Jun 18  2015 barcode4j-2.1.jar
--rw-r--r--. 1 app_botgarden app_botgarden 282237 May 18  2015 barcode4j-fop-ext-0.20.5-complete.jar
--rw-r--r--. 1 app_botgarden app_botgarden  15864 May 18  2015 barcode4j-fop-ext-0.20.5.jar
--rw-r--r--. 1 app_botgarden app_botgarden 298488 May 18  2015 barcode4j-fop-ext-complete.jar
--rw-r--r--. 1 app_botgarden app_botgarden  32115 May 18  2015 barcode4j-fop-ext.jar
--rw-r--r--. 1 app_botgarden app_botgarden 274404 May 18  2015 barcode4j.jar
--rw-r--r--. 1 app_botgarden app_botgarden 230538 May 18  2015 barcode4j-light.jar
--rw-r--r--. 1 app_botgarden app_botgarden  22109 May 18  2015 barcode4j-xgc.jar

@@ -9,7 +9,7 @@ create server bampfa_dev_server
 foreign data wrapper postgres_fdw
 options (host 'dba-postgres-dev-42', port '5114', dbname 'bampfa_domain_bampfa');
 
-create user mapping for piction server bampfa_prod_server
+create user mapping for piction server bampfa_dev_server
 options (user 'piction_ro', password 'secretpassword');
 
 -- Prod-02

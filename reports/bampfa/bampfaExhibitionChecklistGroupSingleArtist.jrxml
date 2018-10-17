@@ -17,7 +17,7 @@
    utils.getdispl(boppg.bampfaobjectproductionperson) artist,
    case when (cob.artistdisplayoverride is null or cob.artistdisplayoverride='') then utils.concat_artists(hrc.name)
      else cob.artistdisplayoverride end as artistCalc,
-   btg.bampfatitle title,
+   btg.bampfaformattedtitle title,
    coc.physicaldescription materials,
    replace(mpg.dimensionsummary, '-', ' ') measurementSummary,
    cb.creditline,
@@ -59,7 +59,7 @@ from
       ON (h2.parentid = coc.id AND h2.name='collectionobjects_common:objectProductionDateGroupList' and h2.pos=0)
    LEFT OUTER JOIN structuredDateGroup sdg ON (h2.id = sdg.id)
 WHERE hgc.name = $P{csid}
-order by sdg.dateearliestscalarvalue, btg.bampfatitle, accnNumberSort]]>
+order by sdg.dateearliestscalarvalue, btg.bampfaformattedtitle, accnNumberSort]]>
 	</queryString>
 	<field name="grouptitle" class="java.lang.String"/>
 	<field name="groupscope" class="java.lang.String"/>
@@ -111,8 +111,8 @@ order by sdg.dateearliestscalarvalue, btg.bampfatitle, accnNumberSort]]>
 		<band height="149" splitType="Stretch">
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="a16519ac-beee-4940-a59f-9bf1026d76b3" x="0" y="5" width="376" height="18" isRemoveLineWhenBlank="true"/>
-				<textElement>
-					<font size="12" isItalic="true"/>
+				<textElement markup="html">
+					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{title}]]></textFieldExpression>
 			</textField>

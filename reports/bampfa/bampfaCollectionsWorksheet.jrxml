@@ -32,7 +32,7 @@
    sdgpb.datedisplaydate artistbirthdate,
    sdgpd.datedisplaydate artistdeathdate,
    pb.datesactive,
-   bt.bampfatitle title,
+   bt.bampfaformattedtitle title,
    cb.seriestitle seriestitle,
    cb.initialvalue,
    cv.currentvalue,
@@ -284,7 +284,7 @@ WHERE h1.name = $P{csid}]]>
 					</staticText>
 					<textField isBlankWhenNull="true">
 						<reportElement x="108" y="158" width="461" height="20" uuid="f60df71d-eb19-4cb6-a1a3-7606d6281d54"/>
-						<textElement textAlignment="Left">
+						<textElement textAlignment="Left" markup="html">
 							<font size="12" isBold="false"/>
 						</textElement>
 						<textFieldExpression><![CDATA[$F{title}]]></textFieldExpression>

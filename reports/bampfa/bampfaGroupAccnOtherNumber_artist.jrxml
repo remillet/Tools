@@ -13,7 +13,7 @@
    cob.sortableEffectiveObjectNumber accnNumberSort,
    con.numbervalue otherNumber,
    utils.getdispl(boppg.bampfaobjectproductionperson) artist,
-   btg.bampfatitle title,
+   btg.bampfaformattedtitle title,
    coc.physicaldescription materials,
    cvg.currentvalue currentValue
 from
@@ -157,7 +157,7 @@ order by utils.getdispl(boppg.bampfaobjectproductionperson)]]>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="73fc7934-b5c2-40f9-9736-74fc178cff3a" stretchType="RelativeToBandHeight" x="326" y="5" width="205" height="16"/>
-				<textElement>
+				<textElement markup="html">
 					<font fontName="SansSerif"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{title}]]></textFieldExpression>

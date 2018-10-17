@@ -25,7 +25,7 @@ select
     lg.coorduncertaintyunit as CoordinateUncertaintyUnit_s,
 
     regexp_replace(tn.family, '^.*\)''(.*)''$', '\1') as family_s,
-    '' gardenlocation_s, -- dead accessions should have no gardenlocations
+    '' gardenlocation_ss, -- dead accessions should have no gardenlocations
     co.recordstatus dataQuality_s,
 case when (lg.fieldlocplace is not null and lg.fieldlocplace <> '') then regexp_replace(lg.fieldlocplace, '^.*\)''(.*)''$', '\1')
      when (lg.fieldlocplace is null and lg.taxonomicrange is not null) then 'Geographic range: '||lg.taxonomicrange

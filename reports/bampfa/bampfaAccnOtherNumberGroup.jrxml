@@ -15,7 +15,7 @@
    con.numbervalue otherNumber,
    getdispl(boppg.bampfaobjectproductionperson) artist,
    concat_artists(hrc.name) artistCalc,
-   btg.bampfatitle title,
+   btg.bampfaformattedtitle title,
    coc.physicaldescription materials,
    mpg.dimensionsummary measurementSummary,
    cvg.currentvalue currentValue
@@ -161,7 +161,7 @@ order by cob.sortableEffectiveObjectNumber]]>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="73fc7934-b5c2-40f9-9736-74fc178cff3a" stretchType="RelativeToBandHeight" x="326" y="0" width="205" height="16"/>
-				<textElement>
+				<textElement markup="html">
 					<font fontName="SansSerif"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{title}]]></textFieldExpression>

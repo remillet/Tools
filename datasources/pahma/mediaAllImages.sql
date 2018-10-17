@@ -15,7 +15,8 @@ SELECT
   mp.approvedforweb,
   cp.pahmatmslegacydepartment                             AS pahmatmslegacydepartment,
   osl0.item                                               AS objectstatus,
-  mp.primarydisplay                                       AS primarydisplay
+  mp.primarydisplay                                       AS primarydisplay,
+  bc.mimetype                                             AS mimetype
 
 FROM media_common mc
   JOIN media_pahma mp ON (mp.id = mc.id)
@@ -29,4 +30,3 @@ FROM media_common mc
   JOIN hierarchy h3 ON (mc.blobcsid = h3.name)
   LEFT OUTER JOIN blobs_common bc ON (h3.id = bc.id)
   FULL OUTER JOIN collectionobjects_pahma_pahmaobjectstatuslist osl0 ON (cc.id = osl0.id AND osl0.pos = 0)
-

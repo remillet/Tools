@@ -8,7 +8,7 @@
     coc.objectnumber accnNumber,
     con.numbervalue otherNumber,
     utils.getdispl(boppg.bampfaobjectproductionperson) artist,
-    btg.bampfatitle title,
+    btg.bampfaformattedtitle title,
     csc.updatedat modDate,
     csc.updatedby modBy
 from collectionobjects_common coc
@@ -149,7 +149,7 @@ order by csc.updatedat desc, csc.updatedby]]>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="751f5b2c-ccad-4deb-91b4-db9894220113" stretchType="RelativeToBandHeight" x="321" y="5" width="220" height="16"/>
-				<textElement>
+				<textElement markup="html">
 					<font fontName="SansSerif"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{title}]]></textFieldExpression>

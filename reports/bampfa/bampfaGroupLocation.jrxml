@@ -16,7 +16,7 @@
             then utils.concat_artists(hrc.name)
         else cob.artistdisplayoverride
    end artistCalc,
-   btg.bampfatitle title,
+   btg.bampfaformattedtitle title,
    utils.getdispl(cob.itemclass) itemClass,
    replace(mpg.dimensionsummary, '-', ' ') measurementSummary,
    CASE
@@ -149,7 +149,7 @@ ORDER BY cob.sortableEffectiveObjectNumber]]>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="73fc7934-b5c2-40f9-9736-74fc178cff3a" stretchType="RelativeToBandHeight" x="226" y="5" width="200" height="16"/>
-				<textElement>
+				<textElement markup="html">
 					<font fontName="SansSerif"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{title}]]></textFieldExpression>

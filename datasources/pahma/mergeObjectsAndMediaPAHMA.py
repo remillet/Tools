@@ -6,12 +6,9 @@ from unicode_hack import UnicodeReader, UnicodeWriter
 count = defaultdict(int)
 delim = '\t'
 
-# MEDIA = open(sys.argv[1],'r')
-# die "couldn't open media file sys.arg[0]"
 blobs = defaultdict()
 seen = defaultdict()
-# this needs to be a list
-restricted = ['59a733dd-d641-4e1a-8552']
+restricted = '59a733dd-d641-4e1a-8552'
 
 mimetypes = {'application/pdf': 'pdf',
              'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'msword',
@@ -33,7 +30,7 @@ objectnamecol = 8
 
 
 def check(string_to_check, pattern):
-    if unicode(pattern) in unicode(string_to_check):
+    if unicode(pattern).lower() in unicode(string_to_check).lower():
         return True
     else:
         return False
@@ -45,19 +42,30 @@ with open(sys.argv[1], 'r') as MEDIA:
     for row in reader:
 
         count['media'] += 1
-        if len(row) != 17:
+
+        # skip header row
+        if count['media'] == 1:
+            continue
+
+        if len(row) != 18:
             print row
+            count['skipped media (invalid row)'] += 1
             continue
         (objectcsid, objectnumber, mediacsid, description, name, creatorrefname, creator, blobcsid, copyrightstatement,
          identificationnumber, rightsholderrefname, rightsholder, contributor, approvedforweb, pahmatmslegacydepartment,
-         objectstatus, primarydisplay) = row
-        # , mimetype
-        mimetype = 'image/jpeg'
+         objectstatus, primarydisplay, mimetype) = row
+        count['primary display %s' % primarydisplay] += 1
+        count['mimetype %s' % mimetype] += 1
+        if mimetype in mimetypes:
+            available_media = mimetypes[mimetype]
+        else:
+            available_media = 'unrecognized'
+        count['media available %s' % available_media] += 1
         # print "blobcsid objectcsid\n"
-        imagetype = 'images'
+        media_type = 'images'
         # mark catalog card images as such
-        if check(description, '(catalog card|HSR Datasheet)'): imagetype = 'cards'
-        if check(description, '^Index'): imagetype = 'cards'
+        if check(description, 'catalog card') or check(description, 'HSR Datasheet'): media_type = 'legacy documentation'
+        if check(description, 'Index'): media_type = 'legacy documentation'
         ispublic = 'public'
         # we don't need to match a pattern here, it's a vocabulary. But just in case...
         if check(pahmatmslegacydepartment, 'Human Remains'): ispublic = 'notpublic'
@@ -66,19 +74,40 @@ with open(sys.argv[1], 'r') as MEDIA:
         # NB: the test 'burial' in context of use occurs below -- we only mask if the FCP is in North America
         if not (approvedforweb == 't'): ispublic = 'notpublic'
         # ispublic = 'notapprovedforweb' unless (approvedforweb == 't')
-        if (imagetype == 'cards'): ispublic = 'public'
+        if (media_type == 'legacy documentation'): ispublic = 'public'
         # warn ispublic + imagetype
-        count[imagetype] += 1
+        count[media_type] += 1
         count[ispublic] += 1
         # start by assuming no images for this object
         # blobs[objectcsid]['hasimages'] = 'no'
-        blobs[objectcsid] = defaultdict(int)
-        blobs[objectcsid]['cards'] = []
-        blobs[objectcsid]['images'] = []
-        blobs[objectcsid]['type'] = []
-        blobs[objectcsid]['restrictions'] = []
-        if (imagetype == 'cards'):
-            blobs[objectcsid]['cards'].append(blobcsid)
+        if not objectcsid in blobs:
+            blobs[objectcsid] = defaultdict(int)
+            blobs[objectcsid]['legacy documentation'] = []
+            blobs[objectcsid]['images'] = []
+            blobs[objectcsid]['type'] = []
+            blobs[objectcsid]['restrictions'] = []
+            blobs[objectcsid]['video_csids'] = []
+            blobs[objectcsid]['video_mimetypes'] = []
+            blobs[objectcsid]['audio_csids'] = []
+            blobs[objectcsid]['audio_mimetypes'] = []
+            blobs[objectcsid]['d3_csids'] = []
+            blobs[objectcsid]['d3_mimetypes'] = []
+            blobs[objectcsid]['media_available'] = []
+            blobs[objectcsid]['mimetypes'] = []
+
+        if not check(blobs[objectcsid]['mimetypes'], mimetype):
+            blobs[objectcsid]['mimetypes'].append(mimetype)
+        if not check(blobs[objectcsid]['media_available'], available_media):
+            blobs[objectcsid]['media_available'].append(available_media)
+
+        if (available_media in ['audio','video','d3']):
+            if ispublic == 'public':
+                blobs[objectcsid]['%s_csids' % available_media].append(blobcsid)
+                blobs[objectcsid]['%s_mimetypes' % available_media].append(mimetype)
+
+        if (media_type == 'legacy documentation'):
+            blobs[objectcsid]['legacy documentation'].append(blobcsid)
+
         else:
             blobs[objectcsid]['hasimages'] = 'yes'
             # if this run is to generate the public datastore, use the restricted image if this blob is restricted.
@@ -96,8 +125,9 @@ with open(sys.argv[1], 'r') as MEDIA:
 
                     else:
                         blobs[objectcsid]['images'].append(blobcsid)
-        if not check(blobs[objectcsid]['type'], 'imagetype'): blobs[objectcsid]['type'].append(imagetype)
-        if not check(blobs[objectcsid]['restrictions'], 'ispublic'): blobs[objectcsid]['restrictions'].append(ispublic)
+
+        if not check(blobs[objectcsid]['type'], media_type): blobs[objectcsid]['type'].append(media_type)
+        if not check(blobs[objectcsid]['restrictions'], ispublic): blobs[objectcsid]['restrictions'].append(ispublic)
 
 # die "couldn't open metadata file sys.arg[1]"
 
@@ -112,42 +142,54 @@ with open(sys.argv[2], 'r') as METADATA:
             continue
         # handle header line
         if (id == 'id'):
-            header = line + u'blob_ss,card_ss,primaryimage_s,imagetype_ss,restrictions_ss,hasimages_s'.split(',')
+            header = line + u'blob_ss,card_ss,primaryimage_s,imagetype_ss,restrictions_ss,hasimages_s,video_csid_ss,video_mimetype_ss,audio_csid_ss,audio_mimetype_ss,d3_csid_ss,d3_mimetype_ss,media_available_ss,mimetypes_ss'.split(',')
             writer.writerow(header)
             continue
         count['metadata'] += 1
         mediablobs = line
         if (objectcsid in blobs):
             if (runtype == 'public'):
-                # if context of use field contains the word burial
-                if check(rest[contextofusecol], 'burial') and check(rest[fcpcol], 'United States') and \
-                        blobs[objectcsid]['images'] != []: blobs[objectcsid]['images'] = restricted
-                # if object name contains something like "charm stone"
-                if check(rest[objectnamecol], 'charm.*stone') and check(rest[fcpcol], 'United States') and \
-                        blobs[objectcsid]['images'] != []: blobs[objectcsid]['images'] = restricted
-                # belt-and-suspenders: restrict if charm stone or NAGPRA appear anywhere in USA records...
-                if check(line, '(charm.*stone|NAGPRA-associated Funerary Objects)') and check(rest[fcpcol],'United States') and \
-                        blobs[objectcsid]['images'] != []: blobs[objectcsid]['images'] = restricted
+                # for US sites...
+                if check(rest[fcpcol], 'United States') and blobs[objectcsid]['images'] != []:
+                    line_as_string = ' '.join(line)
+                    # if context of use field contains the word burial
+                    if check(rest[contextofusecol], 'burial'):
+                        blobs[objectcsid]['images'] = restricted
+                    # if object name contains something like "charm stone"
+                    elif (check(rest[objectnamecol], 'charm stone') or check(rest[objectnamecol], 'charmstone')):
+                        blobs[objectcsid]['images'] = restricted
+                    # belt-and-suspenders: restrict if charm stone or NAGPRA appear anywhere...
+                    elif (check(line_as_string, 'charm stone') or check(line_as_string, 'charmstone')):
+                        blobs[objectcsid]['images'] = restricted
+                    elif check(line_as_string, 'NAGPRA-associated Funerary Objects'):
+                        blobs[objectcsid]['images'] = restricted
 
             # insert list of blobs, etc. as final columns
             # blobs[objectcsid]['restrictions']
             # blobs[objectcsid]['type']
-            blobs[objectcsid]['type'] = blobs[objectcsid]['type'].split(',').join(',')
             if not blobs[objectcsid]['hasimages'] == 'yes': blobs[objectcsid]['hasimages'] = 'no'
-            count['hasimages: ' + blobs[objectcsid]['hasimages']] += 1
-            for column in 'images cards primary type restrictions hasimages'.split(' '):
-                mediablobs.append(blobs[objectcsid][column])
+            count['hasimages: %s' % blobs[objectcsid]['hasimages']] += 1
+            for column in 'images,legacy documentation,primary,type,restrictions,hasimages,video_csids,video_mimetypes,audio_csids,audio_mimetypes,d3_csids,d3_mimetypes,media_available,mimetypes'.split(','):
+                if type(blobs[objectcsid][column]) == type([]):
+                    mediablobs.append(','.join(sorted(blobs[objectcsid][column])))
+                else:
+                    mediablobs.append(blobs[objectcsid][column])
 
-            count['object type: ' + blobs[objectcsid]['type']] += 1
-            count['object restrictions: ' + blobs[objectcsid]['restrictions']] += 1
+            count['object type: ' + ','.join(sorted(blobs[objectcsid]['type']))] += 1
+            count['object restrictions: ' + ','.join(sorted(blobs[objectcsid]['restrictions']))] += 1
             count['matched: yes'] += 1
         else:
             count['matched: no'] += 1
             count['hasimages: no'] += 1
-            mediablobs += [''] * 6
-            mediablobs += 'no'
+            mediablobs += [u''] * 6
+            mediablobs += [u'no']
+
+        for i,m in enumerate(mediablobs):
+            if type(m) == type(0):
+                count['repaired'] += 1
+                mediablobs[i] = str(m)
 
         writer.writerow(mediablobs)
 
-for s in count.keys():
+for s in sorted(count.keys()):
     print "%s: %s" % (s, count[s])

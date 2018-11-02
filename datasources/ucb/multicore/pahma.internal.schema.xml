@@ -247,6 +247,7 @@
     <copyField source="d3_csid_ss" dest="d3_csid_txt"/>
     <copyField source="d3_mimetype_ss" dest="d3_mimetype_txt"/>
     <copyField source="media_available_ss" dest="media_available_txt"/>
+    <copyField source="mimetypes_ss" dest="mimetypes_ss"/>
 
     <copyField source="*_s" dest="text"/>
     <copyField source="*_ss" dest="text"/>

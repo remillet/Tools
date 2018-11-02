@@ -94,6 +94,7 @@ with open(sys.argv[1], 'r') as MEDIA:
             blobs[objectcsid]['d3_mimetypes'] = []
             blobs[objectcsid]['media_available'] = []
             blobs[objectcsid]['mimetypes'] = []
+            blobs[objectcsid]['primary'] = ''
 
         if not check(blobs[objectcsid]['mimetypes'], mimetype):
             blobs[objectcsid]['mimetypes'].append(mimetype)
@@ -114,17 +115,15 @@ with open(sys.argv[1], 'r') as MEDIA:
             if (runtype == 'public'):
                 if (ispublic != 'public'): blobcsid = restricted
 
-            if (primarydisplay == 't'):
-                blobs[objectcsid]['primary'] = blobcsid
+            # add this blob to the list of blobs, unless we somehow already have it (no dups allowed!)
+            if not check(blobs[objectcsid]['images'], blobcsid):
+                # put primary images first
+                if (primarydisplay == 't'):
+                    blobs[objectcsid]['images'].insert(0, blobcsid)
+                    blobs[objectcsid]['primary'] = blobcsid
 
-                # add this blob to the list of blobs, unless we somehow already have it (no dups allowed!)
-                if not check(blobs[objectcsid]['images'], 'blobcsid'):
-                    # put primary images first
-                    if (primarydisplay == 't'):
-                        blobs[objectcsid]['images'].insert(0, blobcsid)
-
-                    else:
-                        blobs[objectcsid]['images'].append(blobcsid)
+                else:
+                    blobs[objectcsid]['images'].append(blobcsid)
 
         if not check(blobs[objectcsid]['type'], media_type): blobs[objectcsid]['type'].append(media_type)
         if not check(blobs[objectcsid]['restrictions'], ispublic): blobs[objectcsid]['restrictions'].append(ispublic)
@@ -165,13 +164,11 @@ with open(sys.argv[2], 'r') as METADATA:
                         blobs[objectcsid]['images'] = restricted
 
             # insert list of blobs, etc. as final columns
-            # blobs[objectcsid]['restrictions']
-            # blobs[objectcsid]['type']
             if not blobs[objectcsid]['hasimages'] == 'yes': blobs[objectcsid]['hasimages'] = 'no'
             count['hasimages: %s' % blobs[objectcsid]['hasimages']] += 1
             for column in 'images,legacy documentation,primary,type,restrictions,hasimages,video_csids,video_mimetypes,audio_csids,audio_mimetypes,d3_csids,d3_mimetypes,media_available,mimetypes'.split(','):
                 if type(blobs[objectcsid][column]) == type([]):
-                    mediablobs.append(','.join(sorted(blobs[objectcsid][column])))
+                    mediablobs.append('|'.join(sorted(blobs[objectcsid][column])))
                 else:
                     mediablobs.append(blobs[objectcsid][column])
 
@@ -181,8 +178,10 @@ with open(sys.argv[2], 'r') as METADATA:
         else:
             count['matched: no'] += 1
             count['hasimages: no'] += 1
-            mediablobs += [u''] * 6
+            mediablobs += [u''] * 4
+            mediablobs += [u'public']
             mediablobs += [u'no']
+            mediablobs += [u''] * 8
 
         for i,m in enumerate(mediablobs):
             if type(m) == type(0):

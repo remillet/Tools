@@ -57,10 +57,10 @@ with open(sys.argv[1], 'r') as MEDIA:
         count['primary display %s' % primarydisplay] += 1
         count['mimetype %s' % mimetype] += 1
         if mimetype in mimetypes:
-            available_media = mimetypes[mimetype]
+            media_available = mimetypes[mimetype]
         else:
-            available_media = 'unrecognized'
-        count['media available %s' % available_media] += 1
+            media_available = 'unrecognized'
+        count['media available %s' % media_available] += 1
         # print "blobcsid objectcsid\n"
         media_type = 'images'
         # mark catalog card images as such
@@ -98,15 +98,15 @@ with open(sys.argv[1], 'r') as MEDIA:
 
         if not check(blobs[objectcsid]['mimetypes'], mimetype):
             blobs[objectcsid]['mimetypes'].append(mimetype)
-        if not check(blobs[objectcsid]['media_available'], available_media):
-            blobs[objectcsid]['media_available'].append(available_media)
+        if not check(blobs[objectcsid]['media_available'], media_available):
+            blobs[objectcsid]['media_available'].append(media_available)
 
-        if (available_media in ['audio','video','d3']):
+        if (media_available in ['audio', 'video', 'd3']):
             if ispublic == 'public':
-                blobs[objectcsid]['%s_csids' % available_media].append(blobcsid)
-                blobs[objectcsid]['%s_mimetypes' % available_media].append(mimetype)
+                blobs[objectcsid]['%s_csids' % media_available].append(blobcsid)
+                blobs[objectcsid]['%s_mimetypes' % media_available].append(mimetype)
 
-        if (media_type == 'legacy documentation'):
+        elif (media_type == 'legacy documentation'):
             blobs[objectcsid]['legacy documentation'].append(blobcsid)
 
         else:

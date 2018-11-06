@@ -40,8 +40,8 @@ ELSE (SELECT 'https://webapps.cspace.berkeley.edu/pahma/imageserver/blobs/'||mc.
 END AS "imagefilepath"
 
 FROM collectionobjects_common cc
-JOIN collectionobjects_pahma cp ON (cc.id=cp.id)
-JOIN collectionobjects_anthropology ca ON (cc.id=ca.id)
+LEFT OUTER JOIN collectionobjects_pahma cp ON (cc.id=cp.id)
+LEFT OUTER JOIN collectionobjects_anthropology ca ON (cc.id=ca.id)
 LEFT OUTER JOIN collectionobjects_common_briefdescriptions bd ON (bd.id=cc.id AND bd.pos=0)
 JOIN hierarchy h1 ON (cc.id=h1.id)
 JOIN relations_common rc ON (h1.name=rc.subjectcsid AND rc.objectdocumenttype='Group')

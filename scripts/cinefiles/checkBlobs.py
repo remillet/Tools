@@ -104,7 +104,6 @@ def checkSyntax(parsedName, n, value):
     if parsedName is None:
         return False
     else:
-        # print '%s :: %s' % (parsedName.group(n),value)
         if parsedName.group(n) in value:
             return True
         else:
@@ -145,9 +144,6 @@ def get_exif(fn):
 def getBlobsFromDB(config, startdate, enddate, binariesrepo):
     dbconn = psycopg2.connect(config.get('connect', 'connect_string'))
     objects = dbconn.cursor()
-
-    # SELECT b.id as blobid, c.id as contentid, b.name as filename,
-    # c.data AS md5, cc.createdat, cc.updatedat
 
     query = """
      SELECT cc.id, cc.updatedat, cc.updatedby, b.name, c.data AS md5
@@ -192,8 +188,8 @@ def get_tifftags(fn, ret):
     try:
         im = Image.open(fn)
     except:
-        for key in 'imageOK isTiff sizeOK syntaxOK resolutionOK isCompressed depthOK colorOK'.split(' '): ret[
-            key] = False
+        for key in 'imageOK isTiff sizeOK syntaxOK resolutionOK isCompressed depthOK colorOK'.split(' '):
+            ret[key] = False
         return
 
     ret['filesize'] = getsize(fn)
@@ -259,7 +255,6 @@ def getRecords(rawFile):
 
 
 def getBloblist(blobpath):
-    # filelist = [ f for f in listdir(blobpath) if isfile(join(blobpath,f)) and ('.csv' in f or 'trace.log' in f) ]
     filelist = [f for f in listdir(blobpath) if isfile(join(blobpath, f))]
     records = []
     for f in sorted(filelist):
@@ -359,8 +354,6 @@ def doChecks(args):
         except:
             print "failed on file", i, tif['fullpathtofile']
             raise
-            # tif['istiff'] = 'Error'
-            # print '%s: no tiff data' % tif['name']
 
         for v1, v2 in enumerate(columns):
             try:

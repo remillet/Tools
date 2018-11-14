@@ -7,7 +7,7 @@
 		<defaultValueExpression><![CDATA["2ca67007-b5b3-49a7-9fa0"]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[SELECT  gc.title AS "GroupTitle",
+		<![CDATA[SELECT gc.title AS "GroupTitle",
         h1.name AS "csid",
         co.objectnumber AS "Museum No.",
         cp.sortableobjectnumber AS "sort",
@@ -25,8 +25,8 @@ JOIN hierarchy h1 ON (gc.id=h1.id)
 JOIN relations_common rc1 ON (h1.name=rc1.subjectcsid)
 JOIN hierarchy h2 ON (rc1.objectcsid=h2.name)
 JOIN collectionobjects_common co ON (h2.id=co.id)
-JOIN collectionobjects_pahma cp ON (co.id=cp.id)
-JOIN collectionobjects_anthropology ca on (co.id=ca.id)
+LEFT OUTER JOIN collectionobjects_pahma cp ON (co.id=cp.id)
+LEFT OUTER JOIN collectionobjects_anthropology ca on (co.id=ca.id)
 JOIN misc ms ON (co.id=ms.id AND ms.lifecyclestate <> 'deleted')
 LEFT OUTER JOIN hierarchy h3 ON (co.id = h3.parentid AND h3.primarytype='objectNameGroup' AND h3.pos=0)
 LEFT OUTER JOIN objectnamegroup ong ON (ong.id=h3.id)

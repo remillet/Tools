@@ -31,8 +31,8 @@ ong.objectName objectName,
 bd.item description,
 misc.lifecyclestate lifecyclestate
 from collectionobjects_common co
-join collectionobjects_pahma cp on (co.id=cp.id)
-join collectionobjects_anthropology ca on (co.id=ca.id)
+left outer join collectionobjects_pahma cp on (co.id=cp.id)
+left outer join collectionobjects_anthropology ca on (co.id=ca.id)
 
 left outer join hierarchy h1 on (co.id = h1.id)
 

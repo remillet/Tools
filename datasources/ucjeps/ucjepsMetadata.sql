@@ -39,7 +39,7 @@ select
             'yyyy-mm-dd')
         else null
     end as latecollectiondate_dt,
-    -- regexp_replace(lg.fieldlocverbatim,E'[\\t\\n\\r]+', ' ', 'g') as locality_s,
+    regexp_replace(lg.fieldlocverbatim,E'[\\t\\n\\r]+', ' ', 'g') as locality_s,
     regexp_replace(lg.fieldloccounty, '^.*\)''(.*)''$', '\1') as collcounty_s,
     regexp_replace(lg.fieldlocstate, '^.*\)''(.*)''$', '\1') as collstate_s,
     regexp_replace(lg.fieldloccountry, '^.*\)''(.*)''$', '\1') as collcountry_s,
@@ -61,7 +61,7 @@ select
     lg.localitynote as localitynote_s,
     lg.localitysource as localitysource_s,
     lg.localitysourcedetail as localitysourcedetail_s,
-    -- TODO: when the data is migrated from the two fiels above, these next two fields should replace them.
+    -- TODO: when the data is migrated from the two fields above, these next two fields should replace them.
     -- TODO: at least, I *think* so!
     -- gr.georefsource as georefersource_s,
     -- gr.georefremarks as georefremarks_s,
@@ -143,6 +143,14 @@ select
       (SELECT CASE WHEN (lg2.fieldlocverbatim IS NOT NULL AND lg2.fieldlocverbatim <>'' and lg2.fieldlocverbatim not like '%unknown%') THEN (getdispl(lg2.fieldlocverbatim)) ELSE '' END
         from collectionobjects_common co5
 	      inner join hierarchy h5int on co5.id = h5int.id
+	      left outer join hierarchy hlg2 on (co5.id = hlg2.parentid and hlg2.pos > 0
+	      and hlg2.name = 'collectionobjects_naturalhistory:localityGroupList')
+	      left outer join localityGroup lg2 on (lg2.id = hlg2.id)
+        where h5int.name=h1.name order by hlg2.pos), '␥', '') as otherlocalities_ss,
+  array_to_string(array
+      (SELECT CASE WHEN (lg2.fieldlocverbatim IS NOT NULL AND lg2.fieldlocverbatim <>'' and lg2.fieldlocverbatim not like '%unknown%') THEN (getdispl(lg2.fieldlocverbatim)) ELSE '' END
+        from collectionobjects_common co5
+	      inner join hierarchy h5int on co5.id = h5int.id
 	      left outer join hierarchy hlg2 on (co5.id = hlg2.parentid and hlg2.pos >= 0
 	      and hlg2.name = 'collectionobjects_naturalhistory:localityGroupList')
 	      left outer join localityGroup lg2 on (lg2.id = hlg2.id)
@@ -202,9 +210,7 @@ left outer join taxontermgroup ttg on (ttg.id = httg.id)
 left outer join taxon_ucjeps tu on (tu.id = tc.id)
 left outer join taxon_naturalhistory tnh on (tnh.id = tc.id)
 left outer join localitygroup lg on (lg.id = hlg.id)
--- left outer join hierarchy hgr
---         on (co.id = hgr.parentid and hgr.pos = 0
---         and hgr.name = 'TODO: what goes here?')
+-- left outer join hierarchy hgr on (co.id = hgr.parentid and hgr.pos = 0 and hgr.name = 'TODO: what goes here?')
 -- left outer join placegeorefgroup gr on (gr.id = hgr.id)
 left outer join collectionobjects_naturalhistory conh on (co.id = conh.id)
 left outer join collectionobjects_ucjeps cj on (co.id = cj.id)

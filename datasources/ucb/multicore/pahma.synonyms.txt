@@ -1,0 +1,16 @@
+# Synonyms groups specific to PAHMA
+Water color,watercolor
+Ground stone,groundstone
+Femur,femora,femurs
+Tibia,tibiae,tibias
+Fibula,fibulae,fibulas
+Humerus,humeri,humeruses
+Radius,radii,radiuses
+Ulna,ulnae,ulnas
+Cranium,crania
+Mandible,mandibulae,mandibles
+Vertebra,vertebrae,vertebras
+
+# Synonym mappings can be used for spelling correction too
+pheobe => phoebe
+

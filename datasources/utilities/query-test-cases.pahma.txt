@@ -17,8 +17,11 @@ Basket	Baskets
 Femur	Femurs
 Filipino	Filipinos
 Comb	Combs
-# pathological cases which probably cannot be handled properly
-
+# cases which probably have to be handled as special cases (i.e. synonyms)
+ox	oxen
+fox	vixen
+cañon	canon
+cañon	canyon
 # other spelling variations (handled using Solr synonyms filter)	
 MacKinley	McKinley
 Eskimo	Eskimaux

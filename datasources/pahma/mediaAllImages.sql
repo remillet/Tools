@@ -2,21 +2,22 @@ SELECT
   h2.name                                                 AS objectcsid,
   cc.objectnumber,
   h1.name                                                 AS mediacsid,
-  mc.description,
+  regexp_replace(mc.description,E'[\\t\\n\\r]+', ' ', 'g') AS description,
   bc.name,
-  mc.creator                                                 creatorRefname,
+  mc.creator                                              AS creatorRefname,
   REGEXP_REPLACE(mc.creator, '^.*\)''(.*)''$', '\1')      AS creator,
   mc.blobcsid,
   mc.copyrightstatement,
   mc.identificationnumber,
-  mc.rightsholder                                            rightsholderRefname,
-  REGEXP_REPLACE(mc.rightsholder, '^.*\)''(.*)''$', '\1') AS rightsholder,
+  mc.rightsholder                                          AS rightsholderRefname,
+  REGEXP_REPLACE(mc.rightsholder, '^.*\)''(.*)''$', '\1')  AS rightsholder,
   mc.contributor,
   mp.approvedforweb,
   cp.pahmatmslegacydepartment                             AS pahmatmslegacydepartment,
   osl0.item                                               AS objectstatus,
   mp.primarydisplay                                       AS primarydisplay,
-  bc.mimetype                                             AS mimetype
+  bc.mimetype                                             AS mimetype,
+  c.data                                                  AS md5
 
 FROM media_common mc
   JOIN media_pahma mp ON (mp.id = mc.id)
@@ -30,3 +31,5 @@ FROM media_common mc
   JOIN hierarchy h3 ON (mc.blobcsid = h3.name)
   LEFT OUTER JOIN blobs_common bc ON (h3.id = bc.id)
   FULL OUTER JOIN collectionobjects_pahma_pahmaobjectstatuslist osl0 ON (cc.id = osl0.id AND osl0.pos = 0)
+  LEFT OUTER JOIN hierarchy h4 ON (bc.repositoryid = h4.parentid AND h4.primarytype = 'content')
+  LEFT OUTER JOIN content c ON (h4.id = c.id)

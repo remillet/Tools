@@ -39,8 +39,8 @@ case when (pef.item is not null and pef.item <> '') then
   regexp_replace(pef.item, '^.*\)''(.*)''$', '\1')
 end as ethnographicfilecode
 FROM collectionobjects_common c
-join collectionobjects_pahma cp on (c.id=cp.id)
-join collectionobjects_anthropology ca on (c.id=ca.id)
+left outer join collectionobjects_pahma cp on (c.id=cp.id)
+left outer join collectionobjects_anthropology ca on (c.id=ca.id)
 
 left outer join hierarchy h5 on (c.id = h5.parentid  and h5.pos=0 and h5.name='collectionobjects_common:objectNameList')
 left outer join objectnamegroup ong on (ong.id=h5.id)

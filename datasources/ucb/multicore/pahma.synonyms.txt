@@ -1,6 +1,5 @@
 # Synonyms groups specific to PAHMA
-Water color,watercolor
-Ground stone,groundstone
+# NB: they have to be single words, I'm pretty sure...
 Femur,femora,femurs
 Tibia,tibiae,tibias
 Fibula,fibulae,fibulas
@@ -13,4 +12,3 @@ Vertebra,vertebrae,vertebras
 
 # Synonym mappings can be used for spelling correction too
 pheobe => phoebe
-

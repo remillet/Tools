@@ -13,14 +13,15 @@ def run(solr_url,query_terms_file):
             row = row.strip()
             if row == '': continue
             if row[0][0] == '#':
+                print row
                 continue
             query_terms = row.split('\t')
             row = row.replace('\t', ' vs ')
             if len(query_terms) != 2:
                 print 'expected two terms, separated by a tab: %s' % row
             results = []
+            tested += 1
             for term in query_terms:
-                tested += 1
                 try:
                     url = '%s/select?q=text:%s' % (solr_url,urllib.quote(term))
                     tree = ET.ElementTree(file=urllib2.urlopen(url))
@@ -40,7 +41,7 @@ def run(solr_url,query_terms_file):
                 failures += 1
 
         print
-        print "End of run. Pairs tested: %s, successes %s, failures %s" % (i, successes, failures)
+        print "End of run. Pairs tested: %s, successes %s, failures %s" % (tested, successes, failures)
 
 
 if __name__ == "__main__":

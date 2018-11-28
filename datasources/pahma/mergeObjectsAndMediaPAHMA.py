@@ -13,16 +13,16 @@ seen = defaultdict()
 restricted_csid = '59a733dd-d641-4e1a-8552'
 restricted_md5 = '44f1c5b4d03a07832c32ccce289268ba'
 
-mimetypes = {'application/pdf': 'pdf',
-             'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'msword',
+mimetypes = {'application/pdf': 'document',
+             'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'document',
              'audio/mpeg': 'audio',
              'audio/x-wav': 'audio',
              'image/jpeg': 'image',
-             'image/photoshop': 'other',
+             'image/photoshop': 'document',
              'image/png': 'image',
              'image/tiff': 'image',
-             'image/x-adobe-dng': 'other',
-             'image/x-nikon-nef': 'other',
+             'image/x-adobe-dng': 'document',
+             'image/x-nikon-nef': 'document',
              'video/mp4': 'video'}
 
 runtype = sys.argv[3]  # generate media for public or internal
@@ -70,7 +70,6 @@ with open(sys.argv[1], 'r') as MEDIA:
             media_type = 'images'
         else:
             media_type = 'other media'
-        # print "blobcsid objectcsid\n"
         # mark catalog card images as such
         if check(description, 'catalog card') or check(description, 'HSR Datasheet'): media_type = 'legacy documentation'
         if check(description, 'Index'): media_type = 'legacy documentation'
@@ -81,17 +80,12 @@ with open(sys.argv[1], 'r') as MEDIA:
         if check(objectstatus, 'culturally'): ispublic = 'notpublic'
         # NB: the test 'burial' in context of use occurs below -- we only mask if the FCP is in North America
         if not (approvedforweb == 't'): ispublic = 'notpublic'
-        # ispublic = 'notapprovedforweb' unless (approvedforweb == 't')
         if media_type == 'legacy documentation':
             # while cards (i.e. legacy documentation) are images, we don't count them as such
             media_available = media_type
             ispublic = 'public'
-        # warn ispublic + imagetype
         count[media_type] += 1
         count[ispublic] += 1
-        # start by assuming no images for this object
-        # blobs[objectcsid]['hasimages'] = 'no'
-
         count['media available %s' % media_available] += 1
 
         if not objectcsid in blobs:
@@ -116,41 +110,47 @@ with open(sys.argv[1], 'r') as MEDIA:
             blobs[objectcsid]['primary'] = ''
             blobs[objectcsid]['primary_md5'] = ''
 
-        if not check(blobs[objectcsid]['mimetypes'], mimetype):
-            blobs[objectcsid]['mimetypes'].append(mimetype)
-        if not check(blobs[objectcsid]['media_available'], media_available):
-            blobs[objectcsid]['media_available'].append(media_available)
+        # if this run is to generate the public datastore, use the restricted image if this blob is restricted.
+        if runtype == 'public' and ispublic != 'public':
+            blobcsid = restricted_csid
+            md5 = restricted_md5
 
-        if media_available in ['audio', 'video', 'd3']:
-            if ispublic == 'public':
-                blobs[objectcsid]['%s_csids' % media_available].append(blobcsid)
-                blobs[objectcsid]['%s_md5s' % media_available].append(md5)
-                blobs[objectcsid]['%s_mimetypes' % media_available].append(mimetype)
+        # if we are regenerating an "internal" core, or if this item is public, we can count it (in facets, etc.)
+        if runtype != 'public' or ispublic == 'public':
 
-        elif media_type == 'legacy documentation':
-            blobs[objectcsid]['legacy documentation'].append(blobcsid)
-            blobs[objectcsid]['legacy documentation md5s'].append(md5)
+            if not check(blobs[objectcsid]['mimetypes'], mimetype):
+                blobs[objectcsid]['mimetypes'].append(mimetype)
 
-        else:
-            # if this run is to generate the public datastore, use the restricted image if this blob is restricted.
-            if runtype == 'public':
-                if ispublic != 'public':
-                    blobcsid = restricted_csid
-                    md5 = restricted_md5
+            if not check(blobs[objectcsid]['media_available'], media_available):
+                blobs[objectcsid]['media_available'].append(media_available)
 
-            # add this blob to the list of blobs, unless we somehow already have it (no dups allowed!)
-            if not check(blobs[objectcsid]['images'], blobcsid):
-                blobs[objectcsid]['hasimages'] = 'yes'
-                # put primary images first
-                if primarydisplay == 't':
-                    blobs[objectcsid]['images'].insert(0, blobcsid)
-                    blobs[objectcsid]['image_md5s'].insert(0, md5)
-                    blobs[objectcsid]['primary'] = blobcsid
-                    blobs[objectcsid]['primary_md5'] = md5
+            if media_available in ['audio', 'video', 'd3']:
+                if ispublic == 'public':
+                    blobs[objectcsid]['%s_csids' % media_available].append(blobcsid)
+                    blobs[objectcsid]['%s_md5s' % media_available].append(md5)
+                    blobs[objectcsid]['%s_mimetypes' % media_available].append(mimetype)
 
-                else:
-                    blobs[objectcsid]['images'].append(blobcsid)
-                    blobs[objectcsid]['image_md5s'].append(md5)
+            elif media_type == 'legacy documentation':
+                blobs[objectcsid]['legacy documentation'].append(blobcsid)
+                blobs[objectcsid]['legacy documentation md5s'].append(md5)
+
+            elif media_type == 'images':
+                # add this blob to the list of blobs, unless we somehow already have it (no dups allowed!)
+                if not check(blobs[objectcsid]['images'], blobcsid):
+                    blobs[objectcsid]['hasimages'] = 'yes'
+                    # put primary images first
+                    if primarydisplay == 't':
+                        blobs[objectcsid]['images'].insert(0, blobcsid)
+                        blobs[objectcsid]['image_md5s'].insert(0, md5)
+                        blobs[objectcsid]['primary'] = blobcsid
+                        blobs[objectcsid]['primary_md5'] = md5
+
+                    else:
+                        blobs[objectcsid]['images'].append(blobcsid)
+                        blobs[objectcsid]['image_md5s'].append(md5)
+
+            else:
+                pass
 
         if not check(blobs[objectcsid]['type'], media_type): blobs[objectcsid]['type'].append(media_type)
         if not check(blobs[objectcsid]['restrictions'], ispublic): blobs[objectcsid]['restrictions'].append(ispublic)

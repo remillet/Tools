@@ -23,6 +23,8 @@ and rc.id is null
 and mmc.lifecyclestate != 'deleted'
 and mc.identificationnumber !~* 'test'
 and mc.identificationnumber !~* 'DHN'
+and mc.identificationnumber !~* 'SL'
+and mc.identificationnumber !~* 'DP'
 order by mc.identificationnumber]]>
 	</queryString>
 	<field name="accession_id" class="java.lang.String"/>

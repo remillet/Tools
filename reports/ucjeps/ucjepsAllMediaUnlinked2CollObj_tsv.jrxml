@@ -25,6 +25,8 @@ left outer join blobs_common bc on (hbc.id = bc.id)
 where rc.id is null
 and mmc.lifecyclestate != 'deleted'
 and mc.identificationnumber !~* 'test'
+and mc.identificationnumber !~* 'SL'
+and mc.identificationnumber !~* 'DP'
 order by tu.taxonmajorgroup, tc.displayname]]>
 	</queryString>
 	<field name="major_group" class="java.lang.String"/>

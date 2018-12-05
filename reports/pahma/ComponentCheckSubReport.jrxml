@@ -13,7 +13,7 @@ DATE(mc.locationdate) AS "location date"
 FROM relations_common rc
 JOIN hierarchy h ON (h.name = rc.objectcsid)
 JOIN movements_common mc ON (mc.id = h.id)
-JOIN movements_anthropology ma ON (ma.id=mc.id)
+LEFT OUTER JOIN movements_anthropology ma ON (ma.id=mc.id)
 WHERE rc.subjectcsid = $P{object_csid}
 AND REGEXP_REPLACE(mc.currentlocation, '^.*\)''(.*)''$', '\1') IS NOT NULL
 AND REGEXP_REPLACE(mc.currentlocation, '^.*\)''(.*)''$', '\1') <> ''

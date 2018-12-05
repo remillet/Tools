@@ -36,8 +36,8 @@ ong.objectName objectName, bd.item as briefdescription, cp.inventorycount as cou
 FROM collectionobjects_common c
 left outer join hierarchy h1 on (c.id = h1.parentid and h1.pos=0 and h1.name='collectionobjects_common:objectNameList')
 left outer join objectnamegroup ong on (ong.id=h1.id)
-join collectionobjects_pahma cp on (c.id=cp.id)
-join collectionobjects_anthropology ca on (c.id=ca.id)
+left outer join collectionobjects_pahma cp on (c.id=cp.id)
+left outer join collectionobjects_anthropology ca on (c.id=ca.id)
 join misc ms on (c.id=ms.id and ms.lifecyclestate <> 'deleted')
 full outer join collectionobjects_common_briefdescriptions bd
 on bd.id=c.id and bd.pos=0

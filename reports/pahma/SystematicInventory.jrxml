@@ -33,8 +33,8 @@ ong.objectName objectName
 FROM collectionobjects_common c
 left outer join hierarchy h1 on (c.id = h1.parentid and h1.pos=0 and h1.name='collectionobjects_common:objectNameList')
 left outer join objectnamegroup ong on (ong.id=h1.id)
-join collectionobjects_pahma cp on (c.id=cp.id)
-join collectionobjects_anthropology ca on (c.id=ca.id)
+left outer join collectionobjects_pahma cp on (c.id=cp.id)
+left outer join collectionobjects_anthropology ca on (c.id=ca.id)
 join misc ms on (c.id=ms.id and ms.lifecyclestate <> 'deleted')
 WHERE replace(regexp_replace(c.computedcurrentlocation, '^.*\)''(.*)''$', '\1'), ' ', '0') >= replace($P{Start Location}, ' ', '0')
   and replace(regexp_replace(c.computedcurrentlocation, '^.*\)''(.*)''$', '\1'), ' ', '0') <= replace($P{End Location}, ' ', '0')

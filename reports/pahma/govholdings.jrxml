@@ -18,8 +18,8 @@
 	<queryString>
 		<![CDATA[SELECT DISTINCT cc.objectnumber AS "objectnumber", cp.sortableobjectnumber AS "sortnumber", cc.numberofobjects AS "pieces", ong.objectname AS "objectname", fcd.datedisplaydate AS "collectiondate", STRING_AGG(DISTINCT(ac.acquisitionreferencenumber), ', ') AS "accno", REGEXP_REPLACE(fcp.item, '^.*\)''(.*)''$', '\1') AS "site", REGEXP_REPLACE(pog.owner, '^.*\)''(.*)''$', '\1') AS "siteowner", pog.ownershipnote AS "ownershipnote", pc.placenote AS "placenote"
 FROM collectionobjects_common cc
-JOIN collectionobjects_pahma cp ON (cc.id = cp.id)
-JOIN collectionobjects_pahma_pahmafieldcollectionplacelist fcp ON (fcp.id = cc.id)
+LEFT OUTER JOIN collectionobjects_pahma cp ON (cc.id = cp.id)
+LEFT OUTER JOIN collectionobjects_pahma_pahmafieldcollectionplacelist fcp ON (fcp.id = cc.id)
 JOIN misc ms ON (ms.id = cc.id AND ms.lifecyclestate <> 'deleted')
 JOIN places_common pc ON (pc.refname = fcp.item)
 JOIN hierarchy h1 ON (h1.parentid = pc.id AND h1.name = 'places_common:placeOwnerGroupList')

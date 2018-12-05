@@ -10,10 +10,13 @@
 #
 # e.g.
 #
-# ./extract.sh orgauthorities/dcba2506-20fd-438b-9adc typeassertion.xml
+# ./extract_authority.sh orgauthorities/dcba2506-20fd-438b-9adc typeassertion.xml
+
+# Absolute path this script is in. /home/user/bin
+SCRIPTPATH=`dirname $0`
 
 # set these to appropriate cspace login and password
-CREDS="xxx@ucjeps.cspace.berkeley.edu:xxx"
+CREDS="authextract@ucjeps.cspace.berkeley.edu:azalea75Roentgen87massey"
 SERVER="https://ucjeps.cspace.berkeley.edu"
 # number of records get get
 PAGESIZE=1000
@@ -41,7 +44,7 @@ HERE
             break
        fi
 
-       python xmlcombine.py /tmp/new1.xml /tmp/tmp.xml > /tmp/new2.xml
+       python $SCRIPTPATH/xmlcombine.py /tmp/new1.xml /tmp/tmp.xml > /tmp/new2.xml
        mv /tmp/new2.xml /tmp/new1.xml
 
        MAXCURLS=`expr $MAXCURLS - 1`

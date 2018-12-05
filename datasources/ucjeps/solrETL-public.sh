@@ -20,7 +20,7 @@ SERVER="dba-postgres-prod-42.ist.berkeley.edu port=5310 sslmode=prefer"
 USERNAME="reporter_$TENANT"
 DATABASE="${TENANT}_domain_${TENANT}"
 CONNECTSTRING="host=$SERVER dbname=$DATABASE"
-CONTACT="jason_alexander@berkeley.edu"
+CONTACT="ucjeps-it@berkeley.edu"
 ##############################################################################
 # extract and massage the metadata from CSpace
 ##############################################################################

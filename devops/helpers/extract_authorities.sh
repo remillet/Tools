@@ -16,7 +16,7 @@
 SCRIPTPATH=`dirname $0`
 
 # set these to appropriate cspace login and password
-CREDS="authextract@ucjeps.cspace.berkeley.edu:azalea75Roentgen87massey"
+CREDS="xxxxx@ucjeps.cspace.berkeley.edu:xxxxx"
 SERVER="https://ucjeps.cspace.berkeley.edu"
 # number of records get get
 PAGESIZE=1000

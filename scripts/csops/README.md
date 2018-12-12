@@ -26,7 +26,9 @@ variables, they may need special handling when installed in the `crontab`.
 The following two options have been used here in UCB managed servers:
 
 ```
-# RHEL4
+[techguru@cspace-prod-01 ~]$ cat /etc/redhat-release
+Red Hat Enterprise Linux Server release 6.10 (Santiago)
+
 [app_pahma@cspace-prod-01 ~]$ crontab -l
 00 23 * * * ~/bin/cscleantemp >>~/log/cscleantemp.log.txt 2>&1
 15 23 * * * ~/bin/cscleanlog >/dev/null 2>&1
@@ -34,7 +36,9 @@ The following two options have been used here in UCB managed servers:
 */10 * * * * bash -l -c '~/bin/cscheckmem -dn >/dev/null 2>&1'
 [app_pahma@cspace-prod-01 ~]$ exit
 
-# RHEL5
+[techguru@cspace-prod-02 ~]$ cat /etc/redhat-release
+Red Hat Enterprise Linux Server release 7.6 (Maipo)
+
 [app_pahma@cspace-prod-02 ~]$ crontab -l
 00 23 * * * /bin/bash -l -c '~/bin/cscleantemp >>~/log/cscleantemp.log.txt 2>&1'
 15 23 * * * /bin/bash -l -c '~/bin/cscleanlog >/dev/null 2>&1'

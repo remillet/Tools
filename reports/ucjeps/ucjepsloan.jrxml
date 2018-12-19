@@ -10,8 +10,8 @@
 		<![CDATA[SELECT
     loanoutnumber,
     case
-        when (borrower is not null and borrower <> '') then
-        substring(borrower, position(')''' in borrower)+2, length(borrower)-position(')''' in borrower)-2)
+        when (borrower is not null and borrower <> '')
+        then getdispl(borrower)
     end as borrower,
     date(lnh.shipdate + interval '8 hour') shipdate,
     date(loanoutdate + interval '8 hour') loanoutdate,
@@ -19,8 +19,8 @@
     lnh.numpackages,
     lnh.majorgroup,
     case
-        when (borrowerscontact is not null and borrowerscontact <> '') then
-        substring(borrowerscontact, position(')''' in borrowerscontact)+2, length(borrowerscontact)-position(')''' in borrowerscontact)-2)
+        when (borrowerscontact is not null and borrowerscontact <> '')
+        then getdispl(borrowerscontact)
     end as borrowerscontact,
     specialconditionsofloan,
     loanoutnote,
@@ -29,34 +29,36 @@
     org.id,
     geog.item geography,
     case
-        when (tax.item is not null and tax.item<>'') then
-        substring(tax.item, position(')''' in tax.item)+2, length(tax.item)-position(')''' in tax.item)-2)
+        when (tax.item is not null and tax.item<>'')
+        then getdispl(tax.item)
         else null
     end as taxonomy,
-h3.parentid,
-ag.addressplace1,
-ag.addressplace2,
-ag.addressmunicipality,
-ag.addressstateorprovince,
-ag.addresspostcode,
-ag.addresscountry,
-ag.addressmunicipality||' '||coalesce(ag.addressstateorprovince, ' ')||' '||ag.addresspostcode address_line3
+    h3.parentid,
+    ag.addressplace1,
+    ag.addressplace2,
+    ag.addressmunicipality,
+    ag.addressstateorprovince,
+    ag.addresspostcode,
+    ag.addresscountry,
+    ag.addressmunicipality || ' ' ||
+        coalesce(ag.addressstateorprovince, ' ') || ' ' ||
+        ag.addresspostcode address_line3
 FROM
     public.loansout_common lc
-inner join hierarchy h1 on lc.id = h1.id
-inner join loansout_naturalhistory lnh on lc.id=lnh.id
-left outer join organizations_common org on lc.borrower=org.refname
-left outer join loansout_naturalhistory_geographylist geog on lc.id=geog.id
-left outer join loansout_naturalhistory_taxonomylist tax on lc.id=tax.id
-inner join hierarchy h2 on (org.id=h2.id)
-left outer join contacts_common cc on (h2.name=cc.initem)
-left outer join hierarchy h3 on (cc.id=h3.parentid)
-left outer join addressgroup ag on (h3.id=ag.id)
-where h1.name=$P{csid}
-and (geog.pos=0 or geog.pos is null)
-and (tax.pos=0 or tax.pos is null)
-and (h3.pos=0 or h3.pos is null)
-and (h3.name is null or h3.name='contacts_common:addressGroupList')]]>
+join hierarchy h1 on lc.id = h1.id
+left outer join loansout_naturalhistory lnh on lc.id = lnh.id
+left outer join organizations_common org on lc.borrower = org.refname
+left outer join loansout_naturalhistory_geographylist geog on lc.id = geog.id
+left outer join loansout_naturalhistory_taxonomylist tax on lc.id = tax.id
+join hierarchy h2 on (org.id = h2.id)
+left outer join contacts_common cc on (h2.name = cc.initem)
+left outer join hierarchy h3 on (cc.id = h3.parentid)
+left outer join addressgroup ag on (h3.id = ag.id)
+where h1.name = $P{csid}
+and (geog.pos = 0 or geog.pos is null)
+and (tax.pos = 0 or tax.pos is null)
+and (h3.pos = 0 or h3.pos is null)
+and (h3.name is null or h3.name = 'contacts_common:addressGroupList')]]>
 	</queryString>
 	<field name="loanoutnumber" class="java.lang.String"/>
 	<field name="borrower" class="java.lang.String"/>

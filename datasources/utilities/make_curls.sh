@@ -4,6 +4,7 @@
 #
 # (3 curls for each core: delete, commit, POST fresh data) 
 #
+cd
 rm -f ~/allcurls.sh
 for t in bampfa botgarden pahma ucjeps
 do

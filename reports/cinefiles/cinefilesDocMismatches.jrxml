@@ -11,10 +11,10 @@ select
         'media page: ' || coalesce(mcin.page::text, 'NULL') ||
                 ' mismatches media title: ' || coalesce(mcom.title, 'NULL') as description
 from collectionobjects_common coc
-inner join collectionobjects_cinefiles cocf on (coc.id = cocf.id)
+left outer join collectionobjects_cinefiles cocf on (coc.id = cocf.id)
 inner join media_common mcom on (
         coc.objectnumber = trim('.' from substring(mcom.title from 1 for position('.' in mcom.title))))
-inner join media_cinefiles mcin on (mcom.id = mcin.id)
+left outer join media_cinefiles mcin on (mcom.id = mcin.id)
 inner join hierarchy hmcom on (mcom.id = hmcom.id)
 inner join misc mmcom on (mcom.id = mmcom.id and mmcom.lifecyclestate != 'deleted')
 where mcin.page != regexp_replace(mcom.title, '^.*\.p([0-9]+)\.*.*$', '\1')

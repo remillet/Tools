@@ -8,15 +8,6 @@
 date
 cd /home/app_solr/solrdatasources/pahma
 ##############################################################################
-# move the current set of extracts to temp (thereby saving the previous run, just in case)
-# note that in this case there are 3 nightly scripts, public, internal, and locations,
-# and internal depends on data created by public, so this case has to be handled
-# specially, and the scripts need to run in order: public > internal > locations
-# so in this case, the locations script cannot 'stash' any files...they
-# have already been stashed by the public script.
-##############################################################################
-#
-##############################################################################
 # while most of this script is already tenant specific, many of the specific commands
 # are shared between the different scripts; having them be as similar as possible
 # eases maintainance. ergo, the TENANT parameter

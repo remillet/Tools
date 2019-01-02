@@ -10,7 +10,7 @@ select distinct
         cocf.docdisplayname || coalesce(': ' || mc.title, '') as title,
         'media title' as description
 from collectionobjects_common coc
-inner join collectionobjects_cinefiles cocf on (coc.id = cocf.id)
+left outer join collectionobjects_cinefiles cocf on (coc.id = cocf.id)
 inner join media_common mc on (
         coc.objectnumber = trim('.' from substring(mc.title from 1 for position('.' in mc.title))))
 inner join (
@@ -26,7 +26,7 @@ select distinct
         cocf.docdisplayname || coalesce(': ' || bc.name, '') as title,
         'blob filename' as description
 from collectionobjects_common coc
-inner join collectionobjects_cinefiles cocf on (coc.id = cocf.id)
+left outer join collectionobjects_cinefiles cocf on (coc.id = cocf.id)
 inner join blobs_common bc on (
         coc.objectnumber = trim('.' from substring(bc.name from 1 for position('.' in bc.name))))
 inner join (
@@ -42,7 +42,7 @@ select distinct
         cocf.docdisplayname || coalesce(': ' || coc.objectnumber, '') as title,
         'document id' as description
 from collectionobjects_common coc
-inner join collectionobjects_cinefiles cocf on (coc.id = cocf.id)
+left outer join collectionobjects_cinefiles cocf on (coc.id = cocf.id)
 inner join (
         select coc.objectnumber as doc_id
         from collectionobjects_common coc
@@ -54,14 +54,14 @@ select distinct
         cocf.docdisplayname || coalesce(': ' || x.page_num::text, '') as title,
         'page number' as description
 from collectionobjects_common coc
-inner join collectionobjects_cinefiles cocf on (coc.id = cocf.id)
+left outer join collectionobjects_cinefiles cocf on (coc.id = cocf.id)
 inner join (select coc.objectnumber as doc_id, mcin.page as page_num
         from collectionobjects_common coc
         inner join misc mcoc on (coc.id = mcoc.id and mcoc.lifecyclestate != 'deleted')
         inner join media_common mcom on (coc.objectnumber =
                 trim('.' from substring(mcom.title from 1 for position('.' in mcom.title))))
         inner join misc mmcom on (mcom.id = mmcom.id and mmcom.lifecyclestate != 'deleted')
-        inner join media_cinefiles mcin on (mcom.id = mcin.id)
+        left outer join media_cinefiles mcin on (mcom.id = mcin.id)
         group by coc.objectnumber, mcin.page
         having count(*) > 1) x on (coc.objectnumber = x.doc_id)
 ) y

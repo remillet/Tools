@@ -46,7 +46,7 @@ select
         cocf.docdisplayname || coalesce(': ' || mc.title, '') as title,
         'deleted blob record' as description
 from collectionobjects_common coc
-inner join collectionobjects_cinefiles cocf on (coc.id = cocf.id)
+left outer join collectionobjects_cinefiles cocf on (coc.id = cocf.id)
 inner join media_common mc on (
         coc.objectnumber = trim('.' from substring(mc.title from 1 for position('.' in mc.title))))
 inner join misc mmc on (

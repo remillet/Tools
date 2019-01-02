@@ -150,37 +150,177 @@ cd ~
 git clone https://github.com/cspace-deployment/Tools
 # get rid of any existing solr4 install here
 sudo rm -rf ~/solr4/
-# install the multicore: assume you have clones of Tools and deployandrelease repos in ~
-~/Tools/datasources/utilities/configureMultiCoreSolr.sh ~/Tools ~/solr4 4.10.4
-# start solr4...assumes solr4 is already installed as a service
-sudo service solr4 start
-~/Tools/datasources/utilities/checkstatus.sh
-# now load the datastores (takes about 15 minutes or so, depending)
-# three ways to do this:
-# 1. if you're running solr on a server which has the solr ETL for UCB installed (i.e. in ~/solrdatasources)
-#    you can just copy the compressed files
-mkdir ~/solrdump
-cd ~/solrdump
-cp ~/solrdatasources/*/4solr*.gz .
-gunzip *.gz
+# config the ucb solr cores and start solr
+Tools/datasources/utilities/configureMultiCoreSolr.sh ~/Tools ~/solr4 4.10.4
+# if the mirror is not available, you might have to get the tar file yourself
+#export SOLRVERSION=4.10.4
+#curl -o /tmp/solr-$SOLRVERSION.tgz http://archive.apache.org/dist/lucene/solr/$SOLRVERSION/solr-$SOLRVERSION.tgz
+#Tools/datasources/utilities/configureMultiCoreSolr.sh ~/Tools ~/solr4 4.10.4
+# increase ram for solr to 786m
+vi solr4/ucb/startSolr.sh
+# start the server
+/home/app_solr/solr4/ucb/startSolr.sh
+
+# set up the solr etl
+mkdir solrdatasources
+Tools/datasources/utilities/redeploy-etl.sh
+# hmmm... the script expects to save an existing dir, remove it if we don't care.
+rm -rf solrdatasources.180409/
+cd solrdatasources/
+# make the prod scripts into dev scripts
+# ymmv! the following used to work, but port number and hostnames are prone to change
+perl -i -pe 's/prod\-42/dev-42/g;s/port=53/port=51/' */*.sh
+perl -i -pe 's/port=5113/port=5114/' */*.sh
+cd
+# setup pgpass, if it is not already set up.
+cat > .pgpass
+vi .pgpass
+chmod u+rw .pgpass
+ls -ltr .pgpass
+# try reloading a couple of cores. the small ones.
+nohup /home/app_solr/solrdatasources/bampfa/solrETL-public.sh bampfa >> /home/app_solr/logs/bampfa.solr_extract_public.log 2>&1 &
+nohup /home/app_solr/solrdatasources/botgarden/solrETL-public.sh botgarden >> /home/app_solr/logs/botgarden.solr_extract_public.log &
+wait
+# did they work?
+Tools/datasources/utilities/checkstatus.sh -v
+
+# now load the solr cores; couple ways to do this:
+# 1. Provided you have access to the Postgress server, you can run the refresh job (takes a couple hours):
+nohup one_job.sh >> /home/app_solr/refresh.log &
 #
-# 2. Otherwise, you can scp them from some other server that has them
-scp cspace-prod.cspace.berkeley.edu:/home/developers/*/4solr*.gz .
-# uncompress them
-gunzip 4solr*.gz
-#
-# 3. load them...
-nohup loadAllDatasources.sh &
-#
-# 4. Install the ETL suite provided in ~/Tools/datasources and run it for some/all of the deployments.
-# This is a challenge if you're outside the firewall, you'll need to tunnel. Etc.
+# 2. Otherwise, you can scp them from some other server that has them:
+mkdir 4solr
+cd 4solr/
+# fetch and decompress the public extracts from prod
+~/Tools/datasources/utilities/curl4solr.sh
+gunzip -f *.gz
+# POST the files to the now-running solr server (takes perhaps 30 mins)
+nohup ~/Tools/datasources/utilities/allcurls.sh
 ```
 
 Caveats:
 
 * You should read and understand these scripts before using them!
-* Mostly these expect the "standard" RHEL VM environment running at IS&T/RIT
-* But they will mostly run on your Mac, perhaps with some tweaking.
+* Mostly these expect the "standard" RHEL VM environment running at IS&T/RTL
+* But they will mostly run on your Mac or local VM, perhaps with some tweaking.
+
+
+#### Differences between Dev and Prod deployments
+
+There are only a few differences between the "pipeline code" as deployed on Dev and as deployed on Prod. (The
+files committed on GitHub are set up for Production; they need some minor edits when deployed on Dev.)
+
+* The Postgres servers of course are different (hostname and port numbers).
+* Several of the scripts send email. On Dev, these emails addresses should be changed to something appropriate: no
+need to bug everyone with Dev output!
+* Usually I keep the Dev Solr cores updated with data from Production. This way, the Dev portals more
+closely resemble their production counterparts. Therefore, in app_solr's home directory there is a subdirectory
+`/4solr` that contains the refresh files from Prod, along with a script to fetch them from Prod (via wget) and to POST
+them to Solr. However, when testing changes to the pipelines, one should run the pipeline on Dev and check results.
+Later it may be prudent to put the production data back...
+* There is no need (in general) to run the Solr refresh scripts nightly: nothing changes much on Dev! Therefore, the
+cron job to run the refreshes (`one_job.sh`) is commented out in the `crontab`
+
+Here are the diffs one can expect between the pipeline files as committed to GitHub and as deployed on Dev.
+
+```
+diff -r ~/Tools/datasources solrdatasources | grep -v Only > diffs
+
+diff -r /home/app_solr/Tools/datasources/bampfa/bampfa_collectionitems_vw.sh solrdatasources/bampfa/bampfa_collectionitems_vw.sh
+8c8
+< SERVER="dba-postgres-prod-42.ist.berkeley.edu port=5313 sslmode=prefer"
+---
+> SERVER="dba-postgres-dev-42.ist.berkeley.edu port=5114 sslmode=prefer"
+20c20
+< mail -a ${TENANT}_collectionitems_vw.tab.gz -s "${TENANT}_collectionitems_vw.csv.gz" -- osanchez@berkeley.edu < /dev/null
+---
+> mail -a ${TENANT}_collectionitems_vw.tab.gz -s "${TENANT}_collectionitems_vw.csv.gz" -- jblowe@berkeley.edu < /dev/null
+diff -r /home/app_solr/Tools/datasources/bampfa/bampfa_website_extract.sh solrdatasources/bampfa/bampfa_website_extract.sh
+7c7
+< SERVER="dba-postgres-prod-42.ist.berkeley.edu port=5313 sslmode=prefer"
+---
+> SERVER="dba-postgres-dev-42.ist.berkeley.edu port=5114 sslmode=prefer"
+37c37
+< echo "https://webapps.cspace.berkeley.edu/${TENANT}_website_objects_extract.tab" | mail -s "new ${TENANT} website extract available" -- aharris@berkeley.edu
+---
+> echo "https://webapps.cspace.berkeley.edu/${TENANT}_website_objects_extract.tab" | mail -s "new ${TENANT} website extract available" -- jblowe@berkeley.edu
+diff -r /home/app_solr/Tools/datasources/bampfa/piction_extract.sh solrdatasources/bampfa/piction_extract.sh
+8c8
+< SERVER="dba-postgres-prod-42.ist.berkeley.edu port=5415 sslmode=prefer"
+---
+> SERVER="dba-postgres-dev-42.ist.berkeley.edu port=5415 sslmode=prefer"
+15c15
+< #time psql -A -d "host=dba-postgres-prod-42.ist.berkeley.edu dbname=piction_transit port=5415 sslmode=prefer" -U "piction"  -c "select * from piction.bampfa_metadata_mv" -o ${TENANT}_pictionview_vw.tab
+---
+> #time psql -A -d "host=dba-postgres-dev-42.ist.berkeley.edu dbname=piction_transit port=5415 sslmode=prefer" -U "piction"  -c "select * from piction.bampfa_metadata_mv" -o ${TENANT}_pictionview_vw.tab
+21c21
+< mail -a ${TENANT}_pictionview_vw.tab.gz -s "${TENANT}_pictionview_vw.csv.gz" -- cspace-piction-view@lists.berkeley.edu < /dev/null
+---
+> mail -a ${TENANT}_pictionview_vw.tab.gz -s "${TENANT}_pictionview_vw.csv.gz" -- jblowe@berkeley.edu < /dev/null
+diff -r /home/app_solr/Tools/datasources/bampfa/solrETL-internal.sh solrdatasources/bampfa/solrETL-internal.sh
+10c10
+< SERVER="dba-postgres-prod-42.ist.berkeley.edu port=5313 sslmode=prefer"
+---
+> SERVER="dba-postgres-dev-42.ist.berkeley.edu port=5114 sslmode=prefer"
+diff -r /home/app_solr/Tools/datasources/bampfa/solrETL-public.sh solrdatasources/bampfa/solrETL-public.sh
+20c20
+< SERVER="dba-postgres-prod-42.ist.berkeley.edu port=5313 sslmode=prefer"
+---
+> SERVER="dba-postgres-dev-42.ist.berkeley.edu port=5114 sslmode=prefer"
+diff -r /home/app_solr/Tools/datasources/botgarden/solrETL-internal.sh solrdatasources/botgarden/solrETL-internal.sh
+19c19
+< SERVER="dba-postgres-prod-42.ist.berkeley.edu port=5313 sslmode=prefer"
+---
+> SERVER="dba-postgres-dev-42.ist.berkeley.edu port=5114 sslmode=prefer"
+diff -r /home/app_solr/Tools/datasources/botgarden/solrETL-propagations.sh solrdatasources/botgarden/solrETL-propagations.sh
+19c19
+< SERVER="dba-postgres-prod-42.ist.berkeley.edu port=5313 sslmode=prefer"
+---
+> SERVER="dba-postgres-dev-42.ist.berkeley.edu port=5114 sslmode=prefer"
+diff -r /home/app_solr/Tools/datasources/botgarden/solrETL-public.sh solrdatasources/botgarden/solrETL-public.sh
+19c19
+< SERVER="dba-postgres-prod-42.ist.berkeley.edu port=5313 sslmode=prefer"
+---
+> SERVER="dba-postgres-dev-42.ist.berkeley.edu port=5114 sslmode=prefer"
+diff -r /home/app_solr/Tools/datasources/cinefiles/solrETL-public.sh solrdatasources/cinefiles/solrETL-public.sh
+17c17
+< SERVER="dba-postgres-prod-42.ist.berkeley.edu port=5313 sslmode=prefer"
+---
+> SERVER="dba-postgres-dev-42.ist.berkeley.edu port=5114 sslmode=prefer"
+diff -r /home/app_solr/Tools/datasources/pahma/solrETL-locations.sh solrdatasources/pahma/solrETL-locations.sh
+25c25
+< HOSTNAME="dba-postgres-prod-42.ist.berkeley.edu port=5307 sslmode=prefer"
+---
+> HOSTNAME="dba-postgres-dev-42.ist.berkeley.edu port=5117 sslmode=prefer"
+diff -r /home/app_solr/Tools/datasources/pahma/solrETL-osteology.sh solrdatasources/pahma/solrETL-osteology.sh
+15c15
+< HOSTNAME="dba-postgres-prod-42.ist.berkeley.edu port=5307 sslmode=prefer"
+---
+> HOSTNAME="dba-postgres-dev-42.ist.berkeley.edu port=5117 sslmode=prefer"
+diff -r /home/app_solr/Tools/datasources/pahma/solrETL-public.sh solrdatasources/pahma/solrETL-public.sh
+24c24
+< SERVER="dba-postgres-prod-42.ist.berkeley.edu port=5307 sslmode=prefer"
+---
+> SERVER="dba-postgres-dev-42.ist.berkeley.edu port=5117 sslmode=prefer"
+28c28
+< CONTACT="mtblack@berkeley.edu"
+---
+> CONTACT="jblowe@berkeley.edu"
+diff -r /home/app_solr/Tools/datasources/ucjeps/solrETL-media.sh solrdatasources/ucjeps/solrETL-media.sh
+10c10
+< SERVER="dba-postgres-prod-42.ist.berkeley.edu port=5310 sslmode=prefer"
+---
+> SERVER="dba-postgres-dev-42.ist.berkeley.edu port=5119 sslmode=prefer"
+diff -r /home/app_solr/Tools/datasources/ucjeps/solrETL-public.sh solrdatasources/ucjeps/solrETL-public.sh
+19c19
+< SERVER="dba-postgres-prod-42.ist.berkeley.edu port=5310 sslmode=prefer"
+---
+> SERVER="dba-postgres-dev-42.ist.berkeley.edu port=5119 sslmode=prefer"
+23c23
+< CONTACT="ucjeps-it@berkeley.edu"
+---
+> CONTACT="jblowe@berkeley.edu"
+```
 
 
 #### Installing solr4 as a service on UCB VMs

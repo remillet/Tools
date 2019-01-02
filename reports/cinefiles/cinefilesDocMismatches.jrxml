@@ -176,7 +176,7 @@ order by title, description]]>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[Dup Field]]></text>
+				<text><![CDATA[Mismatch Description]]></text>
 			</staticText>
 		</band>
 	</columnHeader>

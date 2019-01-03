@@ -56,7 +56,7 @@ from
       ON (h1.id = co.id AND h1.primarytype = 'CollectionObjectTenant55')
    INNER JOIN misc m
       ON (co.id = m.id AND m.lifecyclestate <> 'deleted')
-   INNER JOIN collectionobjects_bampfa cb
+   LEFT OUTER JOIN collectionobjects_bampfa cb
       ON (co.id = cb.id)
    INNER JOIN collectionspace_core core on co.id=core.id
    LEFT OUTER JOIN hierarchy h2

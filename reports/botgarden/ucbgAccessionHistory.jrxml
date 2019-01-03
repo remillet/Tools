@@ -31,7 +31,7 @@ left outer join taxonomicIdentGroup tig on (tig.id = htig.id)
 join relations_common r1 on (h1.name=r1.subjectcsid and objectdocumenttype='Movement')
 join hierarchy h2 on (r1.objectcsid=h2.name and h2.isversion is true)
 join movements_common mc on (mc.id=h2.id)
-join movements_botgarden mb on (mc.id=mb.id)
+left outer join movements_botgarden mb on (mc.id=mb.id)
 join collectionspace_core core on mc.id=core.id
 where h1.name=$P{csid}
 order by locationdate asc, reasonsort, core.updatedat, core.createdat, currentlocation]]>

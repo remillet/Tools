@@ -29,7 +29,7 @@ INNER JOIN collectionobjects_common coc ON (hrc.id = coc.id)
 INNER JOIN misc m ON (
    coc.id = m.id
    AND m.lifecyclestate <> 'deleted')
-INNER JOIN collectionobjects_bampfa cob ON (coc.id = cob.id)
+LEFT OUTER JOIN collectionobjects_bampfa cob ON (coc.id = cob.id)
 LEFT OUTER JOIN hierarchy hsdg ON (
    coc.id = hsdg.parentid
    AND hsdg.name = 'collectionobjects_common:objectProductionDateGroupList'

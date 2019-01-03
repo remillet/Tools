@@ -26,8 +26,8 @@ case when lb.hortwild='Horticultural' then 'hort'
      when lb.hortwild='Wild' then 'wild'
 end as hortwild
 from loansout_common lc
-join loansout_naturalhistory lnh on (lc.id=lnh.id)
-join loansout_botgarden lb on (lc.id=lb.id)
+left outer join loansout_naturalhistory lnh on (lc.id=lnh.id)
+left outer join loansout_botgarden lb on (lc.id=lb.id)
 
 join hierarchy h1 on lc.id=h1.id
 join relations_common r1 on (h1.name=r1.subjectcsid and objectdocumenttype='CollectionObject')
@@ -38,7 +38,7 @@ join collectionspace_core core on (core.id=co1.id and core.tenantid=$P{tenantid}
 join misc misc1 on (misc1.id = lc.id and misc1.lifecyclestate <> 'deleted')
 join misc misc2 on (misc2.id = co1.id and misc2.lifecyclestate <> 'deleted')
 
-join collectionobjects_naturalhistory con on (co1.id=con.id)
+left outer join collectionobjects_naturalhistory con on (co1.id=con.id)
 
 left outer join hierarchy htig
      on (co1.id = htig.parentid and htig.pos = 0 and htig.name = 'collectionobjects_naturalhistory:taxonomicIdentGroupList')

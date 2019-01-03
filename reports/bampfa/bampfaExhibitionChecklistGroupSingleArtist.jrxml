@@ -20,7 +20,7 @@
    btg.bampfaformattedtitle title,
    coc.physicaldescription materials,
    replace(mpg.dimensionsummary, '-', ' ') measurementSummary,
-   cb.creditline,
+   cob.creditline,
    sdg.datedisplaydate dateMade,
    utils.get_mediumjpeg_filepath(hrc.name) imagefilepath
 from
@@ -32,7 +32,7 @@ from
    INNER JOIN misc m ON (
         coc.id = m.id
         AND m.lifecyclestate <> 'deleted')
-   INNER JOIN collectionobjects_bampfa cob ON (coc.id = cob.id)
+   LEFT OUTER JOIN collectionobjects_bampfa cob ON (coc.id = cob.id)
    LEFT OUTER JOIN hierarchy hcon ON (
         coc.id = hcon.parentid
         AND hcon.name = 'collectionobjects_common:otherNumberList'
@@ -53,8 +53,6 @@ from
         AND hmpg.name = 'collectionobjects_common:measuredPartGroupList'
         AND hmpg.pos = 0)
    LEFT OUTER JOIN measuredpartgroup mpg ON (hmpg.id = mpg.id)
-   INNER JOIN collectionobjects_bampfa cb
-      ON (coc.id = cb.id)
    LEFT OUTER JOIN hierarchy h2
       ON (h2.parentid = coc.id AND h2.name='collectionobjects_common:objectProductionDateGroupList' and h2.pos=0)
    LEFT OUTER JOIN structuredDateGroup sdg ON (h2.id = sdg.id)

@@ -25,7 +25,7 @@ from
    INNER JOIN misc m ON (
         coc.id = m.id
         AND m.lifecyclestate <> 'deleted')
-   INNER JOIN collectionobjects_bampfa cob ON (coc.id = cob.id)
+   LEFT OUTER JOIN collectionobjects_bampfa cob ON (coc.id = cob.id)
    LEFT OUTER JOIN hierarchy hcon ON (
         coc.id = hcon.parentid
         AND hcon.name = 'collectionobjects_common:otherNumberList'

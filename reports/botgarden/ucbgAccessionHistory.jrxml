@@ -22,7 +22,7 @@ case when (mc.currentlocation is not null and mc.currentlocation <> '')
      then regexp_replace(mc.currentlocation, '^.*\)''(.*)''$', '\1')
 end as currentlocation,
 mc.movementnote,
-case when mc.reasonformove like '%Other%' then 1 else 0 end as reasonsort
+case when getdispl(mc.reasonformove) = 'Other' then 1 else 0 end as reasonsort
 from collectionobjects_common co1
 join hierarchy h1 on co1.id=h1.id
 left outer join hierarchy htig

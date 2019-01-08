@@ -190,12 +190,12 @@ ORDER BY to_number(objectnumber,'9999.9999')
 LIMIT 6000"""
             
         if qualifier == 'alive':
-            queryPart1 = " mc.reasonformove not like '%Dead%' and "
+            queryPart1 = " getdispl(mc.reasonformove) != 'Dead' and "
             queryPart2 = """join misc misc1 on (misc1.id = mc.id and misc1.lifecyclestate <> 'deleted') -- movement not deleted
                             join misc ms on (co1.id=ms.id and ms.lifecyclestate <> 'deleted')"""
             return queryTemplate % ('not', queryPart2, queryPart1, searchkey, location)
         elif qualifier == 'dead':
-            queryPart1 = " mc.reasonformove like '%Dead%' and "
+            queryPart1 = " getdispl(mc.reasonformove) = 'Dead' and "
             queryPart2 = "inner join misc misc1 on (misc1.id = mc.id and misc1.lifecyclestate <> 'deleted') -- movement not deleted"
             return queryTemplate % ('', queryPart2, queryPart1, searchkey, location)
         else:
@@ -432,14 +432,14 @@ left outer join taxon_naturalhistory tn on (tc.id=tn.id) """
             queryPart2 = "join misc misc1 on (misc1.id = mc.id and misc1.lifecyclestate <> 'deleted') -- movement not deleted"
             return queryTemplate % (queryPart1, queryPart2)
         elif qualifier == 'dead':
-            queryPart1 = " and mc.reasonformove like '%Dead%'"
+            queryPart1 = " and getdispl(mc.reasonformove) ='Dead'"
             queryPart2 = " "
             return queryTemplate % (queryPart1, queryPart2)
         elif qualifier == 'dead or alive':
             queryPart1 = ""
             queryPart2 = "join misc misc1 on (misc1.id = mc.id and misc1.lifecyclestate <> 'deleted') -- movement not deleted"
             part1 = queryTemplate % (queryPart1, queryPart2)
-            queryPart1 = " and mc.reasonformove like '%Dead%'"
+            queryPart1 = " and getdispl(mc.reasonformove) ='Dead'"
             queryPart2 = " "
             part2 = queryTemplate % (queryPart1, queryPart2)
             return part1 + ' UNION ' + part2

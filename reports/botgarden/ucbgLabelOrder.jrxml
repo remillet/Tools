@@ -21,8 +21,8 @@ case when (tig.hybridflag = 'true' or tig.affinitytaxon is not null or tig.affin
      when (tig.taxon is not null and tig.taxon <> '') then regexp_replace(tig.taxon, '^.*\)''(.*)''$', '\1')
 end as shortTaxonomicName,
 to_char(mb.labelcount, '999') labelCount,
-mb.labelsize,
-mb.labelstandtype,
+regexp_replace(mb.labelsize, '^.)''(.)''$', '\1'),
+regexp_replace(mb.labelstandtype, '^.)''(.)''$', '\1'),
 case when (lg.fieldlocplace is not null and lg.fieldlocplace <> '') then regexp_replace(lg.fieldlocplace, '^.*\)''(.*)''$', '\1')
      when (lg.fieldlocplace is null and lg.taxonomicrange is not null) then 'Geographic range: '||lg.taxonomicrange
 end as Locality, -- proxy for collection site information for now

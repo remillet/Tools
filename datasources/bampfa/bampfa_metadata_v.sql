@@ -54,7 +54,7 @@ create or replace view piction.bampfa_metadata_v as
    FROM hierarchy h1
      JOIN collectionobjects_common co ON h1.id::text = co.id::text AND h1.primarytype::text = 'CollectionObjectTenant55'::text
      JOIN misc m ON co.id::text = m.id::text AND m.lifecyclestate::text <> 'deleted'::text
-     JOIN collectionobjects_bampfa cb ON co.id::text = cb.id::text
+     LEFT OUTER JOIN collectionobjects_bampfa cb ON co.id::text = cb.id::text
      JOIN collectionspace_core core ON co.id::text = core.id::text
      LEFT JOIN hierarchy h2 ON h2.parentid::text = co.id::text AND h2.name::text = 'collectionobjects_common:objectProductionDateGroupList'::text AND h2.pos = 0
      LEFT JOIN structureddategroup sdg ON h2.id::text = sdg.id::text

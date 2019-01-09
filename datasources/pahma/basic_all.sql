@@ -4,5 +4,5 @@ regexp_replace(cc.collection, '^.*\)''(.*)''$', '\1') AS "objtype_s", cc.numbero
 cp.portfolioseries AS "objkeelingser_s", cp.pahmafieldlocverbatim AS "objfcpverbatim_s"
 FROM collectionobjects_common cc
 JOIN hierarchy h1 ON (h1.id=cc.id)
-JOIN collectionobjects_pahma cp ON (cp.id=cc.id)
+LEFT OUTER JOIN collectionobjects_pahma cp ON (cp.id=cc.id)
 JOIN misc ON (cc.id=misc.id and misc.lifecyclestate <>'deleted')

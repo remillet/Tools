@@ -20,7 +20,7 @@ SELECT
   c.data                                                  AS md5
 
 FROM media_common mc
-  JOIN media_pahma mp ON (mp.id = mc.id)
+  LEFT OUTER JOIN media_pahma mp ON (mp.id = mc.id)
 
   JOIN misc ON (mc.id = misc.id AND misc.lifecyclestate <> 'deleted')
   LEFT OUTER JOIN hierarchy h1 ON (h1.id = mc.id)

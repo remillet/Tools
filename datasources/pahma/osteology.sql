@@ -479,13 +479,13 @@ SELECT
   ostsex.sexdetermination            AS "sexdetermination_s",
   ostsex.sexdeterminationnote        AS "sexdeterminationnote_s"
 FROM collectionobjects_common cc
-  JOIN collectionobjects_pahma cp
+  LEFT OUTER JOIN collectionobjects_pahma cp
     ON (cc.id = cp.id AND cp.pahmatmslegacydepartment IN ('Human Remains', 'Mixed faunal and human remains'))
   JOIN hierarchy h1 ON (cc.id = h1.id)
   JOIN relations_common rc ON (rc.subjectcsid = h1.name AND rc.objectdocumenttype = 'Osteology')
   JOIN hierarchy h2 ON (rc.objectcsid = h2.name)
   JOIN osteology_common ost ON (h2.id = ost.id)
-  JOIN osteology_anthropology osta ON (ost.id = osta.id)
+  LEFT OUTER JOIN osteology_anthropology osta ON (ost.id = osta.id)
   LEFT OUTER JOIN hierarchy hage
     ON (hage.parentid = ost.id AND hage.primarytype = 'osteoAgeEstimateGroup' AND hage.pos = 0)
   LEFT OUTER JOIN osteoageestimategroup ostage ON (hage.id = ostage.id)

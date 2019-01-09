@@ -10,11 +10,11 @@
 		<![CDATA[select co1.objectnumber,
 findhybridaffinname(tig.id) Determination,
 date(mc.locationdate + interval '8 hours') actiondate,
-mc.reasonformove actionreason,
+regexp_replace(mb.reasonformove, '^.)''(.)''$', '\1') actionreason,
 mb.labelrequested,
 mb.labelcount,
-mb.labelsize,
-mb.labelstandtype,
+regexp_replace(mb.labelsize, '^.)''(.)''$', '\1'),
+regexp_replace(mb.labelstandtype, '^.)''(.)''$', '\1'),
 case when (mb.previouslocation is not null and mb.previouslocation <> '')
      then regexp_replace(mb.previouslocation, '^.*\)''(.*)''$', '\1')
 end as previouslocation,
@@ -22,7 +22,7 @@ case when (mc.currentlocation is not null and mc.currentlocation <> '')
      then regexp_replace(mc.currentlocation, '^.*\)''(.*)''$', '\1')
 end as currentlocation,
 mc.movementnote,
-case when mc.reasonformove = 'Other' then 1 else 0 end as reasonsort
+case when getdispl(mc.reasonformove) = 'Other' then 1 else 0 end as reasonsort
 from collectionobjects_common co1
 join hierarchy h1 on co1.id=h1.id
 left outer join hierarchy htig

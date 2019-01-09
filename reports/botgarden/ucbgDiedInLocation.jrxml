@@ -14,7 +14,7 @@ case when (tn.family is not null and tn.family <> '')
 end as family,
 findhybridaffinname(tig.id) Determination,
 date(mc.locationdate + interval '8 hours') actiondate,
-mc.reasonformove actionreason,
+regexp_replace(mb.reasonformove, '^.)''(.)''$', '\1') actionreason,
 case when (mb.previouslocation is not null and mb.previouslocation <> '')
      then regexp_replace(mb.previouslocation, '^.*\)''(.*)''$', '\1')
 end as previouslocation
@@ -32,7 +32,7 @@ left outer join movements_botgarden mb on (mc.id=mb.id)
 left outer join loctermgroup lct on (regexp_replace(mb.previouslocation, '^.*\)''(.*)''$', '\1')=lct.termdisplayname)
 inner join misc misc1 on (mc.id=misc1.id and misc1.lifecyclestate <> 'deleted')
 join collectionspace_core core on mc.id=core.id
-where mc.reasonformove = 'Dead' and lct.termdisplayname like $P{location}
+where getdispl(mc.reasonformove) = 'Dead' and lct.termdisplayname like $P{location}
 order by determination, locationdate desc]]>
 	</queryString>
 	<field name="objectnumber" class="java.lang.String"/>

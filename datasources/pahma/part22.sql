@@ -3,8 +3,8 @@ SELECT
   STRING_AGG(DISTINCT ec.exhibitionnumber, '␥') AS "exhibitionnumber_ss",
   STRING_AGG(DISTINCT ec.title, '␥')  AS "exhibitiontitle_ss"
 FROM collectionobjects_common cc
-  JOIN collectionobjects_pahma cp ON (cc.id = cp.id)
-  JOIN collectionobjects_anthropology ca ON (cc.id = ca.id)
+  LEFT OUTER JOIN collectionobjects_pahma cp ON (cc.id = cp.id)
+  LEFT OUTER JOIN collectionobjects_anthropology ca ON (cc.id = ca.id)
 
   JOIN hierarchy h1 ON (cc.id = h1.id)
   JOIN relations_common rc ON (h1.name = rc.subjectcsid AND rc.objectdocumenttype = 'Exhibition')

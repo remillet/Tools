@@ -6,7 +6,7 @@ SELECT
 
 FROM collectionobjects_common cc
   JOIN hierarchy h1 ON (h1.id=cc.id)
-  JOIN collectionobjects_anthropology ca ON (cc.id=ca.id)
+  LEFT OUTER JOIN collectionobjects_anthropology ca ON (cc.id=ca.id)
   JOIN misc ON (cc.id = misc.id AND misc.lifecyclestate <> 'deleted')
   
  GROUP BY cc.id, cc.computedcurrentlocation, ca.computedcrate

@@ -11,7 +11,7 @@ SELECT
   cp.pahmafieldlocverbatim    AS "objfcpverbatim_s"
 FROM collectionobjects_common cc
   JOIN hierarchy h1 ON (h1.id = cc.id)
-  JOIN collectionobjects_pahma cp ON (cp.id = cc.id)
+  LEFT OUTER JOIN collectionobjects_pahma cp ON (cp.id = cc.id)
   JOIN misc ON (cc.id = misc.id AND misc.lifecyclestate <> 'deleted')
   LEFT OUTER JOIN collectionobjects_pahma_pahmaobjectstatuslist osl ON (cc.id = osl.id)
 WHERE osl.item IN ('accessioned', 'deaccessioned', 'number not used', 'recataloged', 'not received')

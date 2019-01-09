@@ -15,7 +15,7 @@ mc.contributor
 
 FROM media_common mc
 
-JOIN media_ucjeps mu on (mc.id=mu.id and mu.posttopublic='yes')
+LEFT OUTER JOIN media_ucjeps mu on (mc.id=mu.id and mu.posttopublic='yes')
 JOIN misc ON (mc.id = misc.id AND misc.lifecyclestate <> 'deleted')
 LEFT OUTER JOIN hierarchy h1 ON (h1.id = mc.id)
 INNER JOIN relations_common r on (h1.name = r.objectcsid)

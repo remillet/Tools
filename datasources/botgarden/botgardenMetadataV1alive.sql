@@ -116,8 +116,8 @@ left outer join hierarchy h1 on co.id=h1.id
 -- left outer join movements_common mc on (mc.id=h2.id)
 -- left outer join misc misc1 on (misc1.id = mc.id and misc1.lifecyclestate <> 'deleted') -- movement not deleted
 
-join collectionobjects_naturalhistory con on (co.id = con.id)
-join collectionobjects_botgarden cob on (co.id=cob.id and cob.deadflag='false')
+left outer join collectionobjects_naturalhistory con on (co.id = con.id)
+left outer join collectionobjects_botgarden cob on (co.id=cob.id and cob.deadflag='false')
 left outer join collectionobjects_common_comments coc  on (co.id = coc.id and coc.pos = 0)
 
 left outer join taxon_common tc on (tig.taxon=tc.refname)

@@ -244,6 +244,19 @@
     <copyField source="exhibitiontitle_ss" dest="exhibitiontitle_txt"/>
     <copyField source="grouptitle_ss" dest="grouptitle_txt"/>
 
+    <copyField source="materials_ss" dest="materials_txt"/>
+    <copyField source="materialstree_ss" dest="materialstree_txt"/>
+    <copyField source="objculturedepicted_ss" dest="objculturedepicted_txt"/>
+    <copyField source="objplacedepicted_ss" dest="objplacedepicted_txt"/>
+    <copyField source="taxon_ss" dest="taxon_txt"/>
+    <copyField source="objculturedepictedtree_ss" dest="objculturedepictedtree_txt"/>
+    <copyField source="objplacedepictedtree_ss" dest="objplacedepictedtree_txt"/>
+    <copyField source="taxontree_ss" dest="taxontree_txt"/>
+    <copyField source="objpersondepicted_ss" dest="objpersondepicted_txt"/>
+
+    <copyField source="media_available_ss" dest="media_available_txt"/>
+    <copyField source="mimetypes_ss" dest="mimetypes_txt"/>
+
     <copyField source="*_s" dest="text"/>
     <copyField source="*_ss" dest="text"/>
     <copyField source="*_txt" dest="text"/>

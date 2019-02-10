@@ -233,21 +233,16 @@
 
     <copyField source="materials_ss" dest="materials_txt"/>
     <copyField source="materialstree_ss" dest="materialstree_txt"/>
-    <copyField source="culturedepicted_ss" dest="culturedepicted_txt"/>
-    <copyField source="placedepicted_ss" dest="placedepicted_txt"/>
-    <copyField source="taxa_ss" dest="taxa_txt"/>
-    <copyField source="culturedepictedtree_ss" dest="culturedepictedtree_txt"/>
-    <copyField source="placedepictedtree_ss" dest="placedepictedtree_txt"/>
-    <copyField source="taxatree_ss" dest="taxatree_txt"/>
-    <copyField source="persondepicted_ss" dest="persondepicted_txt"/>
-    <copyField source="video_csid_ss" dest="video_csid_txt"/>
-    <copyField source="video_mimetype_ss" dest="video_mimetype_txt"/>
-    <copyField source="audio_csid_ss" dest="audio_csid_txt"/>
-    <copyField source="audio_mimetype_ss" dest="audio_mimetype_txt"/>
-    <copyField source="d3_csid_ss" dest="d3_csid_txt"/>
-    <copyField source="d3_mimetype_ss" dest="d3_mimetype_txt"/>
+    <copyField source="objculturedepicted_ss" dest="objculturedepicted_txt"/>
+    <copyField source="objplacedepicted_ss" dest="objplacedepicted_txt"/>
+    <copyField source="taxon_ss" dest="taxon_txt"/>
+    <copyField source="objculturedepictedtree_ss" dest="objculturedepictedtree_txt"/>
+    <copyField source="objplacedepictedtree_ss" dest="objplacedepictedtree_txt"/>
+    <copyField source="taxontree_ss" dest="taxontree_txt"/>
+    <copyField source="objpersondepicted_ss" dest="objpersondepicted_txt"/>
+
     <copyField source="media_available_ss" dest="media_available_txt"/>
-    <copyField source="mimetypes_ss" dest="mimetypes_ss"/>
+    <copyField source="mimetypes_ss" dest="mimetypes_txt"/>
 
     <copyField source="*_s" dest="text"/>
     <copyField source="*_ss" dest="text"/>

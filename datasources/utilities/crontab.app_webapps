@@ -33,7 +33,7 @@
 ##################################################################################
 # clean up the BMU temp directories (erase images more than 48 hours old)
 ##################################################################################
-1 5 * * * for t in bampfa botgarden cinefiles pahma ucjeps; do ~/bin/cleanBMUtempdir.sh $t >> ~/monitor/${t}.imagedircleanup.log ; done
+1 5 * * * for t in bampfa botgarden cinefiles pahma ucjeps; do ~/bin/cleanBMUtempdir.sh /srv/nfs/media/image_upload_cache_${t} >> ~/monitor/${t}.imagedircleanup.log ; done
 ##################################################################################
 # run the tricoder upload job (with locks) weekdays 9am-6pm, 3 mins after the hour
 # clean up temp files that sometime get left behind.

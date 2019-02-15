@@ -7,7 +7,7 @@ CREATE OR REPLACE FUNCTION findcurrentlocation(character varying) RETURNS charac
         '': '',regexp_replace(ma.crate, ''^.*\)''''(.*)''''$'', ''\1'')) END) AS storageLocation
 FROM movements_common m
 JOIN hierarchy h1 ON (h1.id=m.id)
-JOIN movements_anthropology ma ON (ma.id=h1.id)
+LEFT OUTER JOIN movements_anthropology ma ON (ma.id=h1.id)
 JOIN relations_common r ON (r.subjectcsid=h1.name AND r.subjectdocumenttype=''Movement'' AND r.objectdocumenttype=''CollectionObject'')
 JOIN hierarchy h2 ON (h2.name=r.objectcsid)
 JOIN collectionobjects_common c ON (c.id=h2.id)

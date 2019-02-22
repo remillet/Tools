@@ -16,6 +16,7 @@ restricted_md5 = '44f1c5b4d03a07832c32ccce289268ba'
 mimetypes = {'application/pdf': 'document',
              'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'document',
              'audio/mpeg': 'audio',
+             'audio/aac': 'audio',
              'audio/x-wav': 'audio',
              'image/jpeg': 'image',
              'image/photoshop': 'document',

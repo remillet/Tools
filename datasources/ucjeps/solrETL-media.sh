@@ -36,6 +36,10 @@ time curl -X POST -S -s "http://localhost:8983/solr/${TENANT}-media/update/csv?c
 time python evaluate.py 4solr.${TENANT}.media.csv /dev/null > counts.media.csv
 # get rid of intermediate files
 rm newmedia.csv
+# count blobs
+cut -f8 4solr.${TENANT}.public.csv | grep -v 'blob_ss' |perl -pe 's/\r//' |  grep . | wc -l > counts.public.blobs.csv
+cut -f8 4solr.${TENANT}.public.csv | perl -pe 's/\r//;s/,/\n/g' | grep -v 'blob_ss' | grep . | wc -l >> counts.public.blobs.csv
+cp counts.public.blobs.csv /tmp/$TENANT.counts.public.csv
 # zip up .csvs, save a bit of space on backups
 gzip -f 4solr.${TENANT}.media.csv
 wait

@@ -94,6 +94,10 @@ tar -czf counts.tgz counts.*.csv
 ./make_error_report.sh | mail -a counts.tgz -s "UCJEPS Solr Refresh Counts and Errors `date`" ${CONTACT}
 # get rid of intermediate files
 rm d?.csv m?.csv metadata.csv media.csv
+# count blobs
+cut -f67 4solr.${TENANT}.public.csv | grep -v 'blob_ss' |perl -pe 's/\r//' |  grep . | wc -l > counts.public.blobs.csv
+cut -f67 4solr.${TENANT}.public.csv | perl -pe 's/\r//;s/,/\n/g' | grep -v 'blob_ss' | grep . | wc -l >> counts.public.blobs.csv
+cp counts.public.blobs.csv /tmp/$TENANT.counts.public.csv
 cp counts.public.final.csv /tmp/$TENANT.counts.public.csv
 # zip up .csvs, save a bit of space on backups
 gzip -f *.csv

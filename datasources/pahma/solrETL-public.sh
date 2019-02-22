@@ -180,6 +180,10 @@ cp counts.public.final.csv /tmp/${TENANT}.counts.public.csv
 # send the errors off to be dealt with
 tar -czf counts.tgz counts*.csv
 ./make_error_report.sh | mail -a counts.tgz -s "PAHMA Solr Counts and Refresh Errors `date`" ${CONTACT}
+# count blobs
+cut -f51 4solr.${TENANT}.public.csv | grep -v 'blob_ss' |perl -pe 's/\r//' |  grep . | wc -l > counts.public.blobs.csv
+cut -f51 4solr.${TENANT}.public.csv | perl -pe 's/\r//;s/,/\n/g' | grep -v 'blob_ss' | grep . | wc -l >> counts.public.blobs.csv
+cp counts.public.blobs.csv /tmp/$TENANT.counts.public.csv
 # get rid of intermediate files
 rm d?.csv d6?.csv m?.csv part*.csv temp.*.csv basic*.csv errors*.csv header4Solr.csv
 # zip up .csvs, save a bit of space on backups

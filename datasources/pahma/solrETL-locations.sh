@@ -60,6 +60,11 @@ time curl -X POST -s -S 'http://localhost:8983/solr/pahma-locations/update/csv?c
 # count the types and tokens in the final file
 ##############################################################################
 time python evaluate.py 4solr.$TENANT.locations.csv /dev/null > counts.locations.csv &
+# count blobs
+cut -f67 4solr.${TENANT}.public.csv | grep -v 'blob_ss' |perl -pe 's/\r//' |  grep . | wc -l > counts.public.blobs.csv
+cut -f67 4solr.${TENANT}.public.csv | perl -pe 's/\r//;s/,/\n/g' | grep -v 'blob_ss' | grep . | wc -l >> counts.public.blobs.csv
+cp counts.public.blobs.csv /tmp/$TENANT.counts.public.csv
+# get rid of intermediate files
 rm m4.csv
 wait
 gzip 4solr.$TENANT.locations.csv

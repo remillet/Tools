@@ -47,6 +47,10 @@ time curl -X POST -S -s "http://localhost:8983/solr/${TENANT}-internal/update/cs
 ##############################################################################
 # wrap things up: make a gzipped version of what was loaded
 ##############################################################################
+# count blobs
+cut -f59 4solr.${TENANT}.public.csv | grep -v 'blob_ss' |perl -pe 's/\r//' |  grep . | wc -l > counts.public.blobs.csv
+cut -f59 4solr.${TENANT}.public.csv | perl -pe 's/\r//;s/,/\n/g' | grep -v 'blob_ss' | grep . | wc -l >> counts.public.blobs.csv
+cp counts.public.blobs.csv /tmp/$TENANT.counts.public.csv
 gzip -f 4solr.*.csv
 # wait for everything to finish
 date

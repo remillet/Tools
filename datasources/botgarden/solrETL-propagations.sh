@@ -53,6 +53,10 @@ time python evaluate.py 4solr.$TENANT.propagations.csv /dev/null > counts.propag
 curl -S -s "http://localhost:8983/solr/${TENANT}-propagations/update" --data '<delete><query>*:*</query></delete>' -H 'Content-type:text/xml; charset=utf-8'
 curl -S -s "http://localhost:8983/solr/${TENANT}-propagations/update" --data '<commit/>' -H 'Content-type:text/xml; charset=utf-8'
 time curl -X POST -S -s "http://localhost:8983/solr/${TENANT}-propagations/update/csv?commit=true&header=true&trim=true&separator=%09&encapsulator=\\" -T 4solr.$TENANT.propagations.csv -H 'Content-type:text/plain; charset=utf-8' &
+# count blobs
+cut -f67 4solr.${TENANT}.public.csv | grep -v 'blob_ss' |perl -pe 's/\r//' |  grep . | wc -l > counts.public.blobs.csv
+cut -f67 4solr.${TENANT}.public.csv | perl -pe 's/\r//;s/,/\n/g' | grep -v 'blob_ss' | grep . | wc -l >> counts.public.blobs.csv
+cp counts.public.blobs.csv /tmp/$TENANT.counts.public.csv
 # get rid of intermediate files
 rm p?.csv header4Solr.csv*
 wait

@@ -24,13 +24,18 @@ mimetypes = {'application/pdf': 'document',
              'image/tiff': 'image',
              'image/x-adobe-dng': 'document',
              'image/x-nikon-nef': 'document',
+             'model/x3d+xml': 'd3',
+             'model/x3d-vrml': 'd3',
+             'model/x3d+fastinfoset': 'd3',
              'video/mp4': 'video'}
 
 runtype = sys.argv[3]  # generate media for public or internal
 
+# nb: these indexes are all offest by 2 -- the list they are used in is sliced
 fcpcol = 39
 contextofusecol = 13
 objectnamecol = 8
+objectlegacydeptcol = 2
 
 
 def check(string_to_check, pattern):
@@ -65,7 +70,7 @@ with open(sys.argv[1], 'r') as MEDIA:
         if mimetype in mimetypes:
             media_available = mimetypes[mimetype]
         else:
-            media_available = 'unrecognized'
+            media_available = 'other media'
 
         if media_available == 'image':
             media_type = 'images'
@@ -75,12 +80,12 @@ with open(sys.argv[1], 'r') as MEDIA:
         if check(description, 'catalog card') or check(description, 'HSR Datasheet'): media_type = 'legacy documentation'
         if check(description, 'Index'): media_type = 'legacy documentation'
         ispublic = 'public'
-        # we don't need to match a pattern here, it's a vocabulary. But just in case...
-        if check(pahmatmslegacydepartment, 'Human Remains'): ispublic = 'notpublic'
-        if check(pahmatmslegacydepartment, 'NAGPRA-associated Funerary Objects'): ispublic = 'notpublic'
         if check(objectstatus, 'culturally'): ispublic = 'notpublic'
         # NB: the test 'burial' in context of use occurs below -- we only mask if the FCP is in North America
         if not (approvedforweb == 't'): ispublic = 'notpublic'
+        # TODO: hack -- all x3d are public, for now...
+        if media_available == 'd3':
+            ispublic = 'public'
         if media_type == 'legacy documentation':
             # while cards (i.e. legacy documentation) are images, we don't count them as such
             media_available = media_type
@@ -182,23 +187,31 @@ with open(sys.argv[2], 'r') as METADATA:
                     # if context of use field contains the word burial
                     if check(rest[contextofusecol], 'burial'):
                         blobs[objectcsid]['images'] = restricted_csid
-                        blobs[objectcsid]['image_md5s'] = restricted_csid
+                        blobs[objectcsid]['image_md5s'] = restricted_md5
                     # if object name contains something like "charm stone"
                     elif check(rest[objectnamecol], 'charm stone') or check(rest[objectnamecol], 'charmstone'):
                         blobs[objectcsid]['images'] = restricted_csid
-                        blobs[objectcsid]['image_md5s'] = restricted_csid
-                    # belt-and-suspenders: restrict if charm stone or NAGPRA appear anywhere...
+                        blobs[objectcsid]['image_md5s'] = restricted_md5
+                    # we don't need to match a pattern here, it's a vocabulary. But just in case...
+                    elif check(rest[objectlegacydeptcol], 'NAGPRA-associated Funerary Objects'):
+                        blobs[objectcsid]['images'] = restricted_csid
+                        blobs[objectcsid]['image_md5s'] = restricted_md5
+                    # belt-and-suspenders: restrict if 'human remains' appears anywhere
+                    elif check(line_as_string, 'Human Remains'):
+                        blobs[objectcsid]['images'] = restricted_csid
+                        blobs[objectcsid]['image_md5s'] = restricted_md5
+                    # belt-and-suspenders: restrict if charmstone or NAGPRA appear anywhere...
                     elif check(line_as_string, 'charm stone') or check(line_as_string, 'charmstone'):
                         blobs[objectcsid]['images'] = restricted_csid
-                        blobs[objectcsid]['image_md5s'] = restricted_csid
+                        blobs[objectcsid]['image_md5s'] = restricted_md5
                     elif check(line_as_string, 'NAGPRA-associated Funerary Objects'):
                         blobs[objectcsid]['images'] = restricted_csid
-                        blobs[objectcsid]['image_md5s'] = restricted_csid
+                        blobs[objectcsid]['image_md5s'] = restricted_md5
 
             # insert list of blobs, etc. as final columns
             if not blobs[objectcsid]['hasimages'] == 'yes': blobs[objectcsid]['hasimages'] = 'no'
             count['hasimages: %s' % blobs[objectcsid]['hasimages']] += 1
-            for column in 'images,image_md5s,legacy documentation,legacy documentation md5s,primary,primary_md5,type,restrictions,hasimages,video_csids,video_md5s,video_mimetypes,audio_csids,audio_md5s,audio_mimetypes,d3_csids,d3_mimetypes,d3_md5s,media_available,mimetypes'.split(
+            for column in 'images,image_md5s,legacy documentation,legacy documentation md5s,primary,primary_md5,type,restrictions,hasimages,video_csids,video_md5s,video_mimetypes,audio_csids,audio_md5s,audio_mimetypes,d3_csids,d3_md5s,d3_mimetypes,media_available,mimetypes'.split(
                     ','):
                 if type(blobs[objectcsid][column]) == type([]):
                     mediablobs.append('|'.join(sorted(blobs[objectcsid][column])))

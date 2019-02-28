@@ -150,19 +150,19 @@ URL: http://ucjeps.berkeley.edu]]></text>
 				<textFieldExpression><![CDATA[$F{shipdate}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="386" y="122" width="100" height="20"/>
+				<reportElement x="400" y="122" width="100" height="20"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{numpackages}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="303" y="122" width="83" height="20"/>
+				<reportElement x="305" y="122" width="90" height="20"/>
 				<textElement/>
 				<text><![CDATA[No. of Packages:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="303" y="101" width="83" height="20"/>
+				<reportElement x="305" y="101" width="90" height="20"/>
 				<textElement/>
 				<text><![CDATA[Date wrapped:]]></text>
 			</staticText>
@@ -172,7 +172,7 @@ URL: http://ucjeps.berkeley.edu]]></text>
 				<text><![CDATA[TRANSACTION DESCRIPTION]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="31" y="198" width="63" height="20"/>
+				<reportElement x="31" y="198" width="98" height="20"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
@@ -208,7 +208,7 @@ URL: http://ucjeps.berkeley.edu]]></text>
 				<textFieldExpression><![CDATA[$F{borrowerscontact}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="31" y="258" width="77" height="20"/>
+				<reportElement x="31" y="258" width="98" height="20"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
@@ -222,7 +222,7 @@ URL: http://ucjeps.berkeley.edu]]></text>
 				<textFieldExpression><![CDATA[$F{loanoutnumber}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="31" y="178" width="66" height="20"/>
+				<reportElement x="31" y="178" width="98" height="20"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
@@ -236,7 +236,7 @@ URL: http://ucjeps.berkeley.edu]]></text>
 				<textFieldExpression><![CDATA[$F{specialconditionsofloan}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="31" y="218" width="63" height="20"/>
+				<reportElement x="31" y="218" width="98" height="20"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
@@ -250,7 +250,7 @@ URL: http://ucjeps.berkeley.edu]]></text>
 				<textFieldExpression><![CDATA[$F{taxonomy}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="31" y="238" width="63" height="20"/>
+				<reportElement x="31" y="238" width="98" height="20"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
@@ -264,7 +264,7 @@ URL: http://ucjeps.berkeley.edu]]></text>
 				<textFieldExpression><![CDATA[$F{geography}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="31" y="278" width="92" height="20"/>
+				<reportElement x="31" y="278" width="98" height="20"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>

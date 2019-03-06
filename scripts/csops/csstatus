@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# Get the status for the collectionspace service
+
+/bin/systemctl status `csservname`

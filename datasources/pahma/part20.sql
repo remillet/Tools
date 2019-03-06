@@ -1,4 +1,4 @@
-SELECT cc.id, 'deaccessioned' AS deaccessioned_s,
+SELECT cc.id, 'Deaccessioned' AS deaccessioned_s,
 STRING_AGG(DISTINCT REGEXP_REPLACE(osl.item, '^.*\)''(.*)''$', '\1'),'␥') AS "status_ss"
 FROM collectionobjects_common cc
 LEFT OUTER JOIN collectionobjects_pahma_pahmaobjectstatuslist osl ON (cc.id=osl.id)

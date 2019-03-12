@@ -103,8 +103,9 @@ time python evaluate.py 4solr.$TENANT.public.csv /dev/null > counts.public.csv
 # get rid of intermediate files
 # count blobs
 cut -f67 4solr.${TENANT}.public.csv | grep -v 'blob_ss' |perl -pe 's/\r//' |  grep . | wc -l > counts.public.blobs.csv
-cut -f67 4solr.${TENANT}.public.csv | perl -pe 's/\r//;s/,/\n/g' | grep -v 'blob_ss' | grep . | wc -l >> counts.public.blobs.csv
-cp counts.public.blobs.csv /tmp/$TENANT.counts.public.csv
+cut -f67 4solr.${TENANT}.public.csv | perl -pe 's/\r//;s/,/\n/g;s/\|/\n/g;' | grep -v 'blob_ss' | grep . | wc -l >> counts.public.blobs.csv
+cp counts.public.blobs.csv /tmp/$TENANT.counts.public.blobs.csv
+cat counts.public.blobs.csv
 rm d?.csv d??.csv m?.csv metadata*.csv
 cp counts.public.csv /tmp/$TENANT.counts.public.csv
 # zip up .csvs, save a bit of space on backups

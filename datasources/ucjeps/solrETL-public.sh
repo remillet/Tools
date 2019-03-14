@@ -96,9 +96,9 @@ tar -czf counts.tgz counts.*.csv
 rm d?.csv m?.csv metadata.csv media.csv
 # count blobs
 cut -f67 4solr.${TENANT}.public.csv | grep -v 'blob_ss' |perl -pe 's/\r//' |  grep . | wc -l > counts.public.blobs.csv
-cut -f67 4solr.${TENANT}.public.csv | perl -pe 's/\r//;s/,/\n/g' | grep -v 'blob_ss' | grep . | wc -l >> counts.public.blobs.csv
-cp counts.public.blobs.csv /tmp/$TENANT.counts.public.csv
-cp counts.public.final.csv /tmp/$TENANT.counts.public.csv
+cut -f67 4solr.${TENANT}.public.csv | perl -pe 's/\r//;s/,/\n/g;s/\|/\n/g;' | grep -v 'blob_ss' | grep . | wc -l >> counts.public.blobs.csv
+cp counts.public.blobs.csv /tmp/$TENANT.counts.public.blobs.csv
+cat counts.public.blobs.csv
 # zip up .csvs, save a bit of space on backups
 gzip -f *.csv
 # hack to zap latlong errors and load the records anyway.

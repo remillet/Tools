@@ -2,8 +2,9 @@
 # snag the nightly field counts files
 cp /tmp/*.counts.*.csv /var/www/static/
 #
-echo "<h2>Contents of Public Solr Cores</h2>" > corestats.html
+echo "<h2>Contents of Solr Cores</h2>" > corestats.html
 echo "<h4>`date`</h4>" >> corestats.html
+echo "<h2>Objects Public Solr Cores</h2>" > corestats.html
 echo '
     <link rel="stylesheet" type="text/css" href="css/reset.css">
     <link rel="stylesheet" type="text/css" href="css/base.css">
@@ -22,4 +23,10 @@ do
     echo "<p/>" >> corestats.html
 done
 echo "</table>" >> corestats.html
+# compute image stats
+echo "<h2>Images in Solr Cores</h2>" >> corestats.html
+echo "<table><tr><th>Institution<th>Core<th>Objects w Images<th>Images" >> corestats.html
+for t in /tmp/*.blobs.csv; do echo $t; cat $t ; done | perl -pe 's#/tmp/#<tr><td>#;s/.counts./<td>/;s/.blobs.csv//;s/^(\d+)/<td>\1/' >> corestats.html
+echo "</table>" >> corestats.html
+#
 cp corestats.html /var/www/static

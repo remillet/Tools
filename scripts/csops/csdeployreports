@@ -16,11 +16,11 @@ echo "Updating reports..."
 TAG=$1
 
 if ! git checkout $TAG; then
-	echo "ERROR: Failed to check out $TAG in $repo"
+	echo "ERROR: Failed to check out tag $TAG"
 	exit 1
 fi
 
-echo "Deploying reports from tag $TAG in $repo"
+echo "Deploying reports from tag $TAG"
 
 cp reports/$DEPLOYMENT_NAME/*.jrxml $REPORT_DIR
 

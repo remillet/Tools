@@ -11,16 +11,7 @@ LIB_DEST_DIR=$CATALINA_HOME/lib
 
 cd $TOOLS_DIR
 
-echo "Updating reports..."
-
-TAG=$1
-
-if ! git checkout $TAG; then
-	echo "ERROR: Failed to check out tag $TAG"
-	exit 1
-fi
-
-echo "Deploying reports from tag $TAG"
+echo "Deploying reports..."
 
 cp reports/$DEPLOYMENT_NAME/*.jrxml $REPORT_DIR
 

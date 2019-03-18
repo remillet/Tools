@@ -13,12 +13,14 @@ cd $TOOLS_DIR
 
 echo "Updating reports..."
 
-if ! git pull; then
-	echo "ERROR: Failed to pull updates"
+TAG=$1
+
+if ! git checkout $TAG; then
+	echo "ERROR: Failed to check out $TAG in $repo"
 	exit 1
 fi
 
-echo "Deploying reports..."
+echo "Deploying reports from tag $TAG in $repo"
 
 cp reports/$DEPLOYMENT_NAME/*.jrxml $REPORT_DIR
 
